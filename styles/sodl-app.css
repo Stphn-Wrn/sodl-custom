@@ -303,6 +303,26 @@
   text-align: center;
 }
 
+.chance-hidden {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px;
+  color: #666;
+  text-align: center;
+}
+
+.chance-hidden i {
+  font-size: 1.6em;
+}
+
+.chance-hidden p {
+  margin: 0;
+  font-size: 0.85em;
+  font-style: italic;
+}
+
 .chance-controls {
   display: flex;
   gap: 6px;
@@ -419,6 +439,41 @@
   padding: 4px 0;
   color: #a5a5a5;
   font-size: 0.85em;
+}
+
+.sodl-fortune-uses {
+  display: flex;
+  flex-direction: column;
+}
+
+.sodl-fortune-use {
+  padding: 8px 0;
+  border-bottom: 1px solid #232323;
+}
+
+.sodl-fortune-use:last-child {
+  border-bottom: none;
+}
+
+.sodl-fortune-use h5 {
+  margin: 0 0 4px 0;
+  color: #d8d8d8;
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
+.sodl-fortune-use p {
+  margin: 0;
+  color: #999;
+  font-size: 0.85em;
+  line-height: 1.5;
+}
+
+.sodl-table-note {
+  color: #777;
+  font-size: 0.8em;
+  font-style: italic;
+  margin: 6px 0 0 0;
 }
 
 /* -------- ONGLETS RÈGLES ET ACTIONS -------- */

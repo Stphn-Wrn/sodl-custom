@@ -10,17 +10,62 @@ export const SODL_CONFIG = {
   chancePointsRules: {
     reserve: "Réserve de 1d3+3 points par aventure pour le groupe.",
     gains: "Également gagnés par des actions remarquables, de bonnes idées, une bonne interprétation...",
-    uses: [
-      "Transformer un échec en succès et inversement",
-      "Gagner 1 Action supplémentaire (restriction sur le tour en cours)",
-      "Dépenser un point de chance pour récupérer 2x votre Vitesse de Guérison se fait durant votre tour et consomme votre action. C'est un effort héroïque pour vous remettre sur pied, mais vous ne pouvez pas attaquer en même temps.",
-      "Changer 1d6 (avantage ou désavantage) en 1 ou 6"
+
+    intro: "La Fortune est faite pour être utilisée souvent. C'est à la fois un parachute en cas de situation horrible et une ressource inutile si on la garde sans s'en servir. Le livre de base définit les effets de base (résumés ici) :",
+    baseUses: [
+      "Transformer un échec en succès pour le joueur qui la dépense.",
+      "Accorder 2 atouts au jet d'attaque ou de défi d'un autre joueur.",
+      "Remplacer le résultat de n'importe quel d6 par un 6."
     ],
-    gmUses: [
-      "Survivre à un coup mortel",
-      "Dépenser une utilisation d'un sort pour en lancer un autre (équivalent)",
-      "Éviter une Marque des ténèbres",
+
+    extendedIntro: "Ces options de base couvrent la plupart des situations (transformer un coup raté en coup au but, encourager un allié, ou arracher un ami à l'agonie en maximisant un soin ou des dégâts). Mais la Fortune donne un contrôle momentané sur l'histoire, et ses usages peuvent être élargis. Voici de nouvelles manières de dépenser la Fortune pour élargir ses pouvoirs :",
+    extendedUses: [
+      {
+        name: "Imposer des fléaux",
+        description: "Un joueur peut dépenser de la Fortune pour imposer 2 fléaux sur n'importe quel jet de d20. C'est un excellent moyen de sauver la vie de quelqu'un en ciblant le jet d'attaque d'un monstre ou en annulant ses atouts. Ou encore pour donner 2 fléaux au jet d'Agilité d'un ennemi poussé d'une falaise afin qu'il rate sa prise. La Fortune de l'un fait le malheur de l'autre."
+      },
+      {
+        name: "Obtenir un résultat faible",
+        description: "Un joueur peut dépenser de la Fortune pour remplacer le résultat de n'importe quel d6 par un 1. Cette option permet de neutraliser un atout adverse en réduisant son bonus à 1, de forcer quelqu'un à rater un jet de destin de la pire des manières, ou de réduire les dégâts entrants pour éviter de tomber inconscient. Provoquer la guigne chez les autres n'est peut-être pas honorable, mais l'époque ne l'est pas non plus."
+      },
+      {
+        name: "Supprimer une affliction",
+        description: "Lorsqu'un membre du groupe s'apprête à subir une affliction (autre que sans défense ou inconscient), tout joueur peut dépenser de la Fortune pour annuler immédiatement cette affliction sur ce personnage, évitant ainsi des conséquences désastreuses."
+      },
+      {
+        name: "Refuser la Marque des Ténèbres",
+        description: "Un joueur dont le personnage devrait gagner une Marque des Ténèbres peut dépenser de la Fortune pour la refuser. Tous les pratiquants des arts sombres ne veulent pas afficher leur perversité. Cela permet de cacher sa Corruption aux yeux de l'Inquisition... ou de ses propres camarades."
+      },
+      {
+        name: "Contrôler la Folie",
+        description: "Un joueur sur le point de devenir fou peut dépenser de la Fortune pour subir le résultat de Révélation à la place du résultat déterminé par le d20 sur la table de Folie. La Révélation renforce la résolution du personnage face aux monstruosités, du moins pour un temps."
+      },
+      {
+        name: "Retenir la main de la Mort",
+        description: "Un joueur dont le personnage subit des dégâts égaux ou supérieurs à sa valeur de Santé peut dépenser de la Fortune pour devenir simplement incapacité au lieu de mourir instantanément. S'il y a bien une raison de garder de la Fortune, c'est celle-ci. Les règles de mort instantanée rappellent aux joueurs qu'ils ne sont pas invincibles ; cette option les sauve d'une attaque écrasante ou d'une chute tragique, même si cela ne les protège pas de ce qui viendra juste après."
+      },
+      {
+        name: "Magie improvisée",
+        description: "Un joueur ayant découvert au moins une tradition magique peut dépenser de la Fortune pour sacrifier l'utilisation d'un sort appris afin de lancer à la place n'importe quel autre sort de rang équivalent ou inférieur provenant d'une tradition qu'il a découverte. Cela permet de lancer précisément le bon sort au bon moment."
+      },
+      {
+        name: "Altérer la réalité",
+        description: "Un joueur peut dépenser de la Fortune pour modifier légèrement l'histoire afin de continuer à faire progresser le récit. C'est l'utilisation la plus libre, qui nécessite un contrôle strict du MJ. Généralement, cela permet de contourner une complication : trouver la clé d'une porte verrouillée, découvrir une corde de 20 mètres quand il en manquait 10, ou trouver un témoin dans une rue bondée. Comme cela peut complètement désamorcer une intrigue, le MJ est libre de refuser ou de modifier le résultat pour qu'il colle à l'histoire."
+      }
     ]
+  },
+
+  fortuneAwardsTable: {
+    title: "Fréquence des Récompenses de Fortune",
+    subtitle: "Maximum de récompenses selon la taille du groupe",
+    header: ["Palier", "Petit", "Moyen", "Grand"],
+    rows: [
+      ["Départ", 8, 7, 6],
+      ["Novice", 7, 6, 5],
+      ["Expert", 6, 5, 4],
+      ["Maître", 4, 3, 2]
+    ],
+    note: "Un petit groupe compte trois personnages ou moins, un grand groupe en compte six ou plus."
   },
 
   afflictions: {

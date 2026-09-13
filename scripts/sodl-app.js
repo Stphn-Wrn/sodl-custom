@@ -61,10 +61,11 @@ export class SODLCompanionApp extends FormApplication {
     index.push({ category: "Règle", name: "Folie", description: SODL_CONFIG.madness.content });
     index.push({ category: "Règle", name: "Corruption", description: SODL_CONFIG.corruption.content });
     index.push({
-      category: "Règle",
+      category: "Fortune",
       name: "Points de Chance",
       description: `${SODL_CONFIG.chancePointsRules.reserve} ${SODL_CONFIG.chancePointsRules.gains}`
     });
+    addAll("Fortune", SODL_CONFIG.chancePointsRules.extendedUses);
     index.push({ category: "Sort", name: "Formule", description: SODL_CONFIG.spellcasting.formula });
     index.push({ category: "Sort", name: "Focale", description: SODL_CONFIG.spellcasting.focus });
     index.push({ category: "Sort", name: "Incantation", description: SODL_CONFIG.spellcasting.incantation.description });
@@ -102,7 +103,8 @@ export class SODLCompanionApp extends FormApplication {
     return {
       chancePoints: SODLDataManager.getChancePoints(),
       maxChancePoints: SODL_CONFIG.resources.chancePoints.maximum,
-      rules: SODL_CONFIG.chancePointsRules
+      rules: SODL_CONFIG.chancePointsRules,
+      awardsTable: SODL_CONFIG.fortuneAwardsTable
     };
   }
 

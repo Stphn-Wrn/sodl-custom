@@ -31,7 +31,7 @@
     {{#if (eq activeTab 'resources')}}
     <div class="tab-content resources-tab">
       <div class="resources-header">
-        <h2>Gestion des Ressources</h2>
+        <h2>Gestion des points de chances</h2>
         <p class="resources-subtitle">Réserve partagée par tout le groupe</p>
       </div>
 
@@ -42,10 +42,17 @@
             <h3>Points de Chance du Groupe</h3>
           </div>
 
+          {{#if canEdit}}
           <div class="chance-display">
             <div class="chance-value">{{tabs.resources.chancePoints}}</div>
             <div class="chance-max">/ {{tabs.resources.maxChancePoints}}</div>
           </div>
+          {{else}}
+          <div class="chance-hidden">
+            <i class="fas fa-eye-slash"></i>
+            <p>Le MJ garde le compte de la réserve de Fortune. Votre bonne étoile vous accompagne, ou pas.</p>
+          </div>
+          {{/if}}
 
           <div class="chance-description">
             <p>Les points de chance peuvent être utilisés par n'importe quel PJ pour relancer les dés ou activer des pouvoirs spéciaux.</p>
@@ -78,19 +85,48 @@
           <p>{{tabs.resources.rules.reserve}}</p>
           <p>{{tabs.resources.rules.gains}}</p>
 
-          <h4>Utilisations</h4>
+          <h4>Effets de Base</h4>
+          <p>{{tabs.resources.rules.intro}}</p>
           <ul>
-            {{#each tabs.resources.rules.uses}}
+            {{#each tabs.resources.rules.baseUses}}
             <li>{{this}}</li>
             {{/each}}
           </ul>
 
-          <h4>Autres utilisations (soumises au MJ)</h4>
-          <ul>
-            {{#each tabs.resources.rules.gmUses}}
-            <li>{{this}}</li>
+          <h4>Effets Étendus</h4>
+          <p>{{tabs.resources.rules.extendedIntro}}</p>
+          <div class="sodl-fortune-uses">
+            {{#each tabs.resources.rules.extendedUses}}
+            <div class="sodl-fortune-use">
+              <h5>{{this.name}}</h5>
+              <p>{{this.description}}</p>
+            </div>
             {{/each}}
-          </ul>
+          </div>
+
+          {{#if canEdit}}
+          <h4><i class="fas fa-eye"></i> {{tabs.resources.awardsTable.title}} (MJ uniquement)</h4>
+          <p>{{tabs.resources.awardsTable.subtitle}}</p>
+          <table class="sodl-spell-table">
+            <thead>
+              <tr>
+                {{#each tabs.resources.awardsTable.header}}
+                <th>{{this}}</th>
+                {{/each}}
+              </tr>
+            </thead>
+            <tbody>
+              {{#each tabs.resources.awardsTable.rows}}
+              <tr>
+                {{#each this}}
+                <td>{{this}}</td>
+                {{/each}}
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+          <p class="sodl-table-note">{{tabs.resources.awardsTable.note}}</p>
+          {{/if}}
         </div>
       </div>
     </div>
