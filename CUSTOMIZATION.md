@@ -2,105 +2,88 @@
 
 ## Modifier le contenu des onglets
 
-Éditer `scripts/sodl-app.js`.
+Toutes les données de règles vivent dans `scripts/config.js` : `afflictions`, `actions`, `meleeOptions`, `rangedOptions`, `otherAttacks`, `situationalRules`, `outOfCombat`, `madness`, `corruption`, `spellcasting`, `chancePointsRules`, `fortuneAwardsTable`.
 
-**Onglet Règles** — Trouvez `getRulesData()`:
+Exemple, ajouter une affliction :
 ```javascript
-async getRulesData() {
-  return {
-    sections: [
-      {
-        title: "Mes Afflictions",
-        content: `<ul><li>Mon contenu ici</li></ul>`
-      }
-    ]
-  };
+afflictions: {
+  list: [
+    // ...
+    { id: "mycustom", name: "Mon Affliction", description: "Description ici." }
+  ]
 }
 ```
 
-**Onglet Actions** — Trouvez `getActionsData()` et faites pareil.
+`scripts/sodl-app.js` transforme ces données en HTML pour les onglets Règles/Actions (`getRulesData()`, `getActionsData()`) et alimente aussi l'index de recherche (`buildSearchIndex()`) — toute entrée `{ name, description }` ajoutée dans une des listes ci-dessus devient automatiquement cherchable si elle est incluse dans un `addAll(...)` de `buildSearchIndex()`.
 
-**Onglet Aide** — Trouvez `getHelpData()`.
+**Onglet Aide** — Contenu en dur dans `getHelpData()` (`scripts/sodl-app.js`), pas dans `config.js`.
+
+## Ajouter une catégorie à la recherche
+
+Dans `buildSearchIndex()` (`scripts/sodl-app.js`) :
+```javascript
+addAll("MaCatégorie", SODL_CONFIG.maNouvelleListe.list);
+```
+Chaque entrée doit avoir `name` et `description`.
 
 ## Changer les couleurs
 
-`styles/sodl-app.css`:
+`styles/sodl-app.css` — variables de couleur principales utilisées un peu partout :
 
 ```css
-/* Couleur primaire */
-background: #8B0000;
+/* Accent (bordures actives, hover, icônes) */
+#A13030
 
-/* Accent */
-color: #FFD700;
+/* Fonds */
+#1b1b1b   /* fond principal */
+#171717   /* en-têtes, barre de recherche, scrollbar track */
+#202020   /* cartes (resource-card) */
 
-/* Fond */
-background: #1a1a1a;
+/* Texte */
+#d8d8d8   /* texte principal */
+#a5a5a5 / #999 / #777   /* texte secondaire, dégradé de gris */
 ```
 
-## Points de chance max
+Le fond parchemin par défaut de Foundry est explicitement écrasé sur `#sodl-companion-app .window-content` — ne pas le retirer sous peine de voir réapparaître la texture parchemin derrière l'interface.
 
-`scripts/sodl-app.js`, ligne ~60:
-```javascript
-maxChancePoints: 6
-```
+## Réserve de Fortune (points de chance)
 
-## Permissions
+C'est un **setting monde partagé**, pas un flag par acteur. Deux settings sont enregistrés dans `scripts/register.js` :
+- `sodl-companion.chancePoints` — réserve courante
+- `sodl-companion.maxChancePoints` — maximum (défaut: `SODL_CONFIG.resources.chancePoints.maximum`, éditable par le MJ dans l'onglet Ressources)
 
+### Changer le maximum par défaut
 `scripts/config.js`:
 ```javascript
-permissions: {
-  players: {
-    canRead: true,
-    canEdit: false
-  },
-  gm: {
-    canRead: true,
-    canEdit: true
+resources: {
+  chancePoints: {
+    maximum: 6
   }
 }
 ```
+Cette valeur ne sert que de valeur initiale du setting `maxChancePoints` — une fois modifiée depuis l'interface, c'est le setting qui fait foi.
 
-## Ajouter une nouvelle ressource
+### Masquer/afficher la réserve aux joueurs
+Contrôlé dans `templates/sodl-app.html` par `{{#if canEdit}}` (= `game.user.isGM`). Pour la rendre visible aux joueurs, remplacer la condition `canEdit` par une condition toujours vraie autour du bloc `.chance-display`.
 
-Exemple: ajouter des points de mana.
+## Ajouter une nouvelle ressource partagée
 
-1. Dans `scripts/sodl-app.js`, modifier `getResourcesData()`:
+Exemple : ajouter des points de mana partagés, sur le même modèle que la Fortune.
+
+1. Enregistrer un setting dans `scripts/register.js` :
 ```javascript
-const manaPoints = actor ? 
-  await SODLDataManager.getManaPoints(actor) : 0;
-
-return {
-  // ...
-  manaPoints: manaPoints,
-  maxManaPoints: 10
-};
+game.settings.register("sodl-companion", "manaPoints", {
+  scope: "world",
+  config: false,
+  type: Number,
+  default: 0,
+  onChange: rerenderOpenApps
+});
 ```
 
-2. Ajouter les méthodes dans `SODLDataManager`:
-```javascript
-static async getManaPoints(actor = null) {
-  if (!actor) actor = game.user.character;
-  return actor?.getFlag("sodl-companion", "manaPoints") || 0;
-}
+2. Ajouter les méthodes dans `SODLDataManager` (`scripts/data-manager.js`), sur le modèle de `getChancePoints`/`setChancePoints`/`modifyChancePoints`.
 
-static async setManaPoints(value, actor = null) {
-  if (!actor) actor = game.user.character;
-  if (!actor || !game.user.isGM) return false;
-  await actor.setFlag("sodl-companion", "manaPoints", Math.max(0, value));
-  return true;
-}
-```
-
-3. Ajouter dans le template `templates/sodl-app.html`:
-```html
-<div class="resource-card">
-  <h3>Points de Mana</h3>
-  <div class="chance-display">
-    <div class="chance-value">{{tabs.resources.manaPoints}}</div>
-    <div class="chance-max">/ {{tabs.resources.maxManaPoints}}</div>
-  </div>
-</div>
-```
+3. Exposer les données dans `getResourcesData()` (`scripts/sodl-app.js`) et les afficher dans `templates/sodl-app.html`.
 
 ## Traductions
 
@@ -117,41 +100,12 @@ Ajouter une clé:
 
 Utiliser dans le template: `{{localize 'SODL.MyKey'}}`
 
-## Thème clair
-
-Dans `styles/sodl-app.css`:
-```css
-#sodl-companion-app {
-  background: linear-gradient(to bottom, #f0f0f0, #e0e0e0);
-  color: #333;
-  border: 2px solid #4a90e2;
-}
-
-#sodl-companion-app .window-header {
-  background: linear-gradient(90deg, #4a90e2, #2e5c8a);
-}
-```
-
-## Mobile
-
-Ajouter à `styles/sodl-app.css`:
-```css
-@media (max-width: 600px) {
-  #sodl-companion-app {
-    width: 100% !important;
-    height: 100% !important;
-  }
-  
-  .chance-points-section {
-    grid-template-columns: 1fr;
-  }
-}
-```
+Notez que la majorité du contenu (règles, afflictions, effets de Fortune...) est actuellement en dur en français dans `config.js`, pas dans les fichiers de langue.
 
 ## Relancer après les modifs
 
-Fermez et rouvrez le monde (ou relancez Foundry) après avoir modifié les fichiers JavaScript.
+Fermez et rouvrez le monde (ou relancez Foundry) après avoir modifié les fichiers JavaScript — les modules ES sont mis en cache par le navigateur, un simple F5 peut ne pas suffire (Ctrl+Shift+R au besoin).
 
 ## Tester
 
-Ouvrez la console (F12) pour voir les erreurs. Testez avec un MJ et un joueur pour vérifier les permissions.
+Ouvrez la console (F12) pour voir les erreurs. Testez avec un compte MJ et un compte joueur pour vérifier que la réserve de Fortune reste bien masquée côté joueur.
