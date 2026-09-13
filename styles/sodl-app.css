@@ -491,6 +491,13 @@
 }
 
 /* -------- SCROLLBAR PERSONNALISÉE -------- */
+/* Restaure le scrollbar fin natif de Foundry (foundry2.css), écrasé par `* { scrollbar-color: initial; }` d'un autre module/système */
+#sodl-companion-app,
+#sodl-companion-app * {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-scrollbar) var(--color-scrollbar-track);
+}
+
 .sodl-tabs-content::-webkit-scrollbar,
 .sodl-search-results::-webkit-scrollbar {
   width: 8px;
