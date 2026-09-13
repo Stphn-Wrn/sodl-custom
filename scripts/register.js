@@ -48,8 +48,8 @@ Hooks.on("getSceneControlButtons", (controls) => {
         title: "Ouvrir le Compagnon SODL",
         icon: "fas fa-book",
         button: true,
-        onChange: () => {
-          new SODLCompanionApp().render(true);
+        onChange: (event, active) => {
+          if (active) new SODLCompanionApp().render(true);
         }
       }
     },
