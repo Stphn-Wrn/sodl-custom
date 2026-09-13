@@ -1,0 +1,51 @@
+{
+  "id": "sodl-companion",
+  "title": "L'Ombre du Seigneur Démon - Companion",
+  "description": "Module compagnon pour L'Ombre du Seigneur Démon avec gestion de ressources et aide de jeu",
+  "version": "1.0.0",
+  "compatibility": {
+    "minimum": "11",
+    "verified": "14"
+  },
+  "relationships": {
+    "systems": [
+      {
+        "id": "shadow-of-the-demon-lord",
+        "type": "system",
+        "compatibility": {
+          "minimum": "6.1.6",
+          "verified": "6.1.6"
+        }
+      }
+    ]
+  },
+  "author": "SODL Community",
+  "authors": [
+    {
+      "name": "SODL Community"
+    }
+  ],
+  "url": "https://github.com/sodl-custom",
+  "manifest": "module.json",
+  "download": "https://github.com/sodl-custom/archive/main.zip",
+  "license": "MIT",
+  "scripts": [
+    "scripts/module.js",
+    "scripts/sodl-app.js"
+  ],
+  "styles": [
+    "styles/sodl-app.css"
+  ],
+  "languages": [
+    {
+      "lang": "fr",
+      "name": "Français",
+      "path": "lang/fr.json"
+    },
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ]
+}

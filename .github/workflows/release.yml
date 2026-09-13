@@ -1,0 +1,85 @@
+name: Release SODL Companion
+
+on:
+  workflow_dispatch:
+    inputs:
+      increment:
+        description: "Version increment type"
+        required: true
+        default: "patch"
+        type: choice
+        options:
+          - fix
+          - patch
+          - minor
+          - major
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get current version
+        id: get_version
+        run: |
+          CURRENT_VERSION=$(jq -r '.version' module.json)
+          echo "current_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Calculate new version
+        id: bump_version
+        run: |
+          VERSION=${{ steps.get_version.outputs.current_version }}
+          INCREMENT=${{ github.event.inputs.increment }}
+          IFS='.' read -r MAJOR MINOR PATCH FIX <<< "$VERSION"
+          FIX=${FIX:-0}
+
+          if [ "$INCREMENT" = "major" ]; then
+            MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0
+            NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+          elif [ "$INCREMENT" = "minor" ]; then
+            MINOR=$((MINOR + 1)); PATCH=0
+            NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+          elif [ "$INCREMENT" = "fix" ]; then
+            FIX=$((FIX + 1))
+            NEW_VERSION="$MAJOR.$MINOR.$PATCH.$FIX"
+          else
+            PATCH=$((PATCH + 1))
+            NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+          fi
+
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Update module.json (version + download)
+        run: |
+          NEW_VERSION=${{ steps.bump_version.outputs.new_version }}
+          REPO=${{ github.repository }}
+          ZIP_URL="https://github.com/${REPO}/releases/download/v${NEW_VERSION}/sodl-companion.zip"
+
+          jq ".version = \"${NEW_VERSION}\" | .download = \"${ZIP_URL}\"" module.json > tmp.json && mv tmp.json module.json
+
+      - name: Commit updated module.json
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add module.json
+          git commit -m "chore: bump version to ${{ steps.bump_version.outputs.new_version }}"
+          git push
+
+      - name: Create ZIP archive
+        run: |
+          zip -r sodl-companion.zip . -x "*.git*" -x ".github/*" -x "node_modules/*" -x ".gitignore"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.bump_version.outputs.new_version }}
+          name: v${{ steps.bump_version.outputs.new_version }}
+          files: sodl-companion.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

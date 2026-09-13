@@ -1,0 +1,143 @@
+<form class="sodl-companion-form" autocomplete="off">
+  <!-- Navigation des onglets -->
+  <nav class="sodl-tab-nav">
+    <button type="button" class="tab-button {{#if (eq activeTab 'resources')}}active{{/if}}" data-tab="resources">
+      <i class="fas fa-coins"></i> Ressources
+    </button>
+    <button type="button" class="tab-button {{#if (eq activeTab 'rules')}}active{{/if}}" data-tab="rules">
+      <i class="fas fa-scroll"></i> Règles
+    </button>
+    <button type="button" class="tab-button {{#if (eq activeTab 'actions')}}active{{/if}}" data-tab="actions">
+      <i class="fas fa-sword"></i> Actions
+    </button>
+    <button type="button" class="tab-button {{#if (eq activeTab 'help')}}active{{/if}}" data-tab="help">
+      <i class="fas fa-question-circle"></i> Aide
+    </button>
+  </nav>
+
+  <!-- Contenu des onglets -->
+  <div class="sodl-tabs-content">
+    
+    <!-- Onglet: Ressources (Points de Chance) -->
+    {{#if (eq activeTab 'resources')}}
+    <div class="tab-content resources-tab">
+      <div class="resources-header">
+        <h2>Gestion des Ressources</h2>
+        <p class="resources-subtitle">Personnage: <strong>{{tabs.resources.character}}</strong></p>
+      </div>
+
+      {{#if tabs.resources.characterId}}
+        <div class="chance-points-section">
+          <div class="resource-card">
+            <div class="resource-header">
+              <i class="fas fa-star"></i>
+              <h3>Points de Chance</h3>
+            </div>
+            
+            <div class="chance-display">
+              <div class="chance-value">{{tabs.resources.chancePoints}}</div>
+              <div class="chance-max">/ {{tabs.resources.maxChancePoints}}</div>
+            </div>
+
+            <div class="chance-description">
+              <p>Les points de chance peuvent être utilisés pour relancer les dés ou activer des pouvoirs spéciaux.</p>
+            </div>
+
+            {{#if canEdit}}
+            <div class="chance-controls">
+              <button type="button" class="chance-decrement btn btn-sm">
+                <i class="fas fa-minus"></i> -1
+              </button>
+              <button type="button" class="chance-reset btn btn-sm">
+                <i class="fas fa-undo"></i> Réinitialiser
+              </button>
+              <button type="button" class="chance-increment btn btn-sm">
+                <i class="fas fa-plus"></i> +1
+              </button>
+            </div>
+            {{else}}
+            <div class="read-only-notice">
+              <i class="fas fa-lock"></i> Lecture seule - Seul le MJ peut modifier
+            </div>
+            {{/if}}
+          </div>
+
+          <div class="resource-info">
+            <h4>Informations</h4>
+            <ul>
+              <li><strong>Maximum par aventure:</strong> {{tabs.resources.maxChancePoints}} points</li>
+              <li><strong>Récupération:</strong> À déterminer selon les règles de votre campagne</li>
+              <li><strong>Utilisation:</strong> Permet de réduire les conséquences ou d'améliorer les jets</li>
+            </ul>
+          </div>
+        </div>
+      {{else}}
+        <div class="no-character-notice">
+          <i class="fas fa-exclamation-triangle"></i>
+          <p>Aucun personnage sélectionné. Veuillez sélectionner votre personnage pour accéder à la gestion des ressources.</p>
+        </div>
+      {{/if}}
+    </div>
+    {{/if}}
+
+    <!-- Onglet: Règles -->
+    {{#if (eq activeTab 'rules')}}
+    <div class="tab-content rules-tab">
+      <div class="rules-header">
+        <h2>Résumé des Règles</h2>
+      </div>
+
+      <div class="rules-sections">
+        {{#each tabs.rules.sections}}
+        <div class="rule-section">
+          <h3>{{this.title}}</h3>
+          <div class="rule-content">
+            {{{this.content}}}
+          </div>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+    {{/if}}
+
+    <!-- Onglet: Actions -->
+    {{#if (eq activeTab 'actions')}}
+    <div class="tab-content actions-tab">
+      <div class="actions-header">
+        <h2>Actions Disponibles</h2>
+      </div>
+
+      <div class="actions-sections">
+        {{#each tabs.actions.sections}}
+        <div class="action-section">
+          <h3>{{this.title}}</h3>
+          <div class="action-content">
+            {{{this.content}}}
+          </div>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+    {{/if}}
+
+    <!-- Onglet: Aide -->
+    {{#if (eq activeTab 'help')}}
+    <div class="tab-content help-tab">
+      <div class="help-header">
+        <h2>Aide et Information</h2>
+      </div>
+
+      <div class="help-sections">
+        {{#each tabs.help.sections}}
+        <div class="help-section">
+          <h3>{{this.title}}</h3>
+          <div class="help-content">
+            {{{this.content}}}
+          </div>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+    {{/if}}
+  </div>
+</form>

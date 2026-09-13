@@ -1,0 +1,41 @@
+{
+  "SODL": {
+    "AppTitle": "Shadow of the Demon Lord - Companion",
+    "Tabs": {
+      "Resources": "Resources",
+      "Rules": "Rules",
+      "Actions": "Actions",
+      "Help": "Help"
+    },
+    "Resources": {
+      "Title": "Resource Management",
+      "Character": "Character",
+      "ChancePoints": "Chance Points",
+      "Max": "Maximum per adventure",
+      "Recovery": "Recovery",
+      "Usage": "Usage",
+      "NoCharacter": "No character selected. Please select your character to access resource management.",
+      "ReadOnly": "Read-only - Only the GM can modify",
+      "PointsIncreased": "Chance points increased by {amount}",
+      "PointsDecreased": "Chance points decreased by {amount}",
+      "PointsReset": "Chance points reset",
+      "NoCharacterSelected": "No character selected",
+      "PermissionDenied": "You do not have permissions to modify"
+    },
+    "Rules": {
+      "Title": "Rules Summary",
+      "Afflictions": "Afflictions Summary",
+      "Actions": "Actions (Non-exhaustive)"
+    },
+    "Actions": {
+      "Title": "Available Actions",
+      "CastSpell": "Cast a Spell",
+      "UseIncantation": "Use an Incantation"
+    },
+    "Help": {
+      "Title": "Help and Information",
+      "About": "About this Module",
+      "Access": "Access Control"
+    }
+  }
+}

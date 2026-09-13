@@ -1,0 +1,41 @@
+{
+  "SODL": {
+    "AppTitle": "L'Ombre du Seigneur Démon - Compagnon",
+    "Tabs": {
+      "Resources": "Ressources",
+      "Rules": "Règles",
+      "Actions": "Actions",
+      "Help": "Aide"
+    },
+    "Resources": {
+      "Title": "Gestion des Ressources",
+      "Character": "Personnage",
+      "ChancePoints": "Points de Chance",
+      "Max": "Maximum par aventure",
+      "Recovery": "Récupération",
+      "Usage": "Utilisation",
+      "NoCharacter": "Aucun personnage sélectionné. Veuillez sélectionner votre personnage pour accéder à la gestion des ressources.",
+      "ReadOnly": "Lecture seule - Seul le MJ peut modifier",
+      "PointsIncreased": "Points de chance augmentés de {amount}",
+      "PointsDecreased": "Points de chance diminués de {amount}",
+      "PointsReset": "Points de chance réinitialisés",
+      "NoCharacterSelected": "Aucun personnage sélectionné",
+      "PermissionDenied": "Vous n'avez pas les permissions pour modifier"
+    },
+    "Rules": {
+      "Title": "Résumé des Règles",
+      "Afflictions": "Résumé des Afflictions",
+      "Actions": "Actions (Non-exhaustif)"
+    },
+    "Actions": {
+      "Title": "Actions Disponibles",
+      "CastSpell": "Lancer un Sort",
+      "UseIncantation": "Utiliser une Incantation"
+    },
+    "Help": {
+      "Title": "Aide et Information",
+      "About": "À propos de ce Module",
+      "Access": "Contrôle d'Accès"
+    }
+  }
+}
