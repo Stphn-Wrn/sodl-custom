@@ -13,24 +13,23 @@ Hooks.once("init", () => {
   registerModule();
 });
 
-Hooks.once("ready", () => {
-  console.log("SODL Companion | Ready");
-  
-  if (game.user.isGM || true) {
-    addSODLAppButton();
-  }
+Hooks.on("getSceneControlButtons", (controls) => {
+  controls.sodl = {
+    name: "sodl",
+    title: "SODL Companion",
+    icon: "fas fa-book",
+    order: 100,
+    tools: {
+      open: {
+        name: "open",
+        title: "Ouvrir le Compagnon SODL",
+        icon: "fas fa-book",
+        button: true,
+        onChange: () => {
+          new SODLCompanionApp().render(true);
+        }
+      }
+    },
+    activeTool: "open"
+  };
 });
-
-function addSODLAppButton() {
-  const button = $(`
-    <div id="sodl-app-button" class="sodl-button">
-      <i class="fas fa-book"></i> SODL
-    </div>
-  `);
-  
-  button.on("click", () => {
-    new SODLCompanionApp().render(true);
-  });
-  
-  $("#ui-top").append(button);
-}

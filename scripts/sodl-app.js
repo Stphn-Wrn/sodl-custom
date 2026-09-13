@@ -7,7 +7,7 @@ export class SODLCompanionApp extends FormApplication {
   }
   
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       title: "L'Ombre du Seigneur Démon - Compagnon",
       id: "sodl-companion-app",
       template: "modules/sodl-companion/templates/sodl-app.html",
