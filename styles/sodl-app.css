@@ -29,8 +29,16 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  min-height: 0;
   overflow: hidden;
   padding: 0;
+}
+
+.sodl-normal-view {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
 }
 
 /* -------- RECHERCHE -------- */
@@ -60,8 +68,11 @@
 }
 
 .sodl-search-results {
+  flex: 1;
+  min-height: 0;
   padding: 16px;
   overflow-y: auto;
+  background: #1b1b1b;
 }
 
 .sodl-search-result {
@@ -123,24 +134,32 @@
 /* -------- NAVIGATION DES ONGLETS -------- */
 .sodl-tab-nav {
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   gap: 22px;
   background: #171717;
   border-bottom: 1px solid #2e2e2e;
   padding: 0 16px;
-  flex-wrap: wrap;
 }
 
 .sodl-tab-nav .tab-button {
-  background: none;
-  border: none;
+  display: inline-flex !important;
+  align-items: center;
+  width: auto !important;
+  flex: 0 0 auto !important;
+  background: none !important;
+  border: none !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
   color: #8a8a8a;
   cursor: pointer;
   font-weight: 600;
   font-size: 11px;
   letter-spacing: 1px;
   text-transform: uppercase;
-  padding: 12px 2px;
-  border-bottom: 2px solid transparent;
+  padding: 12px 2px !important;
+  margin: 0 !important;
   transition: color 0.15s ease, border-color 0.15s ease;
   white-space: nowrap;
 }
@@ -162,6 +181,7 @@
 /* -------- CONTENU DES ONGLETS -------- */
 .sodl-tabs-content {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
   padding: 20px;
   background: #1b1b1b;
