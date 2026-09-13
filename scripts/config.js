@@ -1,10 +1,4 @@
-/**
- * Configuration du Module SODL Companion
- * Personnalisez ces valeurs selon vos besoins
- */
-
 export const SODL_CONFIG = {
-  // Configuration des points de chance
   resources: {
     chancePoints: {
       maximum: 6,
@@ -13,7 +7,6 @@ export const SODL_CONFIG = {
     }
   },
 
-  // Configuration des afflictions (pour extension future)
   afflictions: {
     list: [
       {
@@ -125,7 +118,6 @@ export const SODL_CONFIG = {
     ]
   },
 
-  // Permissions
   permissions: {
     players: {
       canRead: true,
@@ -139,14 +131,12 @@ export const SODL_CONFIG = {
     }
   },
 
-  // Interface
   ui: {
-    buttonPosition: "bottom-right", // bottom-right, bottom-left, top-right, top-left
-    theme: "dark", // dark, light, custom
+    buttonPosition: "bottom-right",
+    theme: "dark",
     showNotifications: true,
     animationsEnabled: true
   }
 };
 
-// Exporter pour utilisation dans d'autres modules
 export default SODL_CONFIG;

@@ -1,31 +1,4 @@
-
-Hooks.once("init", () => {
-  console.log("SODL Companion | Initializing module");
-});
-
-Hooks.once("ready", () => {
-  console.log("SODL Companion | Ready");
-  
-  if (game.user.isGM || true) {
-    addSODLAppButton();
-  }
-});
-
-function addSODLAppButton() {
-  const button = $(`
-    <div id="sodl-app-button" class="sodl-button">
-      <i class="fas fa-book"></i> SODL
-    </div>
-  `);
-  
-  button.on("click", () => {
-    new SODLCompanionApp().render(true);
-  });
-  
-  $("#ui-top").append(button);
-}
-
-class SODLDataManager {
+export class SODLDataManager {
   static async getChancePoints(actor = null) {
     if (!actor) {
       actor = game.user.character;
@@ -55,5 +28,3 @@ class SODLDataManager {
     return this.setChancePoints(current + delta, actor);
   }
 }
-
-window.SODLDataManager = SODLDataManager;

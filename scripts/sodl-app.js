@@ -1,9 +1,6 @@
-/**
- * L'Ombre du Seigneur Démon - Companion Application
- * Gestion des onglets et interface utilisateur
- */
+import { SODLDataManager } from "./data-manager.js";
 
-class SODLCompanionApp extends FormApplication {
+export class SODLCompanionApp extends FormApplication {
   constructor(options = {}) {
     super({}, options);
     this.activeTab = "resources";
@@ -22,18 +19,14 @@ class SODLCompanionApp extends FormApplication {
     });
   }
   
-  /**
-   * Données pour le template
-   */
   async getData(options = {}) {
     const data = await super.getData(options);
     const actor = game.user.character;
     
     data.isGM = game.user.isGM;
-    data.canEdit = game.user.isGM; // Seul le MJ peut éditer
+    data.canEdit = game.user.isGM;
     data.activeTab = this.activeTab;
     
-    // Données des onglets
     data.tabs = {
       resources: await this.getResourcesData(actor),
       rules: await this.getRulesData(),
@@ -44,9 +37,7 @@ class SODLCompanionApp extends FormApplication {
     return data;
   }
   
-  /**
-   * Onglet: Gestion des ressources (Points de Chance)
-   */
+
   async getResourcesData(actor) {
     const chancePoints = actor ? 
       await SODLDataManager.getChancePoints(actor) : 0;
@@ -55,13 +46,10 @@ class SODLCompanionApp extends FormApplication {
       character: actor?.name || "Pas de personnage sélectionné",
       characterId: actor?.id || null,
       chancePoints: chancePoints,
-      maxChancePoints: 6 // À adapter selon vos règles
+      maxChancePoints: 6
     };
   }
-  
-  /**
-   * Onglet: Aide de Jeu - Règles de base
-   */
+
   async getRulesData() {
     return {
       sections: [
@@ -95,9 +83,7 @@ class SODLCompanionApp extends FormApplication {
     };
   }
   
-  /**
-   * Onglet: Aide de Jeu - Actions en détail
-   */
+
   async getActionsData() {
     return {
       sections: [
@@ -127,9 +113,7 @@ class SODLCompanionApp extends FormApplication {
     };
   }
   
-  /**
-   * Onglet: Aide de Jeu - Informations générales
-   */
+
   async getHelpData() {
     return {
       sections: [
@@ -161,18 +145,13 @@ class SODLCompanionApp extends FormApplication {
     };
   }
   
-  /**
-   * Gestion des événements
-   */
   activateListeners(html) {
     super.activateListeners(html);
     
-    // Changement d'onglet
     html.find(".sodl-tab-nav button").on("click", (e) => {
       this.changeTab($(e.currentTarget).data("tab"));
     });
     
-    // Points de chance
     html.find(".chance-increment").on("click", () => {
       if (game.user.isGM) {
         this.incrementChance(1);
@@ -192,17 +171,11 @@ class SODLCompanionApp extends FormApplication {
     });
   }
   
-  /**
-   * Change l'onglet actif
-   */
   changeTab(tabName) {
     this.activeTab = tabName;
     this.render(false);
   }
-  
-  /**
-   * Incrémente les points de chance
-   */
+
   async incrementChance(amount) {
     const actor = game.user.character;
     if (!actor) {
@@ -215,9 +188,6 @@ class SODLCompanionApp extends FormApplication {
     ui.notifications.info(`Points de chance augmentés de ${amount}`);
   }
   
-  /**
-   * Décrémente les points de chance
-   */
   async decrementChance(amount) {
     const actor = game.user.character;
     if (!actor) {
@@ -230,9 +200,6 @@ class SODLCompanionApp extends FormApplication {
     ui.notifications.info(`Points de chance diminués de ${amount}`);
   }
   
-  /**
-   * Réinitialise les points de chance
-   */
   async resetChance() {
     const actor = game.user.character;
     if (!actor) {
@@ -244,17 +211,11 @@ class SODLCompanionApp extends FormApplication {
     this.render(false);
     ui.notifications.info("Points de chance réinitialisés");
   }
-  
-  /**
-   * Soumet le formulaire (désactivé pour les joueurs)
-   */
+
   async _updateObject(event, formData) {
-    // Le formulaire est en lecture seule pour les joueurs
     if (!game.user.isGM) {
       ui.notifications.error("Vous n'avez pas les permissions pour modifier");
       return;
     }
   }
 }
-
-window.SODLCompanionApp = SODLCompanionApp;
