@@ -19,13 +19,13 @@
       }
     ]
   },
-  "author": "SODL Community",
+  "author": "Courbette",
   "authors": [
     {
-      "name": "SODL Community"
+      "name": "Courbette"
     }
   ],
-  "url": "https://github.com/sodl-custom",
+  "url": "https://github.com/Stphn-Wrn/sodl-custom",
   "manifest": "module.json",
   "download": "https://github.com/Stphn-Wrn/sodl-custom/releases/download/v1.1.0/sodl-companion.zip",
   "license": "MIT",
