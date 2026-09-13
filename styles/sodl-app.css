@@ -162,6 +162,13 @@
   margin: 0 !important;
   transition: color 0.15s ease, border-color 0.15s ease;
   white-space: nowrap;
+  outline: none !important;
+}
+
+.sodl-tab-nav .tab-button:focus,
+.sodl-tab-nav .tab-button:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 .sodl-tab-nav .tab-button:hover {
@@ -308,6 +315,15 @@
   font-size: 0.8em;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  outline: none !important;
+}
+
+.chance-controls .btn:focus,
+.chance-controls .btn:focus-visible,
+.chance-roll-adventure:focus,
+.chance-roll-adventure:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 .chance-controls .btn:hover {
@@ -322,6 +338,34 @@
 
 .chance-controls .btn i {
   margin-right: 4px;
+}
+
+.chance-roll-adventure {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: transparent;
+  color: #999;
+  border: 1px dashed #3a1414;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.8em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.15s ease;
+  outline: none !important;
+}
+
+.chance-roll-adventure:hover {
+  color: #ccc;
+  border-color: #A13030;
+}
+
+.chance-roll-adventure i {
+  margin-right: 4px;
+  color: #A13030;
 }
 
 .read-only-notice {

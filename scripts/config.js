@@ -11,16 +11,15 @@ export const SODL_CONFIG = {
     reserve: "Réserve de 1d3+3 points par aventure pour le groupe.",
     gains: "Également gagnés par des actions remarquables, de bonnes idées, une bonne interprétation...",
     uses: [
-      "Transformer un échec en succès et inversement (sur n'importe qui)",
-      "Jouer un second tour durant le round",
-      "Se soigner de 2×Vitesse Guérison dégâts",
-      "Changer 1d6 en 1 ou 6"
+      "Transformer un échec en succès et inversement",
+      "Gagner 1 Action supplémentaire (restriction sur le tour en cours)",
+      "Dépenser un point de chance pour récupérer 2x votre Vitesse de Guérison se fait durant votre tour et consomme votre action. C'est un effort héroïque pour vous remettre sur pied, mais vous ne pouvez pas attaquer en même temps.",
+      "Changer 1d6 (avantage ou désavantage) en 1 ou 6"
     ],
     gmUses: [
       "Survivre à un coup mortel",
-      "Altérer l'histoire (avoir un contact, etc.)",
-      "Dépenser une utilisation d'un sort pour en lancer un autre",
-      "Éviter une Marque des ténèbres"
+      "Dépenser une utilisation d'un sort pour en lancer un autre (équivalent)",
+      "Éviter une Marque des ténèbres",
     ]
   },
 

@@ -241,6 +241,12 @@ export class SODLCompanionApp extends FormApplication {
         this.resetChance();
       }
     });
+
+    html.find(".chance-roll-adventure").on("click", () => {
+      if (game.user.isGM) {
+        this.rollNewAdventure();
+      }
+    });
   }
 
   onSearchInput(html, query) {
@@ -294,6 +300,17 @@ export class SODLCompanionApp extends FormApplication {
     await SODLDataManager.setChancePoints(0);
     this.render(false);
     ui.notifications.info("Points de chance du groupe réinitialisés");
+  }
+
+  async rollNewAdventure() {
+    const roll = await new Roll("1d3+3").roll();
+    await roll.toMessage({
+      flavor: "Réserve de Points de Chance - Nouvelle Aventure",
+      speaker: { alias: "SODL Companion" }
+    });
+
+    await SODLDataManager.setChancePoints(roll.total);
+    this.render(false);
   }
 
   async _updateObject(event, formData) {

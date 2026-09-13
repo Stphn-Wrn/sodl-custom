@@ -1,3 +1,5 @@
+import { SODL_CONFIG } from "./config.js";
+
 export class SODLDataManager {
   static getChancePoints() {
     return game.settings.get("sodl-companion", "chancePoints");
@@ -6,7 +8,9 @@ export class SODLDataManager {
   static async setChancePoints(value) {
     if (!game.user.isGM) return false;
 
-    await game.settings.set("sodl-companion", "chancePoints", Math.max(0, value));
+    const max = SODL_CONFIG.resources.chancePoints.maximum;
+    const clamped = Math.min(max, Math.max(0, value));
+    await game.settings.set("sodl-companion", "chancePoints", clamped);
     return true;
   }
 
