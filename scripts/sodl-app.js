@@ -102,7 +102,7 @@ export class SODLCompanionApp extends FormApplication {
   getResourcesData() {
     return {
       chancePoints: SODLDataManager.getChancePoints(),
-      maxChancePoints: SODL_CONFIG.resources.chancePoints.maximum,
+      maxChancePoints: SODLDataManager.getMaxChancePoints(),
       rules: SODL_CONFIG.chancePointsRules,
       awardsTable: SODL_CONFIG.fortuneAwardsTable
     };
@@ -244,9 +244,9 @@ export class SODLCompanionApp extends FormApplication {
       }
     });
 
-    html.find(".chance-roll-adventure").on("click", () => {
+    html.find(".chance-max-input").on("change", (e) => {
       if (game.user.isGM) {
-        this.rollNewAdventure();
+        this.setMaxChance(Number(e.currentTarget.value));
       }
     });
   }
@@ -304,14 +304,8 @@ export class SODLCompanionApp extends FormApplication {
     ui.notifications.info("Points de chance du groupe réinitialisés");
   }
 
-  async rollNewAdventure() {
-    const roll = await new Roll("1d3+3").roll();
-    await roll.toMessage({
-      flavor: "Réserve de Points de Chance - Nouvelle Aventure",
-      speaker: { alias: "SODL Companion" }
-    });
-
-    await SODLDataManager.setChancePoints(roll.total);
+  async setMaxChance(value) {
+    await SODLDataManager.setMaxChancePoints(value);
     this.render(false);
   }
 

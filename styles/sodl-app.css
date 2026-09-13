@@ -291,8 +291,28 @@
 }
 
 .chance-max {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   font-size: 1.1em;
   color: #777;
+}
+
+.chance-max-input {
+  width: 46px;
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid #3a1414 !important;
+  border-radius: 0 !important;
+  color: #999;
+  font-size: 1em;
+  text-align: center;
+  outline: none !important;
+}
+
+.chance-max-input:focus {
+  border-bottom-color: #A13030 !important;
+  color: #ccc;
 }
 
 .chance-description {
@@ -346,9 +366,7 @@
 }
 
 .chance-controls .btn:focus,
-.chance-controls .btn:focus-visible,
-.chance-roll-adventure:focus,
-.chance-roll-adventure:focus-visible {
+.chance-controls .btn:focus-visible {
   outline: none !important;
   box-shadow: none !important;
 }
@@ -365,34 +383,6 @@
 
 .chance-controls .btn i {
   margin-right: 4px;
-}
-
-.chance-roll-adventure {
-  display: block;
-  width: 100%;
-  margin-top: 8px;
-  padding: 8px 10px;
-  background: transparent;
-  color: #999;
-  border: 1px dashed #3a1414;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.8em;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  transition: all 0.15s ease;
-  outline: none !important;
-}
-
-.chance-roll-adventure:hover {
-  color: #ccc;
-  border-color: #A13030;
-}
-
-.chance-roll-adventure i {
-  margin-right: 4px;
-  color: #A13030;
 }
 
 .read-only-notice {

@@ -1,3 +1,4 @@
+import { SODL_CONFIG } from "./config.js";
 import { SODLDataManager } from "./data-manager.js";
 import { SODLCompanionApp } from "./sodl-app.js";
 
@@ -7,16 +8,26 @@ function registerModule() {
   window.SODLDataManager = SODLDataManager;
   window.SODLCompanionApp = SODLCompanionApp;
 
+  const rerenderOpenApps = () => {
+    for (const app of Object.values(ui.windows)) {
+      if (app instanceof SODLCompanionApp) app.render(false);
+    }
+  };
+
   game.settings.register("sodl-companion", "chancePoints", {
     scope: "world",
     config: false,
     type: Number,
     default: 0,
-    onChange: () => {
-      for (const app of Object.values(ui.windows)) {
-        if (app instanceof SODLCompanionApp) app.render(false);
-      }
-    }
+    onChange: rerenderOpenApps
+  });
+
+  game.settings.register("sodl-companion", "maxChancePoints", {
+    scope: "world",
+    config: false,
+    type: Number,
+    default: SODL_CONFIG.resources.chancePoints.maximum,
+    onChange: rerenderOpenApps
   });
 }
 
