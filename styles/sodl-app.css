@@ -18,6 +18,13 @@
   border-bottom: 1px solid #3a1414;
 }
 
+/* Écrase le fond parchemin et le padding hérités du style de compatibilité v1 de Foundry */
+#sodl-companion-app .window-content {
+  background: #1b1b1b !important;
+  padding: 0 !important;
+  color: #d8d8d8 !important;
+}
+
 #sodl-companion-app .window-title {
   font-weight: 600;
   font-size: 1.05em;
@@ -305,9 +312,9 @@
 .chance-controls .btn {
   flex: 1;
   padding: 8px 10px;
-  background: transparent;
+  background: transparent !important;
   color: #ccc;
-  border: 1px solid #3a1414;
+  border: 1px solid #3a1414 !important;
   border-radius: 4px;
   cursor: pointer;
   font-weight: 600;
