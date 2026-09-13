@@ -9,10 +9,6 @@ export const SODL_CONFIG = {
 
   chancePointsRules: {
     gains: "Les points de chance peuvent être gagnés par des actions remarquables, de bonnes idées, une bonne interprétation et d'autres comportements méritoires...",
-
-    intro: "La Fortune est faite pour être utilisée souvent. C'est à la fois un parachute en cas de situation horrible et une ressource inutile si on la garde sans s'en servir. Le livre de base définit les effets de base (résumés ici) :",
-
-    extendedIntro: "Ces options de base couvrent la plupart des situations (transformer un coup raté en coup au but, encourager un allié, ou arracher un ami à l'agonie en maximisant un soin ou des dégâts). Mais la Fortune donne un contrôle momentané sur l'histoire, et ses usages peuvent être élargis. Voici de nouvelles manières de dépenser la Fortune pour élargir ses pouvoirs :",
     extendedUses: [
       {
         name: "Imposer des fléaux",
