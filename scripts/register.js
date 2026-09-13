@@ -3,9 +3,21 @@ import { SODLCompanionApp } from "./sodl-app.js";
 
 function registerModule() {
   console.log("SODL Companion | Registering module");
-  
+
   window.SODLDataManager = SODLDataManager;
   window.SODLCompanionApp = SODLCompanionApp;
+
+  game.settings.register("sodl-companion", "chancePoints", {
+    scope: "world",
+    config: false,
+    type: Number,
+    default: 0,
+    onChange: () => {
+      for (const app of Object.values(ui.windows)) {
+        if (app instanceof SODLCompanionApp) app.render(false);
+      }
+    }
+  });
 }
 
 Hooks.once("init", () => {

@@ -1,4 +1,13 @@
 <form class="sodl-companion-form" autocomplete="off">
+  <!-- Recherche rapide -->
+  <div class="sodl-search-bar">
+    <i class="fas fa-search"></i>
+    <input type="text" class="sodl-search-input" placeholder="Rechercher une affliction, une action, une règle...">
+  </div>
+
+  <div class="sodl-search-results" style="display: none;"></div>
+
+  <div class="sodl-normal-view">
   <!-- Navigation des onglets -->
   <nav class="sodl-tab-nav">
     <button type="button" class="tab-button {{#if (eq activeTab 'resources')}}active{{/if}}" data-tab="resources">
@@ -23,60 +32,64 @@
     <div class="tab-content resources-tab">
       <div class="resources-header">
         <h2>Gestion des Ressources</h2>
-        <p class="resources-subtitle">Personnage: <strong>{{tabs.resources.character}}</strong></p>
+        <p class="resources-subtitle">Réserve partagée par tout le groupe</p>
       </div>
 
-      {{#if tabs.resources.characterId}}
-        <div class="chance-points-section">
-          <div class="resource-card">
-            <div class="resource-header">
-              <i class="fas fa-star"></i>
-              <h3>Points de Chance</h3>
-            </div>
-            
-            <div class="chance-display">
-              <div class="chance-value">{{tabs.resources.chancePoints}}</div>
-              <div class="chance-max">/ {{tabs.resources.maxChancePoints}}</div>
-            </div>
-
-            <div class="chance-description">
-              <p>Les points de chance peuvent être utilisés pour relancer les dés ou activer des pouvoirs spéciaux.</p>
-            </div>
-
-            {{#if canEdit}}
-            <div class="chance-controls">
-              <button type="button" class="chance-decrement btn btn-sm">
-                <i class="fas fa-minus"></i> -1
-              </button>
-              <button type="button" class="chance-reset btn btn-sm">
-                <i class="fas fa-undo"></i> Réinitialiser
-              </button>
-              <button type="button" class="chance-increment btn btn-sm">
-                <i class="fas fa-plus"></i> +1
-              </button>
-            </div>
-            {{else}}
-            <div class="read-only-notice">
-              <i class="fas fa-lock"></i> Lecture seule - Seul le MJ peut modifier
-            </div>
-            {{/if}}
+      <div class="chance-points-section">
+        <div class="resource-card">
+          <div class="resource-header">
+            <i class="fas fa-star"></i>
+            <h3>Points de Chance du Groupe</h3>
           </div>
 
-          <div class="resource-info">
-            <h4>Informations</h4>
-            <ul>
-              <li><strong>Maximum par aventure:</strong> {{tabs.resources.maxChancePoints}} points</li>
-              <li><strong>Récupération:</strong> À déterminer selon les règles de votre campagne</li>
-              <li><strong>Utilisation:</strong> Permet de réduire les conséquences ou d'améliorer les jets</li>
-            </ul>
+          <div class="chance-display">
+            <div class="chance-value">{{tabs.resources.chancePoints}}</div>
+            <div class="chance-max">/ {{tabs.resources.maxChancePoints}}</div>
           </div>
+
+          <div class="chance-description">
+            <p>Les points de chance peuvent être utilisés par n'importe quel PJ pour relancer les dés ou activer des pouvoirs spéciaux.</p>
+          </div>
+
+          {{#if canEdit}}
+          <div class="chance-controls">
+            <button type="button" class="chance-decrement btn btn-sm">
+              <i class="fas fa-minus"></i> -1
+            </button>
+            <button type="button" class="chance-reset btn btn-sm">
+              <i class="fas fa-undo"></i> Réinitialiser
+            </button>
+            <button type="button" class="chance-increment btn btn-sm">
+              <i class="fas fa-plus"></i> +1
+            </button>
+          </div>
+          {{else}}
+          <div class="read-only-notice">
+            <i class="fas fa-lock"></i> Lecture seule - Seul le MJ peut modifier
+          </div>
+          {{/if}}
         </div>
-      {{else}}
-        <div class="no-character-notice">
-          <i class="fas fa-exclamation-triangle"></i>
-          <p>Aucun personnage sélectionné. Veuillez sélectionner votre personnage pour accéder à la gestion des ressources.</p>
+
+        <div class="resource-info">
+          <h4>Réserve</h4>
+          <p>{{tabs.resources.rules.reserve}}</p>
+          <p>{{tabs.resources.rules.gains}}</p>
+
+          <h4>Utilisations</h4>
+          <ul>
+            {{#each tabs.resources.rules.uses}}
+            <li>{{this}}</li>
+            {{/each}}
+          </ul>
+
+          <h4>Autres utilisations (soumises au MJ)</h4>
+          <ul>
+            {{#each tabs.resources.rules.gmUses}}
+            <li>{{this}}</li>
+            {{/each}}
+          </ul>
         </div>
-      {{/if}}
+      </div>
     </div>
     {{/if}}
 
@@ -139,5 +152,6 @@
       </div>
     </div>
     {{/if}}
+  </div>
   </div>
 </form>

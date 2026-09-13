@@ -1,27 +1,28 @@
 /* ============================================
    L'Ombre du Seigneur Démon - Companion Styles
+   Inspiré du look des fiches "Path" du système
    ============================================ */
 
 /* -------- APPLICATION PRINCIPALE -------- */
 #sodl-companion-app {
-  background: linear-gradient(to bottom, #1a1a1a, #2a2a2a);
-  color: #e0e0e0;
-  border: 2px solid #8B0000;
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
+  background: #1b1b1b;
+  color: #d8d8d8;
+  border: 1px solid #3a1414;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  font-family: "Signika", "Segoe UI", sans-serif;
 }
 
 #sodl-companion-app .window-header {
-  background: linear-gradient(90deg, #8B0000, #600000);
-  border-bottom: 2px solid #8B0000;
-  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.1);
+  background: #171717;
+  border-bottom: 1px solid #3a1414;
 }
 
 #sodl-companion-app .window-title {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-weight: 700;
-  font-size: 1.2em;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  font-weight: 600;
+  font-size: 1.05em;
+  letter-spacing: 0.3px;
+  color: #e8e8e8;
 }
 
 #sodl-companion-app .sodl-companion-form {
@@ -32,58 +33,142 @@
   padding: 0;
 }
 
+/* -------- RECHERCHE -------- */
+.sodl-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #171717;
+  border-bottom: 1px solid #2e2e2e;
+  color: #8a8a8a;
+}
+
+.sodl-search-bar input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #333;
+  color: #e0e0e0;
+  padding: 4px 2px;
+  font-size: 0.9em;
+}
+
+.sodl-search-bar input:focus {
+  outline: none;
+  border-bottom-color: #A13030;
+}
+
+.sodl-search-results {
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.sodl-search-result {
+  border-bottom: 1px solid #2a2a2a;
+  padding: 10px 2px;
+}
+
+.sodl-search-result h4 {
+  margin: 2px 0;
+  color: #e8e8e8;
+  font-weight: 600;
+}
+
+.sodl-search-result p {
+  color: #a5a5a5;
+  font-size: 0.9em;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.sodl-search-category {
+  display: inline-block;
+  font-size: 10px;
+  text-transform: uppercase;
+  color: #A13030;
+  letter-spacing: 1px;
+}
+
+.sodl-search-empty {
+  color: #777;
+  font-style: italic;
+}
+
+/* -------- TABLEAU DES SORTS -------- */
+.sodl-spell-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.sodl-spell-table th,
+.sodl-spell-table td {
+  border: 1px solid #2e2e2e;
+  padding: 4px 6px;
+  text-align: center;
+  color: #c0c0c0;
+}
+
+.sodl-spell-table th {
+  background: #202020;
+  color: #999;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
 /* -------- NAVIGATION DES ONGLETS -------- */
 .sodl-tab-nav {
   display: flex;
-  gap: 2px;
-  background: #0a0a0a;
-  border-bottom: 2px solid #8B0000;
-  padding: 8px;
+  gap: 22px;
+  background: #171717;
+  border-bottom: 1px solid #2e2e2e;
+  padding: 0 16px;
   flex-wrap: wrap;
 }
 
 .sodl-tab-nav .tab-button {
-  flex: 1;
-  min-width: 120px;
-  padding: 10px 12px;
-  background: #1a1a1a;
-  color: #a0a0a0;
-  border: 1px solid #333;
-  border-radius: 4px 4px 0 0;
+  background: none;
+  border: none;
+  color: #8a8a8a;
   cursor: pointer;
   font-weight: 600;
-  font-size: 0.9em;
-  transition: all 0.2s ease;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 12px 2px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
   white-space: nowrap;
 }
 
 .sodl-tab-nav .tab-button:hover {
-  background: #2a2a2a;
-  color: #e0e0e0;
-  border-color: #8B0000;
+  color: #d8d8d8;
 }
 
 .sodl-tab-nav .tab-button.active {
-  background: linear-gradient(135deg, #8B0000, #B00000);
-  color: white;
-  border-color: #8B0000;
-  box-shadow: 0 2px 8px rgba(139, 0, 0, 0.4);
+  color: #ffffff;
+  border-bottom-color: #A13030;
 }
 
 .sodl-tab-nav .tab-button i {
   margin-right: 6px;
+  opacity: 0.8;
 }
 
 /* -------- CONTENU DES ONGLETS -------- */
 .sodl-tabs-content {
   flex: 1;
   overflow-y: auto;
-  padding: 16px;
-  background: linear-gradient(to bottom, #1a1a1a, #262626);
+  padding: 20px;
+  background: #1b1b1b;
 }
 
 .tab-content {
-  animation: fadeIn 0.3s ease;
+  animation: fadeIn 0.2s ease;
 }
 
 @keyframes fadeIn {
@@ -96,91 +181,92 @@
 }
 
 .tab-content h2 {
-  color: #e0e0e0;
-  font-size: 1.4em;
-  margin-bottom: 16px;
-  border-bottom: 2px solid #8B0000;
-  padding-bottom: 8px;
+  color: #ececec;
+  font-size: 1.3em;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin: 0 0 18px 0;
 }
 
 .tab-content h3 {
-  color: #b0b0b0;
-  font-size: 1.1em;
-  margin-top: 12px;
-  margin-bottom: 8px;
+  color: #999;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 18px 0 8px 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #2a2a2a;
 }
 
 /* -------- ONGLET RESSOURCES -------- */
 .resources-subtitle {
-  color: #888;
-  font-size: 0.9em;
-  margin: 8px 0 16px 0;
+  color: #7a7a7a;
+  font-size: 0.85em;
+  font-style: italic;
+  margin: -12px 0 20px 0;
 }
 
 .chance-points-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-top: 16px;
+  gap: 24px;
+  margin-top: 8px;
 }
 
 .resource-card {
-  background: linear-gradient(135deg, #1a1a1a, #262626);
-  border: 2px solid #8B0000;
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0 4px 12px rgba(139, 0, 0, 0.2);
+  background: #202020;
+  border: 1px solid #2e2e2e;
+  border-radius: 4px;
+  padding: 18px;
 }
 
 .resource-header {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .resource-header i {
-  color: #FFD700;
-  font-size: 1.3em;
+  color: #A13030;
+  font-size: 1em;
 }
 
 .resource-header h3 {
   margin: 0;
-  color: #e0e0e0;
+  padding: 0;
+  border: none;
+  color: #ccc;
+  font-size: 11px;
 }
 
 .chance-display {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: center;
-  gap: 8px;
-  margin: 20px 0;
-  background: rgba(139, 0, 0, 0.1);
-  padding: 20px;
-  border-radius: 6px;
-  border: 1px solid #8B0000;
+  gap: 6px;
+  margin: 12px 0;
+  padding: 16px;
 }
 
 .chance-value {
-  font-size: 3.5em;
-  font-weight: bold;
-  color: #FFD700;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  font-size: 3em;
+  font-weight: 700;
+  color: #ececec;
 }
 
 .chance-max {
-  font-size: 1.2em;
-  color: #888;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  font-size: 1.1em;
+  color: #777;
 }
 
 .chance-description {
-  color: #b0b0b0;
-  font-size: 0.9em;
+  color: #999;
+  font-size: 0.85em;
   line-height: 1.5;
-  margin: 12px 0;
+  margin: 8px 0;
+  text-align: center;
 }
 
 .chance-controls {
@@ -192,19 +278,22 @@
 .chance-controls .btn {
   flex: 1;
   padding: 8px 10px;
-  background: #8B0000;
-  color: white;
-  border: none;
+  background: transparent;
+  color: #ccc;
+  border: 1px solid #3a1414;
   border-radius: 4px;
   cursor: pointer;
   font-weight: 600;
-  transition: all 0.2s ease;
-  font-size: 0.85em;
+  transition: all 0.15s ease;
+  font-size: 0.8em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .chance-controls .btn:hover {
-  background: #B00000;
-  box-shadow: 0 2px 8px rgba(139, 0, 0, 0.4);
+  background: #A13030;
+  border-color: #A13030;
+  color: white;
 }
 
 .chance-controls .btn:active {
@@ -219,26 +308,34 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 12px;
-  background: rgba(100, 100, 100, 0.2);
-  border-left: 3px solid #888;
-  border-radius: 4px;
+  padding: 10px 12px;
   color: #888;
-  font-size: 0.9em;
+  font-size: 0.85em;
   margin-top: 16px;
+  border-top: 1px solid #2a2a2a;
 }
 
 .resource-info {
-  background: rgba(139, 0, 0, 0.05);
-  border: 1px solid #8B0000;
-  border-radius: 6px;
-  padding: 12px;
+  padding: 4px;
 }
 
 .resource-info h4 {
-  color: #e0e0e0;
+  color: #999;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 16px 0 6px 0;
+}
+
+.resource-info h4:first-child {
   margin-top: 0;
-  margin-bottom: 8px;
+}
+
+.resource-info p {
+  color: #a5a5a5;
+  font-size: 0.85em;
+  line-height: 1.5;
+  margin: 4px 0;
 }
 
 .resource-info ul {
@@ -248,33 +345,9 @@
 }
 
 .resource-info li {
-  padding: 6px 0;
-  color: #b0b0b0;
-  font-size: 0.9em;
-  border-bottom: 1px solid rgba(139, 0, 0, 0.2);
-}
-
-.resource-info li:last-child {
-  border-bottom: none;
-}
-
-.no-character-notice {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
-  background: rgba(139, 0, 0, 0.1);
-  border: 2px dashed #8B0000;
-  border-radius: 8px;
-  text-align: center;
-  color: #888;
-}
-
-.no-character-notice i {
-  font-size: 2.5em;
-  margin-bottom: 16px;
-  color: #FFD700;
+  padding: 4px 0;
+  color: #a5a5a5;
+  font-size: 0.85em;
 }
 
 /* -------- ONGLETS RÈGLES ET ACTIONS -------- */
@@ -283,61 +356,54 @@
 .help-sections {
   display: flex;
   flex-direction: column;
-  gap: 16px;
 }
 
 .rule-section,
 .action-section,
 .help-section {
-  background: rgba(139, 0, 0, 0.05);
-  border-left: 4px solid #8B0000;
-  border-radius: 4px;
-  padding: 12px 16px;
+  padding: 4px 0;
 }
 
 .rule-content,
 .action-content,
 .help-content {
-  color: #b0b0b0;
+  color: #a5a5a5;
   line-height: 1.6;
+  font-size: 0.9em;
 }
 
 .sodl-rules-list {
   list-style: none;
   padding-left: 0;
-  margin: 8px 0;
+  margin: 4px 0;
 }
 
 .sodl-rules-list li {
-  padding: 6px 0 6px 20px;
-  position: relative;
-  color: #b0b0b0;
+  padding: 5px 0;
+  color: #a5a5a5;
+  border-bottom: 1px solid #232323;
 }
 
-.sodl-rules-list li::before {
-  content: "▸";
-  position: absolute;
-  left: 0;
-  color: #FFD700;
-  font-weight: bold;
+.sodl-rules-list li:last-child {
+  border-bottom: none;
+}
+
+.sodl-rules-list li strong {
+  color: #d8d8d8;
 }
 
 .sodl-action {
-  background: rgba(0, 0, 0, 0.3);
-  padding: 12px;
-  border-radius: 4px;
-  border: 1px solid #333;
-  margin: 8px 0;
+  padding: 4px 0 10px 0;
 }
 
 .sodl-action p {
-  margin: 8px 0;
-  color: #b0b0b0;
+  margin: 6px 0;
+  color: #a5a5a5;
   line-height: 1.5;
 }
 
 .sodl-help {
-  color: #b0b0b0;
+  color: #a5a5a5;
   line-height: 1.6;
 }
 
@@ -354,21 +420,25 @@
 }
 
 /* -------- SCROLLBAR PERSONNALISÉE -------- */
-.sodl-tabs-content::-webkit-scrollbar {
+.sodl-tabs-content::-webkit-scrollbar,
+.sodl-search-results::-webkit-scrollbar {
   width: 8px;
 }
 
-.sodl-tabs-content::-webkit-scrollbar-track {
-  background: #0a0a0a;
+.sodl-tabs-content::-webkit-scrollbar-track,
+.sodl-search-results::-webkit-scrollbar-track {
+  background: #171717;
 }
 
-.sodl-tabs-content::-webkit-scrollbar-thumb {
-  background: #8B0000;
+.sodl-tabs-content::-webkit-scrollbar-thumb,
+.sodl-search-results::-webkit-scrollbar-thumb {
+  background: #3a1414;
   border-radius: 4px;
 }
 
-.sodl-tabs-content::-webkit-scrollbar-thumb:hover {
-  background: #B00000;
+.sodl-tabs-content::-webkit-scrollbar-thumb:hover,
+.sodl-search-results::-webkit-scrollbar-thumb:hover {
+  background: #A13030;
 }
 
 /* -------- RESPONSIVE -------- */
@@ -378,11 +448,7 @@
   }
 
   .sodl-tab-nav {
-    flex-direction: column;
-  }
-
-  .sodl-tab-nav .tab-button {
-    min-width: auto;
+    gap: 12px;
   }
 
   .chance-points-section {

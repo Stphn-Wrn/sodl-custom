@@ -1,11 +1,33 @@
 import { SODLDataManager } from "./data-manager.js";
+import { SODL_CONFIG } from "./config.js";
+
+function listToHtml(list) {
+  return `
+    <ul class="sodl-rules-list">
+      ${list.map(item => `<li><strong>${item.name}:</strong> ${item.description}</li>`).join("")}
+    </ul>
+  `;
+}
+
+function spellUsesTableToHtml(table) {
+  const head = table.header.map(h => `<th>${h}</th>`).join("");
+  const rows = table.rows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join("")}</tr>`).join("");
+  return `
+    <table class="sodl-spell-table">
+      <thead><tr>${head}</tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
 
 export class SODLCompanionApp extends FormApplication {
   constructor(options = {}) {
     super({}, options);
     this.activeTab = "resources";
+    this.searchQuery = "";
+    this.searchIndex = this.buildSearchIndex();
   }
-  
+
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       title: "L'Ombre du Seigneur Démon - Compagnon",
@@ -18,35 +40,69 @@ export class SODLCompanionApp extends FormApplication {
       classes: ["sodl-app"]
     });
   }
-  
+
+  buildSearchIndex() {
+    const index = [];
+
+    const addAll = (category, list) => {
+      for (const item of list) {
+        index.push({ category, name: item.name, description: item.description });
+      }
+    };
+
+    addAll("Affliction", SODL_CONFIG.afflictions.list);
+    addAll("Action", SODL_CONFIG.actions.list);
+    addAll("Mêlée", SODL_CONFIG.meleeOptions.list);
+    addAll("Tir", SODL_CONFIG.rangedOptions.list);
+    addAll("Attaque", SODL_CONFIG.otherAttacks.list);
+    addAll("Règle", SODL_CONFIG.situationalRules.list);
+
+    index.push({ category: "Règle", name: "Hors de Combat", description: SODL_CONFIG.outOfCombat.content });
+    index.push({ category: "Règle", name: "Folie", description: SODL_CONFIG.madness.content });
+    index.push({ category: "Règle", name: "Corruption", description: SODL_CONFIG.corruption.content });
+    index.push({
+      category: "Règle",
+      name: "Points de Chance",
+      description: `${SODL_CONFIG.chancePointsRules.reserve} ${SODL_CONFIG.chancePointsRules.gains}`
+    });
+    index.push({ category: "Sort", name: "Formule", description: SODL_CONFIG.spellcasting.formula });
+    index.push({ category: "Sort", name: "Focale", description: SODL_CONFIG.spellcasting.focus });
+    index.push({ category: "Sort", name: "Incantation", description: SODL_CONFIG.spellcasting.incantation.description });
+
+    return index;
+  }
+
+  searchResults(query) {
+    const q = query.trim().toLowerCase();
+    if (!q) return [];
+    return this.searchIndex.filter(entry =>
+      entry.name.toLowerCase().includes(q) || entry.description.toLowerCase().includes(q)
+    );
+  }
+
   async getData(options = {}) {
     const data = await super.getData(options);
-    const actor = game.user.character;
-    
+
     data.isGM = game.user.isGM;
     data.canEdit = game.user.isGM;
     data.activeTab = this.activeTab;
-    
+
     data.tabs = {
-      resources: await this.getResourcesData(actor),
+      resources: this.getResourcesData(),
       rules: await this.getRulesData(),
       actions: await this.getActionsData(),
       help: await this.getHelpData()
     };
-    
+
     return data;
   }
-  
 
-  async getResourcesData(actor) {
-    const chancePoints = actor ? 
-      await SODLDataManager.getChancePoints(actor) : 0;
-    
+
+  getResourcesData() {
     return {
-      character: actor?.name || "Pas de personnage sélectionné",
-      characterId: actor?.id || null,
-      chancePoints: chancePoints,
-      maxChancePoints: 6
+      chancePoints: SODLDataManager.getChancePoints(),
+      maxChancePoints: SODL_CONFIG.resources.chancePoints.maximum,
+      rules: SODL_CONFIG.chancePointsRules
     };
   }
 
@@ -54,65 +110,77 @@ export class SODLCompanionApp extends FormApplication {
     return {
       sections: [
         {
-          title: "Résumé des Afflictions",
-          content: `
-            <ul class="sodl-rules-list">
-              <li><strong>Affaibli:</strong> les jets subissent +1 Desav</li>
-              <li><strong>Assourdi:</strong> n'entends rien (les jet Perception basé sur l'ouïe échouent)</li>
-              <li><strong>À terre:</strong> Force/Agilité +1 Desav. Adversaires gagnent 1 Av pour attaquer le PJ en mêlée, et Desav à distance</li>
-              <li><strong>Aveugle:</strong> Vitesse maximum 2, ne voir rien</li>
-              <li><strong>Effrayé:</strong> jet +1 Desav (+3 si en voit la source), ne peut pas faire de tours rapides</li>
-              <li><strong>Empoisonné:</strong> jets +1 Desav</li>
-              <li><strong>Endormi:</strong> à terre + inconsistant. Une créature peut utiliser une action pour réveiller le PJ</li>
-            </ul>
-          `
+          title: "Afflictions",
+          content: listToHtml(SODL_CONFIG.afflictions.list)
         },
         {
-          title: "Actions (Non-exhaustif)",
-          content: `
-            <ul class="sodl-rules-list">
-              <li><strong>Attaquer, lancer un sort, recharger une arme:</strong> effectue une action non-listée ici selon le guerrier</li>
-              <li><strong>Aider:</strong> test d'Intellect pour donner +1 Av à une créature</li>
-              <li><strong>Se préparer:</strong> déclarer une action et un déclencheur</li>
-              <li><strong>Battre en retraite:</strong> Vitesse/2, évite les attaques gratuites</li>
-              <li><strong>Chercher:</strong> trouver et partager la position d'une créature dissimulées</li>
-            </ul>
-          `
+          title: "Règles Situationnelles",
+          content: listToHtml(SODL_CONFIG.situationalRules.list)
+        },
+        {
+          title: "Hors de Combat",
+          content: `<p>${SODL_CONFIG.outOfCombat.content}</p>`
+        },
+        {
+          title: "Folie",
+          content: `<p>${SODL_CONFIG.madness.content}</p>`
+        },
+        {
+          title: "Corruption",
+          content: `<p>${SODL_CONFIG.corruption.content}</p>`
         }
       ]
     };
   }
-  
+
 
   async getActionsData() {
+    const sc = SODL_CONFIG.spellcasting;
     return {
       sections: [
+        {
+          title: "Actions (Non-exhaustif)",
+          content: listToHtml(SODL_CONFIG.actions.list)
+        },
+        {
+          title: "Options en Mêlée",
+          content: listToHtml(SODL_CONFIG.meleeOptions.list)
+        },
+        {
+          title: "Options de Tir",
+          content: listToHtml(SODL_CONFIG.rangedOptions.list)
+        },
+        {
+          title: "Autres Types d'Attaques",
+          content: listToHtml(SODL_CONFIG.otherAttacks.list)
+        },
         {
           title: "Lancer un Sort",
           content: `
             <div class="sodl-action">
-              <p><strong>Formule:</strong> il faut la prononcer, donc pouvoir parler</p>
-              <p><strong>Focale:</strong> il faut la brandir. C'est un objet comme une baguette, une amulete, Focale : il faut la brandir</p>
-              <p><strong>Dépenser une utilisation:</strong> regagnée après un repos court ou long</p>
-              <p><strong>Cible:</strong> Un PJ agissant agonisant (i), se relever affaibli (6), ou rester inconsistant (au bout de 3 rounds)</p>
+              <p><strong>Formule:</strong> ${sc.formula}</p>
+              <p><strong>Focale:</strong> ${sc.focus}</p>
+              <p><strong>Dépenser une utilisation:</strong> ${sc.useCost}</p>
+              <p><strong>${sc.nonConsenting}</strong></p>
             </div>
+            ${spellUsesTableToHtml(sc.usesTable)}
           `
         },
         {
           title: "Utiliser une Incantation",
           content: `
             <div class="sodl-action">
-              <p>Ce sont des formules écrites sur un parchemin, gravées, peintes...</p>
-              <p>Pour la lancer : jet d'Intellect</p>
-              <p><strong>L'incantation est définie:</strong> Si la niveau du sort dépasse la Puissance du PJ, le jet subit autant de Désavantages que de différence</p>
-              <p><strong>Si la Puissance du PJ est plus grande:</strong> pas besoin de faire jet</p>
+              <p>${sc.incantation.description}</p>
+              <p>${sc.incantation.cast}</p>
+              <p>${sc.incantation.powerVsLevel}</p>
+              <p>${sc.incantation.higherPower}</p>
             </div>
           `
         }
       ]
     };
   }
-  
+
 
   async getHelpData() {
     return {
@@ -123,10 +191,10 @@ export class SODLCompanionApp extends FormApplication {
             <div class="sodl-help">
               <p>Ce module compagnon pour <strong>L'Ombre du Seigneur Démon</strong> vous permet de:</p>
               <ul>
-                <li>Gérer vos points de chance</li>
+                <li>Gérer les points de chance du groupe</li>
                 <li>Accéder à des résumés de règles</li>
                 <li>Consulter les descriptions d'actions</li>
-                <li>Obtenir de l'aide de jeu</li>
+                <li>Rechercher instantanément une affliction, une action ou une règle</li>
               </ul>
               <p><strong>Note:</strong> Seul le MJ peut modifier les points de chance.</p>
             </div>
@@ -144,72 +212,88 @@ export class SODLCompanionApp extends FormApplication {
       ]
     };
   }
-  
+
   activateListeners(html) {
     super.activateListeners(html);
-    
+
     html.find(".sodl-tab-nav button").on("click", (e) => {
       this.changeTab($(e.currentTarget).data("tab"));
     });
-    
+
+    html.find(".sodl-search-input").on("input", (e) => {
+      this.onSearchInput(html, e.currentTarget.value);
+    });
+
     html.find(".chance-increment").on("click", () => {
       if (game.user.isGM) {
         this.incrementChance(1);
       }
     });
-    
+
     html.find(".chance-decrement").on("click", () => {
       if (game.user.isGM) {
         this.decrementChance(1);
       }
     });
-    
+
     html.find(".chance-reset").on("click", () => {
       if (game.user.isGM) {
         this.resetChance();
       }
     });
   }
-  
+
+  onSearchInput(html, query) {
+    this.searchQuery = query;
+    const results = this.searchResults(query);
+    const resultsPanel = html.find(".sodl-search-results");
+    const normalView = html.find(".sodl-normal-view");
+
+    if (!query.trim()) {
+      resultsPanel.hide().empty();
+      normalView.show();
+      return;
+    }
+
+    normalView.hide();
+
+    if (!results.length) {
+      resultsPanel.html(`<p class="sodl-search-empty">Aucun résultat pour "${query}".</p>`).show();
+      return;
+    }
+
+    const html_ = results.map(entry => `
+      <div class="sodl-search-result">
+        <span class="sodl-search-category">${entry.category}</span>
+        <h4>${entry.name}</h4>
+        <p>${entry.description}</p>
+      </div>
+    `).join("");
+
+    resultsPanel.html(html_).show();
+  }
+
   changeTab(tabName) {
     this.activeTab = tabName;
     this.render(false);
   }
 
   async incrementChance(amount) {
-    const actor = game.user.character;
-    if (!actor) {
-      ui.notifications.warn("Aucun personnage sélectionné");
-      return;
-    }
-    
-    await SODLDataManager.modifyChancePoints(amount, actor);
+    await SODLDataManager.modifyChancePoints(amount);
     this.render(false);
-    ui.notifications.info(`Points de chance augmentés de ${amount}`);
+    ui.notifications.info(`Points de chance du groupe augmentés de ${amount}`);
   }
-  
+
   async decrementChance(amount) {
-    const actor = game.user.character;
-    if (!actor) {
-      ui.notifications.warn("Aucun personnage sélectionné");
-      return;
-    }
-    
-    await SODLDataManager.modifyChancePoints(-amount, actor);
+    await SODLDataManager.modifyChancePoints(-amount);
     this.render(false);
-    ui.notifications.info(`Points de chance diminués de ${amount}`);
+    ui.notifications.info(`Points de chance du groupe diminués de ${amount}`);
   }
-  
+
   async resetChance() {
-    const actor = game.user.character;
-    if (!actor) {
-      ui.notifications.warn("Aucun personnage sélectionné");
-      return;
-    }
-    
-    await SODLDataManager.setChancePoints(0, actor);
+    await SODLDataManager.setChancePoints(0);
     this.render(false);
-    ui.notifications.info("Points de chance réinitialisés");
+    ui.notifications.info("Points de chance du groupe réinitialisés");
   }
 
   async _updateObject(event, formData) {
