@@ -63,7 +63,7 @@ export class SODLCompanionApp extends FormApplication {
     index.push({
       category: "Fortune",
       name: "Points de Chance",
-      description: `${SODL_CONFIG.chancePointsRules.reserve} ${SODL_CONFIG.chancePointsRules.gains}`
+      description: SODL_CONFIG.chancePointsRules.gains
     });
     addAll("Fortune", SODL_CONFIG.chancePointsRules.extendedUses);
     index.push({ category: "Sort", name: "Formule", description: SODL_CONFIG.spellcasting.formula });
