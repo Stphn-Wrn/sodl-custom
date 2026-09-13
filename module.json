@@ -10,11 +10,11 @@
   "relationships": {
     "systems": [
       {
-        "id": "shadow-of-the-demon-lord",
+        "id": "demonlord",
         "type": "system",
         "compatibility": {
-          "minimum": "6.1.6",
-          "verified": "6.1.6"
+          "minimum": "6.1.0",
+          "verified": "6.1.0"
         }
       }
     ]
