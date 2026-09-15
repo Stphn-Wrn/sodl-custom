@@ -90,8 +90,10 @@ export class SODLDiceClockManager {
   static async _playChime() {
     const soundPath = game.settings.get(MODULE_ID, "diceClockSoundPath");
     if (!soundPath) return;
+    // Selon la version de Foundry, AudioHelper est global (v11) ou sous foundry.audio (v12+).
+    const AudioHelperClass = foundry?.audio?.AudioHelper ?? globalThis.AudioHelper;
     try {
-      await AudioHelper.play({ src: soundPath, volume: 0.8, autoplay: true, loop: false }, true);
+      await AudioHelperClass.play({ src: soundPath, volume: 0.8, autoplay: true, loop: false }, true);
     } catch (err) {
       console.warn("SODL Companion | Impossible de jouer le son de l'horloge", err);
     }
@@ -154,24 +156,5 @@ export class SODLDiceClockManager {
       state.remaining = Math.min(this.totalPips, state.remaining + 1);
       await this.setState(state);
     }
-  }
-
-  // -------- Son du carillon --------
-  // Permet au MJ de choisir/uploader directement depuis la fenêtre le son joué
-  // automatiquement à chaque heure pleine (game.settings.diceClockSoundPath),
-  // sans avoir à passer par le menu Paramètres du module.
-
-  static getChimeSoundPath() {
-    return game.settings.get(MODULE_ID, "diceClockSoundPath");
-  }
-
-  static getChimeSoundName() {
-    const path = this.getChimeSoundPath();
-    return path ? decodeURIComponent(path.split("/").pop()) : "";
-  }
-
-  static async setChimeSoundPath(path) {
-    if (!game.user.isGM) return;
-    await game.settings.set(MODULE_ID, "diceClockSoundPath", path);
   }
 }

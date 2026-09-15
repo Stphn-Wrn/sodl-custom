@@ -673,26 +673,6 @@
   width: 100%;
 }
 
-.dice-clock-sound {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  width: 100%;
-  padding: 6px 8px;
-  background: #262626;
-  border: 1px solid #3a1414;
-  border-radius: 6px;
-  font-size: 0.85em;
-  color: #d8d8d8;
-}
-
-.dice-clock-sound-name {
-  flex: 1 1 auto;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
 .dice-clock-manual {
   display: flex;
   align-items: center;

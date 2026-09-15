@@ -31,8 +31,6 @@ export class SODLDiceClockApp extends Application {
       visible: value > 0,
       icon: SODLDiceClockManager.getDiceIcon(value)
     }));
-    data.chimeSoundName = SODLDiceClockManager.getChimeSoundName();
-
     return data;
   }
 
@@ -45,16 +43,9 @@ export class SODLDiceClockApp extends Application {
     html.find(".dice-clock-minus").on("click", () => SODLDiceClockManager.manualAdjust(-1));
     html.find(".dice-clock-plus").on("click", () => SODLDiceClockManager.manualAdjust(1));
 
-    html.find(".dice-clock-sound-browse").on("click", () => {
-      new FilePicker({
-        type: "audio",
-        current: SODLDiceClockManager.getChimeSoundPath(),
-        callback: (path) => SODLDiceClockManager.setChimeSoundPath(path)
-      }).render(true);
-    });
-
     html.find(".dice-clock-reset").on("click", () => {
-      new Dialog({
+      const DialogClass = foundry?.appv1?.api?.Dialog ?? globalThis.Dialog;
+      new DialogClass({
         title: "Réinitialiser l'horloge",
         content: "<p>Remettre l'horloge à son état de départ ?</p>",
         buttons: {
