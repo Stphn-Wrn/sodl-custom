@@ -1,0 +1,55 @@
+<div class="dice-clock-widget">
+  <div class="dice-clock-header">
+    <i class="fas fa-clock"></i>
+    <span class="dice-clock-hour {{#if isMidnight}}dice-clock-hour-critical{{/if}}">{{hourLabel}}</span>
+  </div>
+
+  <div class="dice-clock-dice">
+    {{#each dice}}
+      <div class="dice-clock-die {{#unless this.visible}}dice-clock-die-empty{{/unless}}">
+        {{#if this.visible}}
+          {{#if this.icon}}
+            <i class="fas {{this.icon}}"></i>
+          {{else}}
+            <span class="dice-clock-die-number">{{this.value}}</span>
+          {{/if}}
+        {{else}}
+          <i class="fas fa-circle-notch"></i>
+        {{/if}}
+      </div>
+    {{/each}}
+  </div>
+
+  {{#if isMidnight}}
+  <p class="dice-clock-alert"><i class="fas fa-skull"></i> L'horloge est arrivée à son terme.</p>
+  {{/if}}
+
+  {{#if isGM}}
+  <div class="dice-clock-sound">
+    <i class="fas fa-bell"></i>
+    <span class="dice-clock-sound-name">{{#if chimeSoundName}}{{chimeSoundName}}{{else}}Aucun son de carillon{{/if}}</span>
+    <button type="button" class="dice-clock-sound-browse btn btn-sm" title="Choisir / uploader le son du carillon">
+      <i class="fas fa-upload"></i>
+    </button>
+  </div>
+
+  <div class="dice-clock-controls">
+    <button type="button" class="dice-clock-room btn btn-sm" title="Fouiller une pièce / Changer d'étage (-1 point)">
+      <i class="fas fa-door-open"></i> Pièce / Étage
+    </button>
+    <button type="button" class="dice-clock-rest btn btn-sm" title="Repos court (-1 heure)">
+      <i class="fas fa-bed"></i> Repos court
+    </button>
+    <div class="dice-clock-manual">
+      <button type="button" class="dice-clock-minus btn btn-sm" title="-1 point"><i class="fas fa-minus"></i></button>
+      <span>Ajustement</span>
+      <button type="button" class="dice-clock-plus btn btn-sm" title="+1 point"><i class="fas fa-plus"></i></button>
+    </div>
+    <button type="button" class="dice-clock-reset btn btn-sm" title="Réinitialiser l'horloge">
+      <i class="fas fa-undo"></i> Réinitialiser
+    </button>
+  </div>
+  {{else}}
+  <p class="dice-clock-readonly"><i class="fas fa-eye"></i> Le MJ contrôle l'horloge.</p>
+  {{/if}}
+</div>
