@@ -43,7 +43,7 @@ function registerModule() {
 
   // -------- Horloge à Dés (Dice Clock) --------
   // Paramètres de configuration : rendent le "chronomètre à dés" réutilisable
-  // pour d'autres scènes chronométrées, pas seulement la Death House.
+  // pour d'autres scènes chronométrées
   game.settings.register("sodl-companion", "diceClockEnabled", {
     name: "Horloge à Dés : activer le module",
     hint: "Active ou désactive le bouton et la fenêtre de l'Horloge à Dés. Nécessite de rouvrir/rafraîchir la partie pour que le bouton apparaisse ou disparaisse.",
@@ -56,7 +56,7 @@ function registerModule() {
 
   game.settings.register("sodl-companion", "diceClockDiceCount", {
     name: "Horloge à Dés : nombre de dés",
-    hint: "Nombre de dés utilisés par l'horloge (3 pour la Death House de Curse of Strahd).",
+    hint: "Nombre de dés utilisés par l'horloge.",
     scope: "world",
     config: true,
     type: Number,
@@ -78,7 +78,7 @@ function registerModule() {
 
   game.settings.register("sodl-companion", "diceClockPipMinutes", {
     name: "Horloge à Dés : minutes par point",
-    hint: "Durée en minutes représentée par un point (pip) retiré (20 pour la Death House).",
+    hint: "Durée en minutes représentée par un point (pip) retiré.",
     scope: "world",
     config: true,
     type: Number,
@@ -103,7 +103,7 @@ function registerModule() {
     scope: "world",
     config: true,
     type: String,
-    default: "",
+    default: "modules/sodl-companion/sounds/vecna-clock.mp3",
     filePicker: "audio",
     onChange: rerenderDiceClockApps
   });

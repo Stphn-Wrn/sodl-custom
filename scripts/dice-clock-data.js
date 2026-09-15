@@ -8,7 +8,7 @@ const DICE_ICONS = [null, "fa-dice-one", "fa-dice-two", "fa-dice-three", "fa-dic
  * Gère l'état et la logique de la "Dice Clock" (horloge à dés).
  * Conçu pour être réutilisable : le nombre de dés, le nombre de faces par dé,
  * la durée d'un point (pip) et l'heure de départ sont tous configurables via
- * les paramètres du module, pas seulement pour la Death House de Curse of Strahd.
+ * les paramètres du module
  */
 export class SODLDiceClockManager {
   static get diceCount() {
