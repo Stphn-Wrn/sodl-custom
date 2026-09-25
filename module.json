@@ -30,10 +30,12 @@
   "download": "https://github.com/Stphn-Wrn/sodl-custom/releases/download/v1.2.2/sodl-companion.zip",
   "license": "MIT",
   "esmodules": [
-    "scripts/register.js"
+    "src/main.js"
   ],
   "styles": [
-    "styles/sodl-app.css"
+    "src/features/companion/companion.css",
+    "src/features/dice-clock/dice-clock.css",
+    "src/features/youtube-player/youtube-player.css"
   ],
   "languages": [
     {

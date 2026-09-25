@@ -1,3 +1,4 @@
+import { modulePath } from "../../shared/constants.js";
 import { SODLDataManager } from "./data-manager.js";
 import { SODL_CONFIG } from "./config.js";
 
@@ -32,7 +33,7 @@ export class SODLCompanionApp extends FormApplication {
     return foundry.utils.mergeObject(super.defaultOptions, {
       title: "L'Ombre du Seigneur Démon - Compagnon",
       id: "sodl-companion-app",
-      template: "modules/sodl-companion/templates/sodl-app.html",
+      template: modulePath("src/features/companion/companion.html"),
       width: 800,
       height: 600,
       resizable: true,

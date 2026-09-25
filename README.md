@@ -1,16 +1,30 @@
 # L'Ombre du Seigneur Démon - Module Compagnon
 
-Module Foundry VTT pour la gestion de la réserve de Fortune (points de chance) du groupe et l'aide de jeu pour **L'Ombre du Seigneur Démon**.
+Module Foundry VTT d'aide de jeu pour **L'Ombre du Seigneur Démon** : réserve de Fortune du groupe, résumé des règles, horloge à dés et diffusion de vidéos YouTube.
 
 **Compatibilité:** Foundry VTT v11+ (testé sur v14 stable 7) | Système `demonlord` v6.1.0+
 
 ## Ce qu'il y a dedans
 
+Le module regroupe trois outils indépendants :
+
+### Compagnon SODL
 - **Réserve de Fortune partagée** — Une seule réserve pour tout le groupe (pas par personnage). Seul le MJ voit le total et peut le modifier ; les joueurs voient un message masqué.
 - **Recherche instantanée** — Une barre de recherche en haut de la fenêtre filtre en direct afflictions, actions, options de mêlée/tir, autres attaques et règles diverses.
 - **Aide de jeu complète** — Afflictions, actions, règles de mêlée/tir, règles situationnelles, hors de combat, folie, corruption, incantation de sorts (avec le tableau des utilisations par Puissance/Niveau).
 - **Effets de la Fortune** — Effets de base et effets étendus (imposer des fléaux, refuser une Marque des ténèbres, retenir la main de la Mort, etc.), plus une table de fréquence des récompenses visible seulement du MJ.
 - **4 onglets** — Ressources, Règles, Actions, Aide.
+
+### Horloge à Dés
+- **Compte à rebours à base de dés** — Chaque point retiré fait avancer le temps ; une heure pleine fait sonner un carillon et poste un message dans le chat.
+- **Piloté par le MJ** — Les joueurs voient l'horloge en lecture seule.
+- **Configurable** — Nombre de dés, faces, minutes par point, heure de départ, son et message final réglables dans les paramètres : réutilisable pour n'importe quelle scène chronométrée.
+
+### Lecteur YouTube
+- **Diffusion synchronisée** — Le MJ lance une vidéo et tout le monde la regarde en même temps. Pause, reprise et sauts dans la vidéo sont répercutés chez tous les joueurs.
+- **Bibliothèque en dossiers** — Le MJ range ses vidéos (ambiances, cinématiques, musiques...) dans des dossiers.
+- **Widget flottant discret** — Déplaçable, redimensionnable, réductible en pastille sans couper la vidéo. Chez les joueurs, il n'apparaît que pendant une diffusion.
+- **Désactivé par défaut** — À activer dans les paramètres du module.
 
 ## Installation
 
@@ -19,11 +33,13 @@ Module Foundry VTT pour la gestion de la réserve de Fortune (points de chance) 
 3. Activez le module dans les paramètres du monde (il ne s'affiche dans la liste que si le monde tourne sur le système `demonlord`, cf. `module.json`)
 4. Relancez votre monde
 
-Une icône livre (SODL) apparaît en bas de la barre d'outils de gauche (les contrôles de scène), pas en bouton flottant.
+Voir `INSTALLATION.md` pour le détail, dont l'installation par URL de manifeste.
 
 ## Utilisation
 
-Cliquez sur l'icône **SODL** dans la barre d'outils de gauche pour ouvrir l'interface.
+### Compagnon SODL
+
+Cliquez sur l'icône **livre (SODL)** dans la barre d'outils de gauche (les contrôles de scène) pour ouvrir l'interface.
 
 **Ressources** — Réserve de Fortune du groupe. Le MJ voit le total, peut faire +1/-1/Réinitialiser et éditer le maximum. Les joueurs voient uniquement un message indiquant que le MJ garde le compte.
 
@@ -35,10 +51,36 @@ Cliquez sur l'icône **SODL** dans la barre d'outils de gauche pour ouvrir l'int
 
 **Recherche** — Tapez dans la barre en haut pour filtrer instantanément tout le contenu ci-dessus par mot-clé, sans changer d'onglet.
 
+### Horloge à Dés
+
+Cliquez sur l'icône **dé** dans la barre d'outils de gauche. Activée par défaut ; désactivable dans les paramètres du module.
+
+Commandes du MJ :
+- **Pièce / Étage** — retire 1 point
+- **Repos court** — retire 1 heure de points
+- **Ajustement +/-** — corrige d'un point dans un sens ou dans l'autre
+- **Réinitialiser** — remet l'horloge à son état de départ (avec confirmation)
+
+À chaque heure pleine, le carillon sonne et un message est posté dans le chat. Quand tous les points sont épuisés, le message final configuré est envoyé.
+
+### Lecteur YouTube
+
+1. **Activez-le** : *Paramètres → Configurer les paramètres → L'Ombre du Seigneur Démon - Companion → « Lecteur YouTube : activer le module »*, puis rafraîchissez la partie.
+2. Le widget apparaît chez le MJ. Via l'icône **dossier** du widget, ouvrez la bibliothèque :
+   - **Dossier** — crée un dossier
+   - **Vidéo** — ajoute une vidéo à partir de son lien (`youtube.com/watch?v=…`, `youtu.be/…`, `/shorts/…`, `/embed/…`, `/live/…` ou l'ID seul). Laissez le titre vide pour reprendre celui de YouTube.
+   - Au survol d'un dossier ou d'une vidéo : renommer/modifier (titre et dossier), supprimer. Supprimer un dossier déplace ses vidéos dans « Non classé ».
+3. **Cliquez sur une vidéo** : elle démarre chez tout le monde. Le MJ pilote la lecture avec les contrôles YouTube habituels.
+4. **Arrêter la diffusion** ferme la vidéo pour tous.
+
+Côté joueurs, le widget apparaît automatiquement pendant une diffusion. Ils ne peuvent pas agir sur la lecture, seulement régler leur propre volume. Un joueur qui se connecte en cours de route arrive directement au bon moment de la vidéo.
+
+Chacun peut déplacer le widget (par son en-tête), l'élargir (coin inférieur droit) et le réduire en pastille (`–`) : la vidéo continue de jouer. La position, la largeur et l'état réduit sont mémorisés par utilisateur.
+
 ## Personnalisation
 
 ### Points de chance max par défaut
-`scripts/config.js`:
+`src/features/companion/config.js`:
 ```javascript
 resources: {
   chancePoints: {
@@ -49,26 +91,54 @@ resources: {
 C'est la valeur par défaut du setting monde `maxChancePoints` ; le MJ peut ensuite l'ajuster directement depuis l'onglet Ressources.
 
 ### Contenu des onglets
-Toutes les données (afflictions, actions, règles, sorts, effets de Fortune) sont dans `scripts/config.js`. `scripts/sodl-app.js` (`getRulesData()`, `getActionsData()`, `getResourcesData()`) construit l'affichage à partir de ces données.
+Toutes les données (afflictions, actions, règles, sorts, effets de Fortune) sont dans `src/features/companion/config.js`. `src/features/companion/companion-app.js` (`getRulesData()`, `getActionsData()`, `getResourcesData()`) construit l'affichage à partir de ces données.
 
 ### Couleurs
-`styles/sodl-app.css` — palette sombre inspirée des fiches "Path" du système :
-- Accent: `#A13030`
+Chaque outil a sa feuille de style dans son dossier (`companion.css`, `dice-clock.css`, `youtube-player.css`). Palette sombre commune inspirée des fiches "Path" du système :
+- Accent: `#A13030` (compagnon), `#c9544f` (widget YouTube)
 - Fond: `#1b1b1b` / `#171717` / `#202020`
 - Texte: `#d8d8d8`
+
+Voir `CUSTOMIZATION.md` pour le reste (horloge, lecteur YouTube, ajout d'un outil).
 
 ## Structure
 
 ```
 sodl-companion/
 ├── module.json
-├── scripts/
-│   ├── register.js       # Hooks Foundry, settings, bouton scene-controls
-│   ├── config.js          # Toutes les données de règles (afflictions, actions, sorts, Fortune...)
-│   ├── data-manager.js    # Lecture/écriture de la réserve de Fortune (game.settings)
-│   └── sodl-app.js        # FormApplication + logique de recherche
-├── styles/sodl-app.css
-├── templates/sodl-app.html
+├── src/
+│   ├── main.js                    # Point d'entrée : lance init/ready/boutons de chaque outil
+│   ├── shared/
+│   │   ├── constants.js           # MODULE_ID, chemins du module
+│   │   └── foundry-adapter.js     # Compatibilité entre versions de Foundry (Dialog, templates, audio...)
+│   └── features/
+│       ├── companion/             # Fenêtre de règles, recherche et réserve de Fortune
+│       │   ├── register.js        # Settings + bouton scene-controls
+│       │   ├── config.js          # Toutes les données de règles (afflictions, actions, sorts, Fortune...)
+│       │   ├── data-manager.js    # Lecture/écriture de la réserve de Fortune (game.settings)
+│       │   ├── companion-app.js   # FormApplication + logique de recherche
+│       │   ├── companion.html
+│       │   └── companion.css
+│       ├── dice-clock/            # Horloge à Dés
+│       │   ├── register.js        # Settings + bouton scene-controls
+│       │   ├── dice-clock-manager.js # État, calcul des dés, carillon et messages
+│       │   ├── dice-clock-app.js  # Fenêtre de l'horloge
+│       │   ├── dice-clock.html
+│       │   └── dice-clock.css
+│       └── youtube-player/        # Widget de diffusion YouTube
+│           ├── register.js        # Settings + montage du widget
+│           ├── widget.js          # Widget flottant + synchronisation du lecteur
+│           ├── library-dialogs.js # Dialogues d'édition de la bibliothèque (MJ)
+│           ├── library-manager.js # Persistance de la bibliothèque
+│           ├── broadcast-manager.js # Persistance de l'état de diffusion
+│           ├── library.js         # Logique pure : dossiers et vidéos
+│           ├── broadcast.js       # Logique pure : synchronisation
+│           ├── url-parser.js      # Logique pure : liens YouTube → ID
+│           ├── iframe-api.js      # Chargement de l'API YouTube
+│           ├── widget.html, library.html
+│           └── youtube-player.css
+├── tests/                         # Tests de la logique pure (npm test)
+├── sounds/                        # Carillon de l'horloge
 └── lang/
     ├── fr.json
     └── en.json
@@ -76,7 +146,10 @@ sodl-companion/
 
 ## Accéder aux données
 
-La réserve de Fortune est un setting **monde** partagé (pas un flag d'acteur) :
+Les classes principales sont exposées sur `window` pour les macros et la console.
+
+### Réserve de Fortune
+Setting **monde** partagé (pas un flag d'acteur) :
 
 ```javascript
 // Récupérer la réserve courante / le max
@@ -91,16 +164,59 @@ await SODLDataManager.modifyChancePoints(+1);
 await SODLDataManager.setMaxChancePoints(8);
 ```
 
+### Horloge à Dés
+```javascript
+SODLDiceClockManager.getState();            // { remaining, hour }
+await SODLDiceClockManager.removePoints(1); // MJ seulement
+await SODLDiceClockManager.resetClock();    // MJ seulement
+```
+
+### Lecteur YouTube
+```javascript
+// Bibliothèque (modifications réservées au MJ)
+SODLYoutubeManager.getLibrary();            // { folders: [...], videos: [...] }
+await SODLYoutubeManager.addFolder("Ambiances");
+await SODLYoutubeManager.addVideo({ url: "https://youtu.be/…", title: "", folderId: null });
+
+// Diffusion (MJ seulement)
+const video = SODLYoutubeManager.getLibrary().videos[0];
+await SODLYoutubeBroadcast.start(video);
+await SODLYoutubeBroadcast.stop();
+SODLYoutubeBroadcast.getState();            // { video, playing, position, updatedAt }
+```
+
+## Développement
+
+La logique sans dépendance à Foundry (liens YouTube, bibliothèque, synchronisation) est couverte par des tests Node (v22+), sans aucune dépendance à installer :
+
+```bash
+npm test
+```
+
+Les fichiers `tests/` et `package.json` sont exclus de l'archive de release.
+
 ## Problèmes?
 
 **Le module n'apparaît pas dans "Gérer les modules" du monde**
 - Vérifiez que le monde tourne bien sur le système `demonlord` (l'ID exact déclaré dans `module.json` → `relationships.systems`), pas juste un système au nom similaire.
 - Vérifiez que la version du système installée respecte le minimum déclaré dans `module.json`.
 
-**L'icône SODL n'apparaît pas dans la barre de gauche**
+**L'icône SODL ou l'icône de l'horloge n'apparaît pas dans la barre de gauche**
 - Actualisez (F5)
-- Vérifiez que le module est activé dans le monde
-- Ouvrez la console (F12) : une erreur au chargement de `register.js` empêche le hook `getSceneControlButtons` de s'exécuter.
+- Vérifiez que le module est activé dans le monde (et, pour l'horloge, qu'elle n'est pas désactivée dans les paramètres du module)
+- Ouvrez la console (F12) : une erreur au chargement de `src/main.js` (ou d'un des `register.js`) empêche le hook `getSceneControlButtons` de s'exécuter.
+
+**Le widget YouTube n'apparaît pas**
+- Il est désactivé par défaut : activez-le dans les paramètres du module puis rafraîchissez la partie.
+- Côté joueur, c'est normal hors diffusion : il n'apparaît que quand le MJ lance une vidéo.
+
+**La vidéo ne démarre pas chez un joueur**
+- Le navigateur bloque parfois la lecture automatique, surtout juste après la connexion : un bouton **« Rejoindre la diffusion »** apparaît alors sur la vidéo, il suffit de cliquer dessus.
+- Certaines vidéos refusent d'être intégrées hors de YouTube (choix de leur auteur) : le lecteur affiche alors une erreur. Il faut en choisir une autre.
+
+**La pause ou les sauts du MJ ne sont pas répercutés**
+- Le widget du MJ doit rester chargé (il peut être réduit). Si le MJ rafraîchit sa page, la vidéo continue chez les joueurs et le MJ reprend la main dès que son widget est rechargé.
+- Un seul MJ doit piloter : deux MJ connectés en même temps peuvent se contredire.
 
 **Le MJ ne voit pas ses changements enregistrés**
 - Êtes-vous bien connecté en tant que MJ (pas juste un joueur avec des permissions élevées) ?

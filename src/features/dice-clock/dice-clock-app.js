@@ -1,4 +1,6 @@
-import { SODLDiceClockManager } from "./dice-clock-data.js";
+import { modulePath } from "../../shared/constants.js";
+import { getDialogClass } from "../../shared/foundry-adapter.js";
+import { SODLDiceClockManager } from "./dice-clock-manager.js";
 
 /**
  * Fenêtre flottante affichant la "Dice Clock". Déplaçable par tout le monde
@@ -10,7 +12,7 @@ export class SODLDiceClockApp extends Application {
     return foundry.utils.mergeObject(super.defaultOptions, {
       id: "sodl-dice-clock-app",
       title: "Horloge à Dés",
-      template: "modules/sodl-companion/templates/dice-clock.html",
+      template: modulePath("src/features/dice-clock/dice-clock.html"),
       width: 260,
       height: "auto",
       resizable: false,
@@ -44,7 +46,7 @@ export class SODLDiceClockApp extends Application {
     html.find(".dice-clock-plus").on("click", () => SODLDiceClockManager.manualAdjust(1));
 
     html.find(".dice-clock-reset").on("click", () => {
-      const DialogClass = foundry?.appv1?.api?.Dialog ?? globalThis.Dialog;
+      const DialogClass = getDialogClass();
       new DialogClass({
         title: "Réinitialiser l'horloge",
         content: "<p>Remettre l'horloge à son état de départ ?</p>",

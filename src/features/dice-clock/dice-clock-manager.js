@@ -1,4 +1,5 @@
-const MODULE_ID = "sodl-companion";
+import { MODULE_ID } from "../../shared/constants.js";
+import { playSound } from "../../shared/foundry-adapter.js";
 
 // Icônes Font Awesome pour les faces 1 à 6 (utilisées seulement quand le nombre
 // de faces par dé est 6, pour un rendu générique au-delà on affiche un chiffre).
@@ -90,10 +91,8 @@ export class SODLDiceClockManager {
   static async _playChime() {
     const soundPath = game.settings.get(MODULE_ID, "diceClockSoundPath");
     if (!soundPath) return;
-    // Selon la version de Foundry, AudioHelper est global (v11) ou sous foundry.audio (v12+).
-    const AudioHelperClass = foundry?.audio?.AudioHelper ?? globalThis.AudioHelper;
     try {
-      await AudioHelperClass.play({ src: soundPath, volume: 0.8, autoplay: true, loop: false }, true);
+      await playSound({ src: soundPath, volume: 0.8, autoplay: true, loop: false });
     } catch (err) {
       console.warn("SODL Companion | Impossible de jouer le son de l'horloge", err);
     }

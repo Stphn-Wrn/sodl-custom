@@ -1,0 +1,412 @@
+/* -------- Lecteur YouTube (widget flottant) -------- */
+.yt-widget {
+  --ytw-bg: rgba(20, 20, 23, 0.9);
+  --ytw-surface: rgba(255, 255, 255, 0.04);
+  --ytw-hover: rgba(255, 255, 255, 0.07);
+  --ytw-border: rgba(255, 255, 255, 0.08);
+  --ytw-text: #dcdcdc;
+  --ytw-muted: #8b8b90;
+  --ytw-accent: #c9544f;
+  --ytw-title: #e0c9a6;
+
+  position: fixed;
+  z-index: 60;
+  min-width: 280px;
+  max-width: 960px;
+  color: var(--ytw-text);
+  font-size: 13px;
+  background: var(--ytw-bg);
+  border: 1px solid var(--ytw-border);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  overflow: hidden;
+  resize: horizontal;
+  transition: opacity 0.2s ease;
+}
+
+.yt-widget-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.yt-widget-dragging,
+.yt-widget-dragging * {
+  user-select: none;
+  cursor: grabbing !important;
+}
+
+.yt-widget-dragging iframe {
+  pointer-events: none;
+}
+
+.yt-widget button {
+  width: auto;
+  margin: 0;
+  line-height: normal;
+  box-shadow: none;
+}
+
+/* Indicateur de diffusion */
+.yt-live-dot {
+  flex: 0 0 auto;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ytw-muted);
+  opacity: 0.6;
+}
+
+.yt-widget-live .yt-live-dot {
+  background: var(--ytw-accent);
+  opacity: 1;
+  animation: yt-live-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes yt-live-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201, 84, 79, 0.45); }
+  50% { box-shadow: 0 0 0 4px rgba(201, 84, 79, 0); }
+}
+
+.yt-widget-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* En-tête (poignée de déplacement) */
+.yt-widget-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 6px 0 12px;
+  cursor: grab;
+  color: var(--ytw-title);
+  font-weight: 600;
+}
+
+.yt-widget-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  font-size: 12px;
+  color: var(--ytw-muted);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.yt-widget-icon:hover {
+  color: var(--ytw-text);
+  background: var(--ytw-hover);
+}
+
+.yt-widget-library-open .yt-toggle-library {
+  color: var(--ytw-title);
+}
+
+/* Écran */
+.yt-widget-screen {
+  position: relative;
+  margin: 0 8px;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.yt-widget-screen iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Empêche les joueurs d'interagir avec le lecteur : c'est le MJ qui le contrôle. */
+.yt-player-shield {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.yt-join {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  transform: translate(-50%, -50%);
+  padding: 7px 14px;
+  font-size: 12px;
+  color: #fff;
+  background: rgba(201, 84, 79, 0.9);
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.yt-join.yt-join-visible {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.yt-widget-placeholder {
+  display: none;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px;
+  text-align: center;
+  color: var(--ytw-muted);
+}
+
+.yt-widget-placeholder i {
+  font-size: 22px;
+  opacity: 0.6;
+}
+
+/* Hors diffusion (MJ) : écran compact avec une invite, lecteur gardé en réserve. */
+.yt-widget:not(.yt-widget-live) .yt-widget-screen {
+  aspect-ratio: auto;
+  height: 84px;
+  background: var(--ytw-surface);
+}
+
+.yt-widget:not(.yt-widget-live) .yt-widget-screen iframe {
+  visibility: hidden;
+}
+
+.yt-widget:not(.yt-widget-live) .yt-widget-placeholder {
+  display: flex;
+}
+
+/* Pied */
+.yt-widget-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 6px 10px 8px;
+}
+
+.yt-widget:not(.yt-widget-live) .yt-widget-footer {
+  display: none;
+}
+
+.yt-widget-text-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: var(--ytw-muted);
+  background: transparent;
+  border: 1px solid var(--ytw-border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.yt-widget-text-btn:hover {
+  color: var(--ytw-text);
+  border-color: rgba(201, 84, 79, 0.6);
+}
+
+.yt-volume {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  color: var(--ytw-muted);
+}
+
+.yt-volume input {
+  flex: 1;
+  accent-color: var(--ytw-accent);
+}
+
+/* Bibliothèque (MJ) */
+.yt-widget-library {
+  display: none;
+  max-height: 260px;
+  margin-top: 8px;
+  overflow-y: auto;
+  border-top: 1px solid var(--ytw-border);
+}
+
+.yt-widget-library-open .yt-widget-library {
+  display: block;
+}
+
+.yt-widget:not(.yt-widget-live) .yt-widget-library {
+  margin-top: 8px;
+}
+
+.yt-library {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+}
+
+.yt-library-actions {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.yt-library-actions button {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 5px 8px;
+  font-size: 12px;
+  color: var(--ytw-text);
+  background: var(--ytw-surface);
+  border: 1px solid var(--ytw-border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.yt-library-actions button:hover {
+  background: var(--ytw-hover);
+}
+
+.yt-folder-header,
+.yt-video {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.yt-folder-header {
+  color: var(--ytw-title);
+  font-weight: 600;
+}
+
+.yt-folder-header:hover,
+.yt-video:hover {
+  background: var(--ytw-hover);
+}
+
+.yt-folder-name,
+.yt-video-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.yt-folder-count {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--ytw-muted);
+}
+
+.yt-folder .yt-folder-icon-closed,
+.yt-folder-collapsed .yt-folder-icon-open,
+.yt-folder-collapsed .yt-video-list {
+  display: none;
+}
+
+.yt-folder-collapsed .yt-folder-icon-closed {
+  display: inline-block;
+}
+
+.yt-video-list {
+  margin: 0;
+  padding: 0 0 2px 14px;
+  list-style: none;
+}
+
+.yt-video .fa-play-circle {
+  color: var(--ytw-muted);
+}
+
+.yt-video-active {
+  background: rgba(201, 84, 79, 0.14);
+}
+
+.yt-video-active .fa-play-circle {
+  color: var(--ytw-accent);
+}
+
+.yt-folder-header a,
+.yt-video a {
+  font-size: 11px;
+  color: var(--ytw-muted);
+  visibility: hidden;
+}
+
+.yt-folder-header:hover a,
+.yt-video:hover a {
+  visibility: visible;
+}
+
+.yt-folder-header a:hover,
+.yt-video a:hover {
+  color: var(--ytw-accent);
+}
+
+.yt-empty {
+  margin: 0;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-style: italic;
+  color: var(--ytw-muted);
+}
+
+/* Réduit : une simple pastille, la vidéo continue hors écran. */
+.yt-widget-pill {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  max-width: 260px;
+  height: 34px;
+  padding: 0 12px;
+  font-size: 12px;
+  color: var(--ytw-text);
+  background: transparent;
+  border: none;
+  cursor: grab;
+}
+
+.yt-widget-pill i {
+  font-size: 11px;
+  color: var(--ytw-muted);
+}
+
+.yt-widget-collapsed {
+  width: auto !important;
+  min-width: 0;
+  border-radius: 999px;
+  resize: none;
+}
+
+.yt-widget-collapsed .yt-widget-pill {
+  display: inline-flex;
+}
+
+.yt-widget-collapsed .yt-widget-panel {
+  position: fixed;
+  left: -10000px;
+  top: 0;
+  width: 360px;
+}

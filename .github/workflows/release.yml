@@ -66,7 +66,7 @@ jobs:
 
       - name: Create ZIP archive
         run: |
-          zip -r sodl-companion.zip . -x "*.git*" ".github/workflows/*" "node_modules/*" ".gitignore" ".DS_Store"
+          zip -r sodl-companion.zip . -x "*.git*" ".github/workflows/*" "node_modules/*" "tests/*" "package.json" ".gitignore" ".DS_Store"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
