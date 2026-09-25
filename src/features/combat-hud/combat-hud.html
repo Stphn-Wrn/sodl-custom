@@ -1,0 +1,62 @@
+<section class="sodl-hud {{#if collapsed}}sodl-hud-collapsed{{/if}}">
+  <header class="sodl-hud-header">
+    <img class="sodl-hud-portrait" src="{{snapshot.img}}" alt="">
+    <span class="sodl-hud-name">{{snapshot.name}}</span>
+
+    <div class="sodl-hud-health {{#if snapshot.characteristics.injured}}sodl-hud-injured{{/if}}" title="Santé (dégâts : {{snapshot.characteristics.damage}})">
+      <button type="button" class="sodl-hud-icon" data-damage="1" title="Subir 1 dégât"><i class="fas fa-minus"></i></button>
+      <div class="sodl-hud-health-bar">
+        <div class="sodl-hud-health-fill" style="width: {{healthPercent}}%"></div>
+        <span>{{snapshot.characteristics.health}} / {{snapshot.characteristics.healthMax}}</span>
+      </div>
+      <button type="button" class="sodl-hud-icon" data-damage="-1" title="Soigner 1 dégât"><i class="fas fa-plus"></i></button>
+    </div>
+
+    <ul class="sodl-hud-stats">
+      <li title="Défense"><i class="fas fa-shield"></i>{{snapshot.characteristics.defense}}</li>
+      <li title="Vitesse"><i class="fas fa-person-running"></i>{{snapshot.characteristics.speed}}</li>
+      <li title="Pouvoir"><i class="fas fa-bolt"></i>{{snapshot.characteristics.power}}</li>
+      <li title="Folie"><i class="fas fa-brain"></i>{{snapshot.characteristics.insanity}}/{{snapshot.characteristics.insanityMax}}</li>
+      <li title="Corruption"><i class="fas fa-skull"></i>{{snapshot.characteristics.corruption}}</li>
+    </ul>
+
+    <ul class="sodl-hud-afflictions">
+      {{#each afflictions}}
+      <li title="{{this.name}}"><img src="{{this.img}}" alt="{{this.name}}"></li>
+      {{/each}}
+    </ul>
+
+    <button type="button" class="sodl-hud-icon sodl-hud-collapse" title="Réduire / agrandir">
+      <i class="fas {{#if collapsed}}fa-chevron-up{{else}}fa-chevron-down{{/if}}"></i>
+    </button>
+  </header>
+
+  <div class="sodl-hud-body">
+    <nav class="sodl-hud-tabs">
+      {{#each sections}}
+      <button type="button" class="sodl-hud-tab {{#if this.active}}active{{/if}}" data-section="{{this.id}}">
+        <i class="{{this.icon}}"></i> {{this.label}}
+      </button>
+      {{/each}}
+    </nav>
+
+    <ul class="sodl-hud-entries">
+      {{#each entries}}
+      <li>
+        <button type="button"
+          class="sodl-hud-entry {{#if this.active}}active{{/if}} {{#if this.warning}}has-warning{{/if}}"
+          data-entry="{{@index}}"
+          title="{{this.name}}{{#if this.warning}} — {{this.warning}}{{/if}}"
+          {{#if this.disabled}}disabled{{/if}}>
+          {{#if this.img}}<img src="{{this.img}}" alt="">{{/if}}
+          <span class="sodl-hud-entry-name">{{this.name}}</span>
+          {{#if this.badge}}<span class="sodl-hud-badge">{{this.badge}}</span>{{/if}}
+          {{#if this.warning}}<i class="fas fa-triangle-exclamation sodl-hud-warning"></i>{{/if}}
+        </button>
+      </li>
+      {{else}}
+      <li class="sodl-hud-empty">Rien dans cet onglet.</li>
+      {{/each}}
+    </ul>
+  </div>
+</section>

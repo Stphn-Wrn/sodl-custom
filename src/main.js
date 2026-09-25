@@ -1,6 +1,7 @@
 import { companionFeature } from "./features/companion/register.js";
 import { diceClockFeature } from "./features/dice-clock/register.js";
 import { youtubePlayerFeature } from "./features/youtube-player/register.js";
+import { combatHudFeature } from "./features/combat-hud/register.js";
 
 /**
  * Point d'entrée du module. Chaque fonctionnalité vit dans son dossier
@@ -10,7 +11,7 @@ import { youtubePlayerFeature } from "./features/youtube-player/register.js";
  *   - getSceneControlButtons(controls)   : boutons dans les contrôles de scène
  * Pour ajouter une fonctionnalité, il suffit de l'ajouter à cette liste.
  */
-const FEATURES = [companionFeature, diceClockFeature, youtubePlayerFeature];
+const FEATURES = [companionFeature, diceClockFeature, youtubePlayerFeature, combatHudFeature];
 
 function runStep(step, ...args) {
   for (const feature of FEATURES) {

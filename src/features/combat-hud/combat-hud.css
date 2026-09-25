@@ -1,0 +1,235 @@
+/* -------- HUD de combat (barre ancrée en bas) -------- */
+.sodl-hud {
+  --hud-bg: rgba(20, 20, 23, 0.92);
+  --hud-surface: rgba(255, 255, 255, 0.05);
+  --hud-hover: rgba(255, 255, 255, 0.1);
+  --hud-border: rgba(255, 255, 255, 0.1);
+  --hud-text: #dcdcdc;
+  --hud-muted: #8b8b90;
+  --hud-accent: #c9544f;
+  --hud-title: #e0c9a6;
+  --hud-health: #6f9e55;
+  --hud-warning: #e0a44f;
+
+  position: fixed;
+  z-index: 60;
+  /* Au-dessus de la barre de macros de Foundry. */
+  bottom: 76px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(920px, calc(100vw - 32px));
+  color: var(--hud-text);
+  font-size: 13px;
+  background: var(--hud-bg);
+  border: 1px solid var(--hud-border);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  pointer-events: auto;
+}
+
+.sodl-hud button {
+  width: auto;
+  line-height: normal;
+  margin: 0;
+  color: inherit;
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+
+.sodl-hud-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+}
+
+.sodl-hud-portrait {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--hud-border);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.sodl-hud-name {
+  color: var(--hud-title);
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.sodl-hud-health {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sodl-hud-health-bar {
+  position: relative;
+  width: 120px;
+  height: 18px;
+  background: var(--hud-surface);
+  border: 1px solid var(--hud-border);
+  border-radius: 9px;
+  overflow: hidden;
+}
+
+.sodl-hud-health-fill {
+  height: 100%;
+  background: var(--hud-health);
+  transition: width 0.2s ease;
+}
+
+.sodl-hud-injured .sodl-hud-health-fill {
+  background: var(--hud-accent);
+}
+
+.sodl-hud-health-bar span {
+  position: absolute;
+  inset: 0;
+  text-align: center;
+  font-size: 11px;
+  line-height: 16px;
+  text-shadow: 0 0 3px #000;
+}
+
+.sodl-hud-stats,
+.sodl-hud-afflictions {
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sodl-hud-stats li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.sodl-hud-stats i {
+  color: var(--hud-muted);
+}
+
+.sodl-hud-afflictions {
+  gap: 4px;
+}
+
+.sodl-hud-afflictions img {
+  width: 22px;
+  height: 22px;
+  border: none;
+}
+
+.sodl-hud-icon {
+  padding: 2px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.sodl-hud-icon:hover {
+  background: var(--hud-hover);
+}
+
+.sodl-hud-collapse {
+  margin-left: auto !important;
+}
+
+.sodl-hud-collapsed .sodl-hud-body {
+  display: none;
+}
+
+.sodl-hud-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--hud-border);
+}
+
+.sodl-hud-tab {
+  padding: 6px 10px !important;
+  color: var(--hud-muted) !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.sodl-hud-tab.active {
+  color: var(--hud-title) !important;
+  border-bottom-color: var(--hud-accent) !important;
+}
+
+.sodl-hud-entries {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 6px;
+  max-height: 180px;
+  margin: 0;
+  padding: 8px 10px;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.sodl-hud-entry {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100% !important;
+  padding: 4px 6px !important;
+  text-align: left;
+  background: var(--hud-surface) !important;
+  border: 1px solid transparent !important;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.sodl-hud-entry:hover:not(:disabled) {
+  background: var(--hud-hover) !important;
+}
+
+.sodl-hud-entry.active {
+  border-color: var(--hud-title) !important;
+}
+
+.sodl-hud-entry:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.sodl-hud-entry img {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 4px;
+}
+
+.sodl-hud-entry-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sodl-hud-badge {
+  flex: none;
+  padding: 0 5px;
+  color: var(--hud-muted);
+  font-size: 11px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+}
+
+.sodl-hud-warning {
+  flex: none;
+  color: var(--hud-warning);
+}
+
+.sodl-hud-empty {
+  grid-column: 1 / -1;
+  color: var(--hud-muted);
+  font-style: italic;
+}

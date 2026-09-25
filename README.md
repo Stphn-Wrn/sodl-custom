@@ -6,7 +6,7 @@ Module Foundry VTT d'aide de jeu pour **L'Ombre du Seigneur Démon** : réserve 
 
 ## Ce qu'il y a dedans
 
-Le module regroupe trois outils indépendants :
+Le module regroupe quatre outils indépendants :
 
 ### Compagnon SODL
 - **Réserve de Fortune partagée** — Une seule réserve pour tout le groupe (pas par personnage). Seul le MJ voit le total et peut le modifier ; les joueurs voient un message masqué.
@@ -27,6 +27,14 @@ Le module regroupe trois outils indépendants :
 - **Lecteur intégré** — L'interface YouTube est masquée au profit des contrôles du widget (lecture/pause, progression, volume, plein écran).
 - **Widget flottant discret** — Déplaçable, redimensionnable, réductible en pastille sans couper la vidéo. Chez les joueurs, il n'apparaît que pendant une diffusion.
 - **Désactivé par défaut** — À activer dans les paramètres du module.
+
+### HUD de combat
+- **Barre ancrée en bas de l'écran** — Elle suit le token contrôlé (ou le personnage du joueur), sans ouvrir la fiche.
+- **En-tête** — Santé (boutons -1/+1 dégât), Défense, Vitesse, Pouvoir, Folie, Corruption et afflictions actives.
+- **Onglets** — Attaques (armes portées, munitions), Équipement, Sorts (incantations restantes), Talents, Objets (consommables), Caractéristiques et Professions.
+- **Équipement strict** — Deux mains et une armure : équiper une arme à deux mains, un bouclier ou une autre armure range automatiquement ce qui entre en conflit. Les prérequis de caractéristique non remplis sont signalés.
+- **Jets du système** — Chaque clic passe par les jets du système `demonlord` (dialogue de faveurs/fléaux, munitions, utilisations). Clic droit : ouvre la fiche de l'objet.
+- **Activé par défaut** — Désactivable par joueur dans les paramètres du module.
 
 ## Installation
 
