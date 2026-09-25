@@ -71,3 +71,11 @@ test("les afflictions actives sont lues depuis les statuts de l'acteur", () => {
   const actor = { ...actorWith([]), statuses: new Set(["prone", "blinded"]) };
   assert.deepEqual(toSnapshot(actor).statuses, ["prone", "blinded"]);
 });
+
+test("les effets de l'acteur sont lus avec leur état et leur durée restante", () => {
+  const effect = { id: "e1", name: "Bénédiction", img: "b.webp", disabled: false, statuses: new Set(), duration: { label: "3 rounds" } };
+  const actor = { ...actorWith([]), effects: [effect] };
+  assert.deepEqual(toSnapshot(actor).effects, [
+    { id: "e1", name: "Bénédiction", img: "b.webp", disabled: false, statuses: [], duration: "3 rounds" }
+  ]);
+});

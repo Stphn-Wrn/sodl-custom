@@ -273,7 +273,6 @@ export class SODLCombatHud {
       healthPercent,
       editingPortrait: Boolean(this.portraitDraft),
       rollPanel: this.rollPanelData(),
-      detailedEntries: this.entries.some((entry) => entry.description),
       diceMenuOpen: this.openMenu === MENU.DICE,
       restMenuOpen: this.openMenu === MENU.REST,
       diceCounts: Array.from({ length: DICE_MAX_COUNT }, (_, index) => index + 1),
@@ -382,6 +381,11 @@ export class SODLCombatHud {
       executeAction(this.actor, { type: "adjustUses", itemId: usesItem, amount: Number(amount) });
     });
 
+    html.find("[data-delete-effect]").on("click", (event) => {
+      event.stopPropagation();
+      executeAction(this.actor, { type: "deleteEffect", effectId: event.currentTarget.dataset.deleteEffect });
+    });
+
     // Infobulle (i) et icônes d'afflictions : postent la règle dans le chat.
     html.find("[data-rule]").on("click", (event) => {
       event.stopPropagation();
@@ -392,6 +396,10 @@ export class SODLCombatHud {
     html.find(".sodl-hud-entry").on("contextmenu", (event) => {
       event.preventDefault();
       const entry = this.entries[Number(event.currentTarget.dataset.entry)];
+      if (entry?.effectId) {
+        this.actor.effects.get(entry.effectId)?.sheet.render(true);
+        return;
+      }
       const item = this.actor.items.get(entry?.action?.itemId ?? entry?.itemId);
       if (item) {
         item.sheet.render(true);

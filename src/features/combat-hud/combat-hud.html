@@ -130,14 +130,14 @@
     </div>
     {{/if}}
 
-    <ul class="sodl-hud-entries {{#if detailedEntries}}sodl-hud-entries-detailed{{/if}}">
+    <ul class="sodl-hud-entries">
       {{#each entries}}
       {{#if this.isHeading}}
       <li class="sodl-hud-new-row sodl-hud-heading">{{this.name}}</li>
       {{else}}
       <li {{#if this.newRow}}class="sodl-hud-new-row"{{/if}}>
         <button type="button"
-          class="sodl-hud-entry {{#if this.active}}active{{/if}} {{#if this.warning}}has-warning{{/if}} {{#if this.description}}has-description{{/if}} {{#if this.variant}}sodl-hud-entry-{{this.variant}}{{/if}} {{#if this.disabled}}is-disabled{{/if}}"
+          class="sodl-hud-entry {{#if this.active}}active{{/if}} {{#if this.warning}}has-warning{{/if}} {{#if this.ruleId}}has-corner{{/if}}{{#if this.effectId}}has-corner{{/if}} {{#if this.variant}}sodl-hud-entry-{{this.variant}}{{/if}} {{#if this.disabled}}is-disabled{{/if}}"
           data-entry="{{@index}}"
           title="{{this.name}}{{#if this.warning}} — {{this.warning}}{{/if}}{{#if this.description}} : {{this.description}}{{/if}}"
           {{#if this.disabled}}aria-disabled="true"{{/if}}>
@@ -146,13 +146,15 @@
           <span class="sodl-hud-entry-name">{{this.name}}</span>
           {{#if this.badge}}<span class="sodl-hud-badge">{{this.badge}}</span>{{/if}}
           {{#if this.warning}}<i class="fas fa-triangle-exclamation sodl-hud-warning"></i>{{/if}}
-          {{#if this.description}}<small class="sodl-hud-entry-desc">{{this.description}}</small>{{/if}}
         </button>
         {{#if this.usesItemId}}
         <div class="sodl-hud-entry-uses">
           <button type="button" data-uses-item="{{this.usesItemId}}" data-amount="-1" title="Retirer une utilisation"><i class="fas fa-minus"></i></button>
           <button type="button" data-uses-item="{{this.usesItemId}}" data-amount="1" title="Rendre une utilisation"><i class="fas fa-plus"></i></button>
         </div>
+        {{/if}}
+        {{#if this.effectId}}
+        <button type="button" class="sodl-hud-entry-help" data-delete-effect="{{this.effectId}}" title="Supprimer l'effet"><i class="fas fa-xmark"></i></button>
         {{/if}}
         {{#if this.ruleId}}
         <button type="button" class="sodl-hud-entry-help" data-rule="{{this.ruleId}}" title="Envoyer la règle dans le chat"><i class="fas fa-circle-info"></i></button>

@@ -55,6 +55,44 @@ async function recover(actor) {
   });
 }
 
+// Ajoute ou retire une affliction comme le fait le système (findAddEffect) :
+// l'effet est créé depuis CONFIG.statusEffects avec un statut explicite, car
+// Actor#toggleStatusEffect refuse les effets du système sans _id statique.
+async function toggleStatus(actor, { statusId }) {
+  const existing = actor.effects.find((effect) => effect.statuses?.has(statusId));
+  if (existing) {
+    return existing.delete();
+  }
+  if (actor.isImmuneToAffliction?.(statusId)) {
+    ui.notifications.warn(`${actor.name} est immunisé contre cette affliction.`);
+    return undefined;
+  }
+  const definition = CONFIG.statusEffects[statusId];
+  if (!definition) {
+    ui.notifications.error(`Affliction inconnue du système : ${statusId}`);
+    return undefined;
+  }
+  const data = { ...foundry.utils.deepClone(definition), statuses: [statusId] };
+  return ActiveEffect.create(data, { parent: actor });
+}
+
+// Effets temporaires : activer/désactiver, créer (puis configurer dans sa
+// fiche), supprimer.
+function toggleEffect(actor, { effectId }) {
+  const effect = actor.effects.get(effectId);
+  return effect?.update({ disabled: !effect.disabled });
+}
+
+async function createEffect(actor) {
+  const [effect] = await actor.createEmbeddedDocuments("ActiveEffect", [{ name: "Nouvel effet", img: "icons/svg/aura.svg" }]);
+  effect?.sheet.render(true);
+  return effect;
+}
+
+function deleteEffect(actor, { effectId }) {
+  return actor.effects.get(effectId)?.delete();
+}
+
 // Rend (+1) ou retire (-1) une utilisation d'un sort ou d'un talent, sans le lancer.
 function adjustUses(actor, { itemId, amount }) {
   const uses = limitedUsesOf(toSnapshot(actor), itemId);
@@ -99,7 +137,10 @@ const ACTION_STRATEGIES = {
   changeCorruption: (actor, action) => actor.increaseCorruption(action.amount),
   rollCorruption: (actor) => actor.rollCorruption(),
   rollDice,
-  toggleStatus: (actor, action) => actor.toggleStatusEffect(action.statusId),
+  toggleStatus,
+  toggleEffect,
+  createEffect,
+  deleteEffect,
   postRule,
   adjustUses,
   recover,

@@ -17,6 +17,7 @@ function emptySnapshot(overrides) {
     consumables: [],
     professions: [],
     statuses: [],
+    effects: [],
     ...overrides
   };
 }
@@ -24,8 +25,8 @@ function emptySnapshot(overrides) {
 test("un personnage a tous les onglets, une créature n'a pas l'équipement ni les objets", () => {
   const characterIds = createSections("character").map((candidate) => candidate.id);
   const creatureIds = createSections("creature").map((candidate) => candidate.id);
-  assert.deepEqual(characterIds, ["attacks", "equipment", "spells", "talents", "items", "attributes", "afflictions"]);
-  assert.deepEqual(creatureIds, ["attacks", "spells", "talents", "attributes", "afflictions"]);
+  assert.deepEqual(characterIds, ["attacks", "equipment", "spells", "talents", "items", "attributes", "afflictions", "effects"]);
+  assert.deepEqual(creatureIds, ["attacks", "spells", "talents", "attributes", "afflictions", "effects"]);
 });
 
 test("les attaques ne listent que les armes portées", () => {
@@ -182,7 +183,7 @@ test("sans affliction active, l'onglet l'indique et propose d'en ajouter", () =>
 });
 
 test("la liste d'ajout propose les afflictions inactives, précédées d'un retour", () => {
-  const snapshot = emptySnapshot({ statuses: ["weakened"] });
+  const snapshot = emptySnapshot({ statuses: ["impaired"] });
   const entries = section("character", "afflictions").build(snapshot, { adding: true });
   const names = entries.map((entry) => entry.name);
   assert.equal(names[0], "Afflictions actives");
@@ -280,4 +281,25 @@ test("seuls les sorts et talents à utilisations limitées peuvent être corrig�
   const talents = section("character", "talents").build(snapshot, {}).map((entry) => [entry.name, entry.usesItemId]);
   assert.deepEqual(spells, [["Lueur", ""], ["Éclair", "s1"]]);
   assert.deepEqual(talents, [["Riposte", "t1"]]);
+});
+
+test("l'onglet effets liste les effets temporaires hors afflictions, puis un accès pour en créer un", () => {
+  const snapshot = emptySnapshot({
+    effects: [
+      { id: "e1", name: "Bénédiction", img: "b.webp", disabled: false, statuses: [], duration: "3 rounds" },
+      { id: "e2", name: "À terre", img: "p.svg", disabled: false, statuses: ["prone"], duration: "" },
+      { id: "e3", name: "Blessé", img: "i.svg", disabled: false, statuses: ["injured"], duration: "" },
+      { id: "e4", name: "Rage", img: "r.webp", disabled: true, statuses: [], duration: "" }
+    ]
+  });
+  const entries = section("character", "effects").build(snapshot, {});
+  assert.deepEqual(
+    entries.map((entry) => [entry.name, entry.badge, entry.active, entry.action]),
+    [
+      ["Bénédiction", "3 rounds", true, { type: "toggleEffect", effectId: "e1" }],
+      ["Rage", "Inactif", false, { type: "toggleEffect", effectId: "e4" }],
+      ["Nouvel effet", "", false, { type: "createEffect" }]
+    ]
+  );
+  assert.equal(entries[0].effectId, "e1");
 });

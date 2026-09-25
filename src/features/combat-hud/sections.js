@@ -12,14 +12,15 @@ import { SODL_CONFIG } from "../companion/config.js";
  * `newRow` force l'entrée à commencer une nouvelle ligne de la grille ;
  * `isHeading` en fait un intitulé de catégorie (non cliquable). `itemId` sert
  * au clic droit (fiche de l'objet) quand l'entrée n'a pas d'action ;
- * `usesItemId` permet de rendre ou retirer une utilisation à la main.
+ * `usesItemId` permet de rendre ou retirer une utilisation à la main ;
+ * `effectId` désigne un effet actif (clic droit : sa fiche, ✕ : le supprimer).
  * Entrée : { id, name, img, icon, badge, description, variant, newRow, disabled, active, warning, action }
  * Une action `navigate` ne touche pas l'acteur : elle remplace la vue de
  * l'onglet (`view`, passée en second argument de `build`), gérée par le HUD.
  */
 
 function entry(fields) {
-  return { img: "", icon: "", badge: "", description: "", ruleId: "", variant: "", newRow: false, isHeading: false, itemId: "", usesItemId: "", disabled: false, active: false, warning: "", ...fields };
+  return { img: "", icon: "", badge: "", description: "", ruleId: "", variant: "", newRow: false, isHeading: false, itemId: "", usesItemId: "", effectId: "", disabled: false, active: false, warning: "", ...fields };
 }
 
 // Tuile de retour à la vue principale de l'onglet (annule sans rien lancer).
@@ -388,9 +389,48 @@ const afflictionsSection = {
   }
 };
 
+// États de santé posés par le système : déjà visibles via la couleur du HUD.
+const HEALTH_STATUSES = ["injured", "incapacitated", "disabled", "dying", "dead"];
+
+function isTemporaryEffect(effect) {
+  const afflictionIds = SODL_CONFIG.afflictions.list.map((affliction) => affliction.id);
+  return !effect.statuses.some((status) => afflictionIds.includes(status) || HEALTH_STATUSES.includes(status));
+}
+
+function effectBadge(effect) {
+  if (effect.disabled) {
+    return "Inactif";
+  }
+  return effect.duration;
+}
+
+/**
+ * Effets temporaires (bénédictions, rages, sorts actifs...) hors afflictions
+ * et états de santé : clic pour activer/désactiver, « Nouvel effet » pour en
+ * créer un (sa fiche s'ouvre pour le configurer).
+ */
+const effectsSection = {
+  id: "effects",
+  label: "Effets",
+  icon: "fas fa-hourglass-half",
+  build(snapshot) {
+    const effects = snapshot.effects.filter(isTemporaryEffect).map((effect) => entry({
+      id: effect.id,
+      name: effect.name,
+      img: effect.img,
+      badge: effectBadge(effect),
+      active: !effect.disabled,
+      effectId: effect.id,
+      action: { type: "toggleEffect", effectId: effect.id }
+    }));
+    const create = entry({ id: "create", name: "Nouvel effet", icon: "fas fa-plus", action: { type: "createEffect" } });
+    return [...effects, create];
+  }
+};
+
 const SECTIONS_BY_ACTOR_TYPE = {
-  character: [attacksSection, equipmentSection, spellsSection, talentsSection, itemsSection, attributesSection, afflictionsSection],
-  creature: [attacksSection, spellsSection, talentsSection, attributesSection, afflictionsSection]
+  character: [attacksSection, equipmentSection, spellsSection, talentsSection, itemsSection, attributesSection, afflictionsSection, effectsSection],
+  creature: [attacksSection, spellsSection, talentsSection, attributesSection, afflictionsSection, effectsSection]
 };
 
 // Fabrique : les onglets disponibles selon le type d'acteur.

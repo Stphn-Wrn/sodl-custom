@@ -106,7 +106,15 @@ export function toSnapshot(actor) {
       .map((item) => ({ ...base(item), quantity: toNumber(item.system.quantity), rollsAttack: rollsAttack(item.system) })),
     professions: itemsOfType(actor, "profession").map(base),
     // Identifiants des statuts actifs (afflictions du système : "prone", "blinded"...).
-    statuses: Array.from(actor.statuses ?? [])
+    statuses: Array.from(actor.statuses ?? []),
+    effects: Array.from(actor.effects ?? []).map((effect) => ({
+      id: effect.id,
+      name: effect.name,
+      img: effect.img ?? effect.icon ?? "",
+      disabled: Boolean(effect.disabled),
+      statuses: Array.from(effect.statuses ?? []),
+      duration: effect.duration?.label ?? ""
+    }))
   };
 }
 

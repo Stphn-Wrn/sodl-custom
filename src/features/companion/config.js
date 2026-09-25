@@ -60,22 +60,26 @@ export const SODL_CONFIG = {
 
   afflictions: {
     list: [
-      { id: "weakened", name: "Affaibli (weakened)", description: "Les jets subissent +1 Desav (Désavantage)." },
+      { id: "impaired", name: "Affaibli (impaired)", description: "Les jets subissent +1 Desav (Désavantage)." },
       { id: "deafened", name: "Assourdi (deafened)", description: "N'entends rien (les jets de Perception basés sur l'ouïe échouent)." },
       { id: "prone", name: "À terre (prone)", description: "Force/Agilité +1 Desav. Les adversaires gagnent 1 Av pour attaquer le PJ en mêlée, et 1 Desav à distance. Se relever coûte le déplacement ou une action." },
       { id: "blinded", name: "Aveuglé (blinded)", description: "Vitesse maximum 2, ne voit rien." },
+      { id: "charmed", name: "Charmé (charmed)", description: "Considère la source comme un allié de confiance et ne peut pas la prendre pour cible." },
+      { id: "compelled", name: "Contraint (compelled)", description: "Ne peut ni agir ni se déplacer ; à chaque tour rapide, la source peut le forcer à se déplacer ou à utiliser une action." },
       { id: "frightened", name: "Effrayé (frightened)", description: "Jet +1 Desav (+3 si en voit la source), ne peut pas faire de tours rapides." },
       { id: "poisoned", name: "Empoisonné (poisoned)", description: "Jets +1 Desav." },
       { id: "asleep", name: "Endormi (asleep)", description: "À terre + inconscient. Une créature peut utiliser une action pour réveiller le PJ. Prendre des dégâts réveille." },
       { id: "dazed", name: "Étourdi (dazed)", description: "Aucune action possible." },
       { id: "fatigued", name: "Fatigué (fatigued)", description: "Jets +1 Desav." },
+      { id: "grabbed", name: "Saisi (grabbed)", description: "Si son Gabarit est inférieur ou égal à celui de l'agresseur, ne peut pas s'éloigner de lui ; sinon, l'agresseur peut suivre ses déplacements ou le lâcher." },
       { id: "immobilized", name: "Immobilisé (immobilized)", description: "Vitesse 0 et +1 Av pour attaquer le PJ." },
       { id: "unconscious", name: "Inconscient (unconscious)", description: "Défense 5, aucune action ni déplacement." },
       { id: "diseased", name: "Malade (diseased)", description: "Jets +1 Desav." },
       { id: "slowed", name: "Ralenti (slowed)", description: "Vitesse/2, tours lents uniquement." },
-      { id: "stupefied", name: "Stupéfait (stupefied)", description: "Ne peut pas agir/se déplacer, +1 Av pour l'attaquer." },
+      { id: "stunned", name: "Stupéfait (stunned)", description: "Ne peut pas agir/se déplacer, +1 Av pour l'attaquer." },
       { id: "surprised", name: "Surpris (surprised)", description: "Ne peut pas agir/se déplacer (pour ce round)." },
-      { id: "vulnerable", name: "Vulnérable (vulnerable)", description: "Ne peut pas agir, Défense de 5, tout jet échoue (sauf Perception)." }
+      { id: "horrified", name: "Terrifié (horrified)", description: "Jets +3 Desav tant qu'il voit la source de sa terreur." },
+      { id: "defenseless", name: "Vulnérable (defenseless)", description: "Ne peut pas agir, Défense de 5, tout jet échoue (sauf Perception)." }
     ]
   },
 

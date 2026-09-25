@@ -415,6 +415,7 @@ body.sodl-hud-active #players {
   display: flex;
   align-items: center;
   gap: 2px;
+  margin-left: auto;
 }
 
 .sodl-hud-menu-anchor {
@@ -598,26 +599,22 @@ body.sodl-hud-active #players {
   color: var(--hud-title);
 }
 
-/* Liste détaillée (afflictions) : colonnes régulières, description sur 2 lignes
-   (le texte complet est dans l'infobulle et dans l'aide de jeu). */
-.sodl-hud-entries-detailed {
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  grid-auto-rows: 1fr;
-}
-
 .sodl-hud-entry {
   height: auto;
   min-height: 28px;
 }
 
-.sodl-hud-entries-detailed .sodl-hud-entry {
-  height: 100%;
-  align-content: flex-start;
+/* Place pour le bouton de coin ((i) d'une affliction, ✕ d'un effet). */
+.sodl-hud-entry.has-corner {
+  padding-right: 22px !important;
 }
 
-.sodl-hud-entry.has-description {
-  flex-wrap: wrap;
-  padding: 4px 6px !important;
+.sodl-hud-has-help {
+  cursor: pointer;
+}
+
+.sodl-hud-entries li {
+  position: relative;
 }
 
 .sodl-hud-entries .sodl-hud-new-row {
@@ -635,6 +632,23 @@ body.sodl-hud-active #players {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   border-right: 1px solid var(--hud-border);
+}
+
+/* Bouton de coin : (i) d'une affliction (règle dans le chat), ✕ d'un effet. */
+.sodl-hud .sodl-hud-entry-help {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  transform: translateY(-50%);
+  padding: 2px !important;
+  color: var(--hud-muted);
+  font-size: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.sodl-hud .sodl-hud-entry-help:hover {
+  color: var(--hud-title);
 }
 
 /* −/+ des utilisations (sorts, talents), visibles au survol de la tuile. */
@@ -669,46 +683,6 @@ body.sodl-hud-active #players {
 .sodl-hud .sodl-hud-entry-uses button:hover {
   color: var(--hud-text);
   background: var(--hud-hover) !important;
-}
-
-/* Infobulle (i) : poste la règle dans le chat, dans le coin de la tuile. */
-.sodl-hud-entries li {
-  position: relative;
-}
-
-.sodl-hud .sodl-hud-entry-help {
-  position: absolute;
-  top: 3px;
-  right: 4px;
-  padding: 2px !important;
-  color: var(--hud-muted);
-  font-size: 12px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.sodl-hud .sodl-hud-entry-help:hover {
-  color: var(--hud-title);
-}
-
-.sodl-hud-entry.has-description .sodl-hud-entry-name {
-  padding-right: 18px;
-}
-
-.sodl-hud-has-help {
-  cursor: pointer;
-}
-
-.sodl-hud-entry-desc {
-  flex-basis: 100%;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-  color: var(--hud-muted);
-  font-size: 11px;
-  line-height: 1.3;
-  white-space: normal;
 }
 
 .sodl-hud-entry-name {
