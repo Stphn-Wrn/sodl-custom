@@ -22,7 +22,9 @@ Le module regroupe trois outils indépendants :
 
 ### Lecteur YouTube
 - **Diffusion synchronisée** — Le MJ lance une vidéo et tout le monde la regarde en même temps. Pause, reprise et sauts dans la vidéo sont répercutés chez tous les joueurs.
-- **Bibliothèque en dossiers** — Le MJ range ses vidéos (ambiances, cinématiques, musiques...) dans des dossiers.
+- **Recherche intégrée** — Le MJ cherche sur YouTube (ou colle un lien) directement dans le widget, puis diffuse ou ajoute la vidéo en un clic.
+- **Bibliothèque en dossiers** — Le MJ range ses vidéos (ambiances, cinématiques, musiques...) dans des dossiers, sans aucune fenêtre de dialogue : création et renommage sur place, glisser-déposer entre dossiers.
+- **Lecteur intégré** — L'interface YouTube est masquée au profit des contrôles du widget (lecture/pause, progression, volume, plein écran).
 - **Widget flottant discret** — Déplaçable, redimensionnable, réductible en pastille sans couper la vidéo. Chez les joueurs, il n'apparaît que pendant une diffusion.
 - **Désactivé par défaut** — À activer dans les paramètres du module.
 
@@ -66,12 +68,16 @@ Commandes du MJ :
 ### Lecteur YouTube
 
 1. **Activez-le** : *Paramètres → Configurer les paramètres → L'Ombre du Seigneur Démon - Companion → « Lecteur YouTube : activer le module »*, puis rafraîchissez la partie.
-2. Le widget apparaît chez le MJ. Via l'icône **dossier** du widget, ouvrez la bibliothèque :
-   - **Dossier** — crée un dossier
-   - **Vidéo** — ajoute une vidéo à partir de son lien (`youtube.com/watch?v=…`, `youtu.be/…`, `/shorts/…`, `/embed/…`, `/live/…` ou l'ID seul). Laissez le titre vide pour reprendre celui de YouTube.
-   - Au survol d'un dossier ou d'une vidéo : renommer/modifier (titre et dossier), supprimer. Supprimer un dossier déplace ses vidéos dans « Non classé ».
-3. **Cliquez sur une vidéo** : elle démarre chez tout le monde. Le MJ pilote la lecture avec les contrôles YouTube habituels.
-4. **Arrêter la diffusion** ferme la vidéo pour tous.
+2. Le widget apparaît chez le MJ. L'icône **dossier** du widget affiche ou masque la recherche et la bibliothèque :
+   - **Recherche** — tapez des mots-clés, ou collez un lien (`youtube.com/watch?v=…`, `youtu.be/…`, `/shorts/…`, `/embed/…`, `/live/…`). Pour chaque résultat : **▶** le diffuse tout de suite, **+** l'ajoute à la bibliothèque dans le dossier choisi en haut des résultats.
+   - **Plusieurs liens d'un coup** — collez une liste de liens (un par ligne, ou séparés par des espaces ou des virgules ; les doublons et lignes sans lien sont ignorés) : chaque vidéo apparaît dans les résultats, et le bouton **« Tout ajouter »** (icône de pile) les range toutes dans le dossier choisi en une fois.
+   - **Nouveau dossier** — icône à droite de « Bibliothèque » : le nom se saisit sur place (Entrée pour valider, Échap pour annuler).
+   - Au survol d'un dossier ou d'une vidéo : **crayon** pour renommer sur place, **corbeille** puis second clic pour supprimer. Supprimer un dossier déplace ses vidéos dans « Non classé ».
+   - **Glissez une vidéo** sur un dossier pour l'y ranger.
+3. **Cliquez sur une vidéo** : elle démarre chez tout le monde. Le MJ la pilote avec les contrôles du widget (lecture/pause — ou clic sur l'image —, barre de progression).
+4. **■ (arrêter)** ferme la vidéo pour tous.
+
+La recherche fonctionne sans configuration grâce à des instances publiques [Invidious](https://invidious.io), parfois indisponibles. Pour une recherche fiable, renseignez une clé **YouTube Data API v3** (gratuite, créée depuis la Google Cloud Console) dans le paramètre **« Lecteur YouTube : clé API (recherche) »**. Cette clé est visible des joueurs connectés au monde : restreignez-la à l'API YouTube Data dans la console Google.
 
 Côté joueurs, le widget apparaît automatiquement pendant une diffusion. Ils ne peuvent pas agir sur la lecture, seulement régler leur propre volume. Un joueur qui se connecte en cours de route arrive directement au bon moment de la vidéo.
 
@@ -127,15 +133,18 @@ sodl-companion/
 │       │   └── dice-clock.css
 │       └── youtube-player/        # Widget de diffusion YouTube
 │           ├── register.js        # Settings + montage du widget
-│           ├── widget.js          # Widget flottant + synchronisation du lecteur
-│           ├── library-dialogs.js # Dialogues d'édition de la bibliothèque (MJ)
+│           ├── widget.js          # Widget flottant, contrôles et synchronisation du lecteur
+│           ├── library-panel.js   # Recherche + bibliothèque du MJ (édition sur place)
+│           ├── search-service.js  # Recherche YouTube (paramètres, oEmbed)
 │           ├── library-manager.js # Persistance de la bibliothèque
 │           ├── broadcast-manager.js # Persistance de l'état de diffusion
 │           ├── library.js         # Logique pure : dossiers et vidéos
 │           ├── broadcast.js       # Logique pure : synchronisation
 │           ├── url-parser.js      # Logique pure : liens YouTube → ID
+│           ├── search.js          # Logique pure : fournisseurs de recherche (API YouTube, Invidious)
+│           ├── time-format.js     # Logique pure : affichage des durées
 │           ├── iframe-api.js      # Chargement de l'API YouTube
-│           ├── widget.html, library.html
+│           ├── widget.html, library.html, search-results.html
 │           └── youtube-player.css
 ├── tests/                         # Tests de la logique pure (npm test)
 ├── sounds/                        # Carillon de l'horloge
@@ -183,11 +192,14 @@ const video = SODLYoutubeManager.getLibrary().videos[0];
 await SODLYoutubeBroadcast.start(video);
 await SODLYoutubeBroadcast.stop();
 SODLYoutubeBroadcast.getState();            // { video, playing, position, updatedAt }
+
+// Recherche
+await SODLYoutubeSearch.query("musique taverne"); // [{ videoId, title, channel, duration, thumbnail }]
 ```
 
 ## Développement
 
-La logique sans dépendance à Foundry (liens YouTube, bibliothèque, synchronisation) est couverte par des tests Node (v22+), sans aucune dépendance à installer :
+La logique sans dépendance à Foundry (liens YouTube, recherche, bibliothèque, synchronisation) est couverte par des tests Node (v22+), sans aucune dépendance à installer :
 
 ```bash
 npm test
@@ -213,6 +225,10 @@ Les fichiers `tests/` et `package.json` sont exclus de l'archive de release.
 **La vidéo ne démarre pas chez un joueur**
 - Le navigateur bloque parfois la lecture automatique, surtout juste après la connexion : un bouton **« Rejoindre la diffusion »** apparaît alors sur la vidéo, il suffit de cliquer dessus.
 - Certaines vidéos refusent d'être intégrées hors de YouTube (choix de leur auteur) : le lecteur affiche alors une erreur. Il faut en choisir une autre.
+
+**La recherche YouTube ne renvoie rien ou affiche une erreur**
+- Sans clé API, la recherche dépend d'instances Invidious publiques qui tombent régulièrement : renseignez une clé YouTube Data API v3, ou remplacez les instances dans le paramètre **« Lecteur YouTube : instances Invidious »**.
+- Coller directement un lien YouTube fonctionne toujours, même sans service de recherche.
 
 **La pause ou les sauts du MJ ne sont pas répercutés**
 - Le widget du MJ doit rester chargé (il peut être réduit). Si le MJ rafraîchit sa page, la vidéo continue chez les joueurs et le MJ reprend la main dès que son widget est rechargé.

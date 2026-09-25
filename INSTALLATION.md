@@ -52,6 +52,7 @@ Fermez et rouvrez votre monde. Dans la barre d'outils de gauche (les contrôles 
 Dans **Paramètres → Configurer les paramètres → L'Ombre du Seigneur Démon - Companion** :
 - **Horloge à Dés : activer le module** — activé par défaut ; décochez pour masquer l'horloge. Ses autres réglages (dés, faces, heure de départ, son...) sont au même endroit.
 - **Lecteur YouTube : activer le module** — désactivé par défaut ; cochez pour afficher le widget de diffusion vidéo.
+- **Lecteur YouTube : clé API (recherche)** — facultatif ; une clé YouTube Data API v3 rend la recherche intégrée fiable (sinon, instances Invidious publiques).
 
 Ces deux options demandent de rafraîchir la partie pour s'appliquer.
 

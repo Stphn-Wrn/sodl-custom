@@ -1,0 +1,56 @@
+<div class="yt-search-results">
+  {{#if loading}}
+  <p class="yt-empty"><i class="fas fa-spinner fa-spin"></i> Recherche en cours…</p>
+  {{else if error}}
+  <p class="yt-search-error"><i class="fas fa-triangle-exclamation"></i> {{error}}</p>
+  {{else if searched}}
+  <div class="yt-section-header">
+    <span>Résultats ({{results.length}})</span>
+    <label class="yt-target-folder" title="Dossier dans lequel ajouter les vidéos">
+      <i class="fas fa-folder"></i>
+      <select>
+        <option value="">Non classé</option>
+        {{#each folders}}
+        <option value="{{this.id}}" {{#if this.selected}}selected{{/if}}>{{this.name}}</option>
+        {{/each}}
+      </select>
+    </label>
+    {{#if canAddAll}}
+    <button type="button" class="yt-widget-icon yt-add-all" title="Ajouter les {{unsavedCount}} vidéos à la bibliothèque">
+      <i class="fas fa-layer-group"></i>
+    </button>
+    {{/if}}
+    <button type="button" class="yt-widget-icon yt-clear-results" title="Fermer les résultats">
+      <i class="fas fa-xmark"></i>
+    </button>
+  </div>
+  <ul class="yt-result-list">
+    {{#each results}}
+    <li class="yt-result" data-index="{{@index}}">
+      <div class="yt-result-thumb">
+        <img src="{{this.thumbnail}}" alt="" loading="lazy">
+        {{#if this.durationLabel}}<span class="yt-result-duration">{{this.durationLabel}}</span>{{/if}}
+      </div>
+      <div class="yt-result-info">
+        <span class="yt-result-title" title="{{this.title}}">{{this.title}}</span>
+        <span class="yt-result-channel">{{this.channel}}</span>
+      </div>
+      <div class="yt-result-actions">
+        <button type="button" class="yt-widget-icon yt-result-play" title="Diffuser maintenant">
+          <i class="fas fa-play"></i>
+        </button>
+        {{#if this.saved}}
+        <span class="yt-widget-icon yt-result-saved" title="Déjà dans la bibliothèque"><i class="fas fa-check"></i></span>
+        {{else}}
+        <button type="button" class="yt-widget-icon yt-result-add" title="Ajouter à la bibliothèque">
+          <i class="fas fa-plus"></i>
+        </button>
+        {{/if}}
+      </div>
+    </li>
+    {{else}}
+    <li class="yt-empty">Aucun résultat.</li>
+    {{/each}}
+  </ul>
+  {{/if}}
+</div>

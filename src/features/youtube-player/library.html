@@ -1,14 +1,17 @@
 <div class="yt-library">
-  {{#if isGM}}
-  <div class="yt-library-actions">
-    <button type="button" class="yt-add-folder btn btn-sm" title="Nouveau dossier">
-      <i class="fas fa-folder-plus"></i> Dossier
-    </button>
-    <button type="button" class="yt-add-video btn btn-sm" title="Ajouter une vidéo">
-      <i class="fab fa-youtube"></i> Vidéo
+  <div class="yt-section-header">
+    <span>Bibliothèque</span>
+    <button type="button" class="yt-widget-icon yt-new-folder-toggle" title="Nouveau dossier">
+      <i class="fas fa-folder-plus"></i>
     </button>
   </div>
-  {{/if}}
+
+  <form class="yt-inline-form yt-new-folder">
+    <i class="fas fa-folder"></i>
+    <input type="text" name="name" placeholder="Nom du dossier" autocomplete="off">
+    <button type="submit" class="yt-widget-icon" title="Créer"><i class="fas fa-check"></i></button>
+    <button type="button" class="yt-widget-icon yt-inline-cancel" title="Annuler"><i class="fas fa-xmark"></i></button>
+  </form>
 
   {{#each groups}}
   <div class="yt-folder {{#if this.collapsed}}yt-folder-collapsed{{/if}}" data-folder-id="{{this.id}}">
@@ -17,27 +20,25 @@
       <i class="fas fa-folder-open yt-folder-icon-open"></i>
       <span class="yt-folder-name">{{this.name}}</span>
       <span class="yt-folder-count">{{this.videos.length}}</span>
-      {{#if ../isGM}}{{#if this.id}}
-      <a class="yt-rename-folder" title="Renommer le dossier"><i class="fas fa-pen"></i></a>
-      <a class="yt-remove-folder" title="Supprimer le dossier"><i class="fas fa-trash"></i></a>
-      {{/if}}{{/if}}
+      {{#if this.id}}
+      <a class="yt-rename" title="Renommer le dossier"><i class="fas fa-pen"></i></a>
+      <a class="yt-remove" title="Supprimer le dossier (ses vidéos passent dans « Non classé »)"><i class="fas fa-trash"></i></a>
+      {{/if}}
     </div>
     <ul class="yt-video-list">
       {{#each this.videos}}
-      <li class="yt-video {{#if this.active}}yt-video-active{{/if}}" data-video-id="{{this.id}}" title="{{this.title}}">
+      <li class="yt-video {{#if this.active}}yt-video-active{{/if}}" data-video-id="{{this.id}}" title="{{this.title}} — cliquer pour diffuser, glisser pour changer de dossier" draggable="true">
         <i class="fas fa-play-circle"></i>
         <span class="yt-video-title">{{this.title}}</span>
-        {{#if ../../isGM}}
-        <a class="yt-edit-video" title="Modifier la vidéo"><i class="fas fa-pen"></i></a>
-        <a class="yt-remove-video" title="Supprimer la vidéo"><i class="fas fa-trash"></i></a>
-        {{/if}}
+        <a class="yt-rename" title="Renommer la vidéo"><i class="fas fa-pen"></i></a>
+        <a class="yt-remove" title="Supprimer la vidéo"><i class="fas fa-trash"></i></a>
       </li>
       {{else}}
-      <li class="yt-empty">Dossier vide</li>
+      <li class="yt-empty">Dossier vide — glissez-y des vidéos</li>
       {{/each}}
     </ul>
   </div>
   {{else}}
-  <p class="yt-empty">Aucune vidéo pour le moment.</p>
+  <p class="yt-empty">Aucune vidéo pour le moment. Recherchez-en une ci-dessus.</p>
   {{/each}}
 </div>

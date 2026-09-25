@@ -1,15 +1,15 @@
 import { MODULE_ID, modulePath } from "../../shared/constants.js";
-import { renderTemplate, escapeHTML } from "../../shared/foundry-adapter.js";
-import { SODLYoutubeManager } from "./library-manager.js";
+import { renderTemplate } from "../../shared/foundry-adapter.js";
 import { SODLYoutubeBroadcast } from "./broadcast-manager.js";
-import { UNSORTED_FOLDER_NAME } from "./library.js";
 import { SYNC_TOLERANCE } from "./broadcast.js";
 import { loadYoutubeIframeApi } from "./iframe-api.js";
-import { promptFolderName, promptVideo, confirmRemoval } from "./library-dialogs.js";
+import { SODLYoutubeLibraryPanel } from "./library-panel.js";
+import { formatTime } from "./time-format.js";
 
-export const LIBRARY_TEMPLATE = modulePath("src/features/youtube-player/library.html");
 const WIDGET_TEMPLATE = modulePath("src/features/youtube-player/widget.html");
 const SYNC_INTERVAL_MS = 1000;
+// Rafraîchissement de la barre de progression et du temps affiché.
+const PROGRESS_INTERVAL_MS = 250;
 // Délai après lequel on propose aux joueurs de cliquer si le navigateur a bloqué la lecture auto.
 const AUTOPLAY_BLOCKED_DELAY_MS = 2500;
 // En dessous de ce déplacement (px), un appui sur la pastille est un clic et non un glisser.
@@ -24,8 +24,10 @@ const PLAYER_STATE = { UNSTARTED: -1, ENDED: 0, PLAYING: 1, PAUSED: 2, BUFFERING
 /**
  * Widget flottant de diffusion YouTube, présent en permanence quand l'outil est activé.
  *
- * - Le MJ dispose de la bibliothèque et d'un lecteur complet : ce qu'il fait
- *   (lancer, mettre en pause, avancer...) est diffusé à tout le monde.
+ * L'interface YouTube est masquée : le widget fournit ses propres contrôles.
+ * - Le MJ dispose de la recherche, de la bibliothèque et des contrôles de
+ *   lecture : ce qu'il fait (lancer, mettre en pause, avancer...) est diffusé
+ *   à tout le monde.
  * - Les joueurs voient un lecteur verrouillé qui suit la diffusion, avec un
  *   volume local. Le widget n'apparaît chez eux que pendant une diffusion.
  *
@@ -50,8 +52,8 @@ export class SODLYoutubeWidget {
   }
 
   static onLibraryChanged() {
-    if (this.instance) {
-      this.instance.refreshLibrary();
+    if (this.instance?.libraryPanel) {
+      this.instance.libraryPanel.refresh();
     }
   }
 
@@ -61,23 +63,29 @@ export class SODLYoutubeWidget {
     this._playerReady = false;
     this._loadedVideoId = null;
     this._playRequestedAt = null;
-    this._activeLibraryVideoId = null;
-    this._syncInterval = null;
+    this._seeking = false;
+    this.libraryPanel = null;
     this.layout = this._loadLayout();
-    // Dossiers repliés : état local à chaque client, non partagé.
-    this.collapsedFolders = new Set();
   }
 
   async render() {
-    const data = this._getLibraryData();
-    data.volume = game.settings.get(MODULE_ID, "youtubeVolume");
+    const data = {
+      isGM: game.user.isGM,
+      volume: game.settings.get(MODULE_ID, "youtubeVolume"),
+      // Le partial de la bibliothèque est rendu vide puis rempli par le panneau.
+      groups: []
+    };
     const html = await renderTemplate(WIDGET_TEMPLATE, data);
     this.element = $(html);
     $(document.body).append(this.element);
 
     this._applyLayout();
     this._activateListeners();
-    this._activateLibraryListeners(this.element.find(".yt-library"));
+    this._updateVolumeDisplay(data.volume);
+    if (game.user.isGM) {
+      this.libraryPanel = new SODLYoutubeLibraryPanel(this.element.find(".yt-widget-library"));
+      this.libraryPanel.refresh();
+    }
     this._updateChrome(SODLYoutubeBroadcast.getState());
     this._mountPlayer();
   }
@@ -201,8 +209,30 @@ export class SODLYoutubeWidget {
       if (this._playerReady) {
         this.player.setVolume(volume);
       }
-      game.settings.set(MODULE_ID, "youtubeVolume", volume);
+      this._updateVolumeDisplay(volume);
     });
+    html.find(".yt-volume input").on("change", (event) => {
+      game.settings.set(MODULE_ID, "youtubeVolume", Number(event.currentTarget.value));
+    });
+
+    html.find(".yt-fullscreen").on("click", () => this._toggleFullscreen());
+
+    if (game.user.isGM) {
+      html.find(".yt-play-toggle, .yt-player-shield").on("click", () => this._togglePlayback());
+
+      // Pendant le glisser, seul l'affichage suit ; la vidéo saute au relâchement.
+      html.find(".yt-seek").on("input", (event) => {
+        this._seeking = true;
+        html.find(".yt-time-current").text(formatTime(event.currentTarget.value));
+      });
+      html.find(".yt-seek").on("change", (event) => {
+        this._seeking = false;
+        if (this._playerReady) {
+          this.player.seekTo(Number(event.currentTarget.value), true);
+          this._reportGmPlayback();
+        }
+      });
+    }
 
     html.find(".yt-join").on("click", () => {
       this._playRequestedAt = Date.now();
@@ -227,27 +257,20 @@ export class SODLYoutubeWidget {
     }
 
     const isGM = game.user.isGM;
-    let controls = 0;
-    let disablekb = 1;
-    if (isGM) {
-      controls = 1;
-      disablekb = 0;
-    }
-
     this.player = new YT.Player(target, {
       width: "100%",
       height: "100%",
-      playerVars: { controls, disablekb, rel: 0, playsinline: 1, modestbranding: 1, origin: window.location.origin },
+      playerVars: { controls: 0, disablekb: 1, rel: 0, playsinline: 1, iv_load_policy: 3, fs: 0, origin: window.location.origin },
       events: {
         onReady: () => {
           this._playerReady = true;
-          if (!isGM) {
-            this.player.setVolume(game.settings.get(MODULE_ID, "youtubeVolume"));
-          }
+          this.player.setVolume(game.settings.get(MODULE_ID, "youtubeVolume"));
           this.syncBroadcast();
-          this._syncInterval = setInterval(() => this._tick(), SYNC_INTERVAL_MS);
+          setInterval(() => this._tick(), SYNC_INTERVAL_MS);
+          setInterval(() => this._updateProgress(), PROGRESS_INTERVAL_MS);
         },
         onStateChange: () => {
+          this._updateProgress();
           if (isGM) {
             this._reportGmPlayback();
           }
@@ -381,10 +404,70 @@ export class SODLYoutubeWidget {
     this.element.find(".yt-widget-title").text(title);
     this.element.find(".yt-widget-pill").attr("title", title);
 
-    const activeId = state.video?.id ?? null;
-    if (activeId !== this._activeLibraryVideoId) {
-      this.refreshLibrary();
+    if (this.libraryPanel) {
+      this.libraryPanel.onBroadcastChanged();
     }
+  }
+
+  // -------- Contrôles du module --------
+
+  _togglePlayback() {
+    if (!this._playerReady || !SODLYoutubeBroadcast.getState().video) {
+      return;
+    }
+    const playerState = this.player.getPlayerState();
+    if (playerState === PLAYER_STATE.PLAYING || playerState === PLAYER_STATE.BUFFERING) {
+      this.player.pauseVideo();
+      return;
+    }
+    this.player.playVideo();
+  }
+
+  _toggleFullscreen() {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+      return;
+    }
+    this.element.find(".yt-widget-screen")[0].requestFullscreen?.();
+  }
+
+  // Met à jour la barre de progression, le temps et l'icône lecture/pause.
+  _updateProgress() {
+    if (!this._playerReady || !this.element) {
+      return;
+    }
+    const duration = this.player.getDuration() || 0;
+    const current = this.player.getCurrentTime() || 0;
+    const seek = this.element.find(".yt-seek");
+    seek.attr("max", duration);
+    if (!this._seeking) {
+      seek.val(current);
+      this.element.find(".yt-time-current").text(formatTime(current));
+    }
+    this.element.find(".yt-time-total").text(formatTime(duration));
+    let percent = 0;
+    if (duration > 0) {
+      percent = (Number(seek.val()) / duration) * 100;
+    }
+    seek[0].style.setProperty("--yt-progress", `${percent}%`);
+
+    const playerState = this.player.getPlayerState();
+    const playing = playerState === PLAYER_STATE.PLAYING || playerState === PLAYER_STATE.BUFFERING;
+    this.element.toggleClass("yt-widget-playing", playing);
+    this.element.find(".yt-play-toggle i")
+      .toggleClass("fa-play", !playing)
+      .toggleClass("fa-pause", playing);
+  }
+
+  _updateVolumeDisplay(volume) {
+    let icon = "fa-volume-high";
+    if (volume === 0) {
+      icon = "fa-volume-xmark";
+    } else if (volume < 50) {
+      icon = "fa-volume-low";
+    }
+    this.element.find(".yt-volume i").attr("class", `fas ${icon}`);
+    this.element.find(".yt-volume input")[0].style.setProperty("--yt-progress", `${volume}%`);
   }
 
   _setJoinButtonVisible(visible) {
@@ -392,98 +475,5 @@ export class SODLYoutubeWidget {
       return;
     }
     this.element.find(".yt-join").toggleClass("yt-join-visible", visible);
-  }
-
-  // -------- Bibliothèque (MJ) --------
-
-  _getLibraryData() {
-    const activeId = SODLYoutubeBroadcast.getState().video?.id;
-    this._activeLibraryVideoId = activeId ?? null;
-    const groups = SODLYoutubeManager.getLibraryView().map((group) => ({
-      ...group,
-      collapsed: this.collapsedFolders.has(group.id ?? ""),
-      videos: group.videos.map((video) => ({ ...video, active: video.id === activeId }))
-    }));
-    return { isGM: game.user.isGM, groups };
-  }
-
-  // Re-rend uniquement la bibliothèque, sans toucher au lecteur.
-  async refreshLibrary() {
-    if (!this.element || !game.user.isGM) {
-      return;
-    }
-    const html = await renderTemplate(LIBRARY_TEMPLATE, this._getLibraryData());
-    const library = $(html);
-    this.element.find(".yt-library").replaceWith(library);
-    this._activateLibraryListeners(library);
-  }
-
-  _activateLibraryListeners(html) {
-    html.find(".yt-folder-header").on("click", (event) => {
-      if ($(event.target).closest("a").length) {
-        return;
-      }
-      const folder = $(event.currentTarget).closest(".yt-folder");
-      const key = folder.attr("data-folder-id") ?? "";
-      folder.toggleClass("yt-folder-collapsed");
-      if (folder.hasClass("yt-folder-collapsed")) {
-        this.collapsedFolders.add(String(key));
-      } else {
-        this.collapsedFolders.delete(String(key));
-      }
-    });
-
-    if (!game.user.isGM) {
-      return;
-    }
-
-    html.find(".yt-video").on("click", (event) => {
-      if ($(event.target).closest("a").length) {
-        return;
-      }
-      const video = SODLYoutubeManager.findVideo($(event.currentTarget).attr("data-video-id"));
-      if (video) {
-        SODLYoutubeBroadcast.start(video);
-      }
-    });
-
-    html.find(".yt-add-folder").on("click", () => promptFolderName("Nouveau dossier", "", (name) => SODLYoutubeManager.addFolder(name)));
-    html.find(".yt-add-video").on("click", () => promptVideo());
-
-    html.find(".yt-rename-folder").on("click", (event) => {
-      const folderEl = $(event.currentTarget).closest(".yt-folder");
-      const folderId = folderEl.attr("data-folder-id");
-      const currentName = folderEl.find(".yt-folder-name").text();
-      promptFolderName("Renommer le dossier", currentName, (name) => SODLYoutubeManager.renameFolder(folderId, name));
-    });
-
-    html.find(".yt-remove-folder").on("click", (event) => {
-      const folderEl = $(event.currentTarget).closest(".yt-folder");
-      const name = escapeHTML(folderEl.find(".yt-folder-name").text());
-      confirmRemoval(
-        "Supprimer le dossier",
-        `<p>Supprimer le dossier <strong>${name}</strong> ? Ses vidéos seront déplacées dans « ${UNSORTED_FOLDER_NAME} ».</p>`,
-        () => SODLYoutubeManager.removeFolder(folderEl.attr("data-folder-id"))
-      );
-    });
-
-    html.find(".yt-edit-video").on("click", (event) => {
-      const video = SODLYoutubeManager.findVideo($(event.currentTarget).closest(".yt-video").attr("data-video-id"));
-      if (video) {
-        promptVideo(video);
-      }
-    });
-
-    html.find(".yt-remove-video").on("click", (event) => {
-      const video = SODLYoutubeManager.findVideo($(event.currentTarget).closest(".yt-video").attr("data-video-id"));
-      if (!video) {
-        return;
-      }
-      confirmRemoval(
-        "Supprimer la vidéo",
-        `<p>Supprimer la vidéo <strong>${escapeHTML(video.title)}</strong> de la bibliothèque ?</p>`,
-        () => SODLYoutubeManager.removeVideo(video.id)
-      );
-    });
   }
 }

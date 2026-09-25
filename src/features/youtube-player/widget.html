@@ -1,4 +1,4 @@
-<section class="yt-widget">
+<section class="yt-widget {{#if isGM}}yt-widget-gm{{/if}}">
   <button type="button" class="yt-widget-pill" title="Agrandir le lecteur">
     <span class="yt-live-dot"></span>
     <span class="yt-widget-title"></span>
@@ -10,7 +10,7 @@
       <span class="yt-live-dot"></span>
       <span class="yt-widget-title"></span>
       {{#if isGM}}
-      <button type="button" class="yt-widget-icon yt-toggle-library" title="Bibliothèque">
+      <button type="button" class="yt-widget-icon yt-toggle-library" title="Recherche et bibliothèque">
         <i class="fas fa-folder-tree"></i>
       </button>
       {{/if}}
@@ -21,33 +21,51 @@
 
     <div class="yt-widget-screen">
       <div class="yt-player-target"></div>
+      {{! Couvre l'iframe : l'interface YouTube reste masquée, le module fournit ses propres contrôles. }}
+      <div class="yt-player-shield" {{#if isGM}}title="Lecture / pause"{{/if}}></div>
       {{#unless isGM}}
-      <div class="yt-player-shield"></div>
       <button type="button" class="yt-join">
         <i class="fas fa-play"></i> Rejoindre la diffusion
       </button>
       {{/unless}}
       <div class="yt-widget-placeholder">
         <i class="fab fa-youtube"></i>
-        <span>Choisissez une vidéo dans la bibliothèque pour la diffuser.</span>
+        <span>Recherchez une vidéo ou choisissez-en une dans la bibliothèque pour la diffuser.</span>
       </div>
     </div>
 
-    <footer class="yt-widget-footer">
-      {{#if isGM}}
-      <button type="button" class="yt-widget-text-btn yt-stop-broadcast" title="Arrêter la diffusion pour tout le monde">
-        <i class="fas fa-stop"></i> Arrêter la diffusion
-      </button>
-      {{else}}
-      <label class="yt-volume" title="Volume">
-        <i class="fas fa-volume-low"></i>
-        <input type="range" min="0" max="100" step="1" value="{{volume}}">
-      </label>
-      {{/if}}
-    </footer>
+    <div class="yt-controls">
+      <input type="range" class="yt-seek" min="0" max="0" step="0.1" value="0" {{#unless isGM}}disabled{{/unless}}>
+      <div class="yt-controls-row">
+        {{#if isGM}}
+        <button type="button" class="yt-widget-icon yt-play-toggle" title="Lecture / pause">
+          <i class="fas fa-play"></i>
+        </button>
+        {{/if}}
+        <span class="yt-time"><span class="yt-time-current">0:00</span> / <span class="yt-time-total">0:00</span></span>
+        <label class="yt-volume" title="Volume (uniquement pour vous)">
+          <i class="fas fa-volume-high"></i>
+          <input type="range" min="0" max="100" step="1" value="{{volume}}">
+        </label>
+        <button type="button" class="yt-widget-icon yt-fullscreen" title="Plein écran">
+          <i class="fas fa-expand"></i>
+        </button>
+        {{#if isGM}}
+        <button type="button" class="yt-widget-icon yt-stop-broadcast" title="Arrêter la diffusion pour tout le monde">
+          <i class="fas fa-stop"></i>
+        </button>
+        {{/if}}
+      </div>
+    </div>
 
     {{#if isGM}}
     <div class="yt-widget-library">
+      <form class="yt-search">
+        <i class="fas fa-magnifying-glass"></i>
+        <input type="search" name="query" placeholder="Rechercher sur YouTube ou coller un ou plusieurs liens" autocomplete="off">
+        <button type="submit" class="yt-widget-icon" title="Rechercher"><i class="fas fa-arrow-right"></i></button>
+      </form>
+      <div class="yt-search-results"></div>
       {{> "modules/sodl-companion/src/features/youtube-player/library.html"}}
     </div>
     {{/if}}

@@ -1,6 +1,8 @@
 import { MODULE_ID } from "../../shared/constants.js";
 import * as Library from "./library.js";
 import { parseYoutubeVideoId } from "./url-parser.js";
+import { SODLYoutubeSearch } from "./search-service.js";
+
 const SETTING_KEY = "youtubeLibrary";
 
 /**
@@ -62,6 +64,14 @@ export class SODLYoutubeManager {
     return this._update((library) => Library.addVideo(library, { title: finalTitle, videoId, folderId }, foundry.utils.randomID()));
   }
 
+  // Ajoute plusieurs vidéos déjà identifiées ({ title, videoId }) en une seule sauvegarde.
+  static addVideos(videos, folderId) {
+    return this._update((library) => videos.reduce(
+      (current, video) => Library.addVideo(current, { ...video, folderId }, foundry.utils.randomID()),
+      library
+    ));
+  }
+
   static renameVideo(id, title) {
     return this._update((library) => Library.renameVideo(library, id, title));
   }
@@ -74,20 +84,8 @@ export class SODLYoutubeManager {
     return this._update((library) => Library.removeVideo(library, id));
   }
 
-  // Récupère le titre public de la vidéo via oEmbed ; à défaut, utilise l'ID.
   static async fetchVideoTitle(videoId) {
-    const watchUrl = `https://www.youtube.com/watch?v=${videoId}`;
-    try {
-      const response = await fetch(`https://www.youtube.com/oembed?format=json&url=${encodeURIComponent(watchUrl)}`);
-      if (response.ok) {
-        const data = await response.json();
-        if (data?.title) {
-          return data.title;
-        }
-      }
-    } catch (err) {
-      console.warn("SODL Companion | Impossible de récupérer le titre de la vidéo", err);
-    }
-    return `Vidéo ${videoId}`;
+    const video = await SODLYoutubeSearch.lookupVideo(videoId);
+    return video.title;
   }
 }

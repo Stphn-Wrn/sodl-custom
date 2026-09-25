@@ -2,7 +2,9 @@ import { MODULE_ID } from "../../shared/constants.js";
 import { loadTemplates } from "../../shared/foundry-adapter.js";
 import { SODLYoutubeManager } from "./library-manager.js";
 import { SODLYoutubeBroadcast } from "./broadcast-manager.js";
-import { SODLYoutubeWidget, LIBRARY_TEMPLATE } from "./widget.js";
+import { SODLYoutubeSearch } from "./search-service.js";
+import { SODLYoutubeWidget } from "./widget.js";
+import { LIBRARY_TEMPLATE } from "./library-panel.js";
 
 function isEnabled() {
   return game.settings.get(MODULE_ID, "youtubePlayerEnabled");
@@ -17,6 +19,7 @@ export const youtubePlayerFeature = {
     window.SODLYoutubeManager = SODLYoutubeManager;
     window.SODLYoutubeBroadcast = SODLYoutubeBroadcast;
     window.SODLYoutubeWidget = SODLYoutubeWidget;
+    window.SODLYoutubeSearch = SODLYoutubeSearch;
 
     game.settings.register(MODULE_ID, "youtubePlayerEnabled", {
       name: "Lecteur YouTube : activer le module",
@@ -26,6 +29,24 @@ export const youtubePlayerFeature = {
       type: Boolean,
       default: false,
       requiresReload: true
+    });
+
+    game.settings.register(MODULE_ID, "youtubeApiKey", {
+      name: "Lecteur YouTube : clé API (recherche)",
+      hint: "Facultatif. Clé « YouTube Data API v3 » (Google Cloud Console) pour une recherche fiable. Sans clé, la recherche passe par des instances publiques Invidious, parfois indisponibles.",
+      scope: "world",
+      config: true,
+      type: String,
+      default: ""
+    });
+
+    game.settings.register(MODULE_ID, "youtubeInvidiousInstances", {
+      name: "Lecteur YouTube : instances Invidious",
+      hint: "Utilisées pour la recherche quand aucune clé API n'est renseignée, dans l'ordre, séparées par des virgules.",
+      scope: "world",
+      config: true,
+      type: String,
+      default: "https://inv.nadeko.net, https://yewtu.be, https://invidious.nerdvpn.de"
     });
 
     // Bibliothèque partagée (dossiers + vidéos), modifiable uniquement par le MJ.
@@ -46,7 +67,7 @@ export const youtubePlayerFeature = {
       onChange: () => SODLYoutubeWidget.onBroadcastChanged()
     });
 
-    // Volume propre à chaque joueur (le MJ utilise les contrôles YouTube).
+    // Volume local à chaque utilisateur (non diffusé).
     game.settings.register(MODULE_ID, "youtubeVolume", {
       scope: "client",
       config: false,

@@ -117,6 +117,9 @@ Dans `_loadLayout()` (`widget.js`) : `top`, `width` et `libraryOpen`. Au premier
 - `SYNC_TOLERANCE` (`broadcast.js`, 2 s par défaut) : écart au-delà duquel le lecteur d'un joueur est recalé sur celui du MJ. Plus bas, les recalages sont plus fréquents (et plus visibles).
 - `SYNC_INTERVAL_MS` (`widget.js`, 1 s) : fréquence de vérification.
 
+### Recherche
+`search.js` définit un fournisseur par service, choisi par `createSearchProvider` : l'API YouTube Data si la clé `youtubeApiKey` est renseignée, sinon les instances Invidious de `youtubeInvidiousInstances` (essayées dans l'ordre). Chaque fournisseur renvoie `{ videoId, title, channel, duration, thumbnail }`. Pour ajouter un service, écrivez un fournisseur exposant `search(text)`, branchez-le dans `createSearchProvider` et ajoutez un cas dans `tests/youtube-player/search.test.js`. Le nombre de résultats est réglé par `SEARCH_RESULTS_LIMIT`.
+
 ### Formats de liens acceptés
 `url-parser.js` essaie une liste de stratégies (ID seul, `youtu.be`, `watch?v=`, `/embed`, `/shorts`, `/live`). Pour accepter un nouveau format, ajoutez une fonction à `PARSING_STRATEGIES` qui renvoie l'ID trouvé ou `null`, et un cas dans `tests/youtube-player/url-parser.test.js`.
 
@@ -124,6 +127,7 @@ Dans `_loadLayout()` (`widget.js`) : `top`, `width` et `libraryOpen`. Au premier
 - `youtubeLibrary` (monde) : `{ folders: [{ id, name }], videos: [{ id, title, videoId, folderId }] }` — `folderId: null` signifie « Non classé ».
 - `youtubeBroadcast` (monde) : `{ video, playing, position, updatedAt }` — chaque client calcule la position attendue à partir de `position` et de `updatedAt` (heure du serveur).
 - `youtubeVolume` et `youtubeWidgetLayout` (client) : préférences de chaque utilisateur.
+- `youtubeApiKey` et `youtubeInvidiousInstances` (monde) : configuration de la recherche.
 
 ## Ajouter un nouvel outil
 
