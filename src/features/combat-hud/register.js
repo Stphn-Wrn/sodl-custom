@@ -54,6 +54,15 @@ export const combatHudFeature = {
       onChange: applyEnabled
     });
 
+    game.settings.register(MODULE_ID, "combatHudConfirmRolls", {
+      name: "HUD de combat : confirmer les jets",
+      hint: "Réglage personnel. Affiche la fenêtre de jet du système (déjà remplie avec les faveurs/fléaux et le modificateur du HUD) pour pouvoir annuler, au lieu de lancer directement.",
+      scope: personalScope(),
+      config: true,
+      type: Boolean,
+      default: false
+    });
+
     game.keybindings.register(MODULE_ID, "combatHudToggle", {
       name: "HUD de combat : basculer HUD / macros",
       hint: "Alterne entre le HUD de combat et la barre de macros avec la liste des joueurs.",
@@ -91,6 +100,7 @@ export const combatHudFeature = {
     Hooks.on("updateActiveEffect", onEffectChanged);
     Hooks.on("deleteActiveEffect", onEffectChanged);
     Hooks.on("collapseSidebar", () => SODLCombatHud.onViewportChanged());
+    Hooks.on("renderDialogV2", (app, element) => SODLCombatHud.onDialogRendered(element));
     window.addEventListener("resize", () => SODLCombatHud.onViewportChanged());
   }
 };

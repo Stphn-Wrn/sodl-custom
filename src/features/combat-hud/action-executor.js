@@ -1,4 +1,4 @@
-import { escapeHTML, getDialogClass } from "../../shared/foundry-adapter.js";
+import { escapeHTML } from "../../shared/foundry-adapter.js";
 import { toEquipmentItems, toSnapshot, toWearUpdates } from "./actor-adapter.js";
 import { planEquip, planUnequip } from "./equipment-rules.js";
 
@@ -30,76 +30,31 @@ async function toggleWear(actor, { itemId }) {
   }
 }
 
-// Une profession accorde une faveur au jet quand elle s'applique : on propose
-// le jet d'Intelligence avec +1 faveur, modifiable avant de lancer.
-function rollProfession(actor, { itemId }) {
-  const profession = actor.items.get(itemId);
-  const options = Object.entries(actor.system.attributes)
-    .map(([key, attribute]) => {
-      let selected = "";
-      if (key === "intellect") {
-        selected = "selected";
-      }
-      return `<option value="${key}" ${selected}>${escapeHTML(attribute.label || key)}</option>`;
-    })
-    .join("");
-
-  const DialogClass = getDialogClass();
-  new DialogClass({
-    title: `Profession : ${profession?.name ?? ""}`,
-    content: `
-      <form class="sodl-hud-profession-form">
-        <div class="form-group"><label>Caractéristique</label><select name="attribute">${options}</select></div>
-        <div class="form-group"><label>Faveurs / fléaux</label><input type="number" name="boons" value="1"></div>
-        <div class="form-group"><label>Modificateur</label><input type="number" name="modifier" value="0"></div>
-      </form>`,
-    buttons: {
-      roll: {
-        icon: '<i class="fas fa-dice-d20"></i>',
-        label: "Lancer",
-        callback: (html) => {
-          const form = $(html).find("form")[0];
-          const attribute = actor.getAttribute(form.attribute.value);
-          actor.rollAttributeChallenge(attribute, form.boons.value, form.modifier.value);
-        }
-      },
-      cancel: { icon: '<i class="fas fa-times"></i>', label: "Annuler" }
-    },
-    default: "roll"
-  }).render(true);
+// Défi sur la caractéristique choisie pour la profession.
+function rollProfession(actor, { attribute }) {
+  return actor.rollChallenge(attribute);
 }
 
-function rollD20(actor) {
-  const roll = new Roll("1d20");
-  return roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor: "Jet de d20" });
+// Jet libre de `amount` dés à `faces` faces (ex. 3d6), posté au nom du personnage.
+function rollDice(actor, { amount, faces }) {
+  const formula = `${amount}d${faces}`;
+  return new Roll(formula).toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor: `Jet de ${formula}` });
 }
 
-// Le jeu n'a pas de repos court : on propose l'action Récupérer (soins du taux
-// de guérison) et les repos du système, qui rendent talents et incantations.
-function rest(actor) {
-  const DialogClass = getDialogClass();
-  new DialogClass({
-    title: `${actor.name} : repos`,
-    content: "<p>Récupérer soigne un montant égal au taux de guérison. Un repos rend aussi les talents et les incantations.</p>",
-    buttons: {
-      recover: {
-        icon: '<i class="fas fa-heart-pulse"></i>',
-        label: "Récupérer",
-        callback: () => actor.applyHealing(true)
-      },
-      rest8: {
-        icon: '<i class="fas fa-bed"></i>',
-        label: "Repos 8 h",
-        callback: () => actor.restActor(8, true, true, true)
-      },
-      rest24: {
-        icon: '<i class="fas fa-campground"></i>',
-        label: "Repos 24 h",
-        callback: () => actor.restActor(24, true, true, true)
-      }
-    },
-    default: "recover"
-  }).render(true);
+// Action Récupérer : soigne le taux de guérison (règle : une fois par repos,
+// non vérifiée par le système). Le système ne poste rien, on l'annonce au chat.
+async function recover(actor) {
+  const { healingRate } = toSnapshot(actor).characteristics;
+  await actor.applyHealing(true);
+  return ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<p><strong>${escapeHTML(actor.name)}</strong> récupère et soigne ${healingRate} dégât(s).</p>`
+  });
+}
+
+// Repos de 8 ou 24 h du système : rend talents et incantations et soigne.
+function rest(actor, action) {
+  return actor.restActor(action.amount, true, true, true);
 }
 
 const ACTION_STRATEGIES = {
@@ -114,7 +69,9 @@ const ACTION_STRATEGIES = {
   changeInsanity: (actor, action) => actor.increaseInsanity(action.amount),
   changeCorruption: (actor, action) => actor.increaseCorruption(action.amount),
   rollCorruption: (actor) => actor.rollCorruption(),
-  rollD20,
+  rollDice,
+  toggleStatus: (actor, action) => actor.toggleStatusEffect(action.statusId),
+  recover,
   rest
 };
 
@@ -125,4 +82,12 @@ export function executeAction(actor, action) {
     return undefined;
   }
   return strategy(actor, action);
+}
+
+// Actions qui ouvrent la fenêtre de faveurs/fléaux du système, que le HUD
+// remplit et valide à la place du joueur.
+const SYSTEM_ROLL_ACTIONS = ["rollWeapon", "castSpell", "useTalent", "useItem", "rollChallenge", "rollProfession"];
+
+export function isSystemRoll(action) {
+  return SYSTEM_ROLL_ACTIONS.includes(action.type);
 }

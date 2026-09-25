@@ -1,16 +1,30 @@
+import { SODL_CONFIG } from "../companion/config.js";
+
 /**
  * Onglets du HUD de combat (stratégies). Chaque onglet sait construire ses
  * entrées à partir de la vue normalisée de l'acteur (cf. actor-adapter.js) ;
  * il ne touche jamais à Foundry. Une entrée décrit ce qu'on affiche et l'action
  * déclenchée au clic, exécutée ensuite par l'adapter.
  *
- * Entrée : { id, name, img, icon, badge, disabled, active, warning, action }
+ * Entrée : { id, name, img, icon, badge, description, variant, disabled, active, warning, action }
  * Une action `navigate` ne touche pas l'acteur : elle remplace la vue de
  * l'onglet (`view`, passée en second argument de `build`), gérée par le HUD.
  */
 
 function entry(fields) {
-  return { img: "", icon: "", badge: "", disabled: false, active: false, warning: "", ...fields };
+  return { img: "", icon: "", badge: "", description: "", variant: "", disabled: false, active: false, warning: "", ...fields };
+}
+
+// Tuile de retour à la vue principale de l'onglet (annule sans rien lancer).
+function backEntry(label) {
+  return entry({
+    id: "back",
+    name: label,
+    icon: "fas fa-arrow-left",
+    badge: "Retour",
+    variant: "back",
+    action: { type: "navigate", view: {} }
+  });
 }
 
 function formatModifier(modifier) {
@@ -18,6 +32,10 @@ function formatModifier(modifier) {
     return `+${modifier}`;
   }
   return `${modifier}`;
+}
+
+function attributeBadge(attribute) {
+  return `${attribute.value} (${formatModifier(attribute.modifier ?? 0)})`;
 }
 
 function limitedUses(used, max) {
@@ -177,11 +195,7 @@ const spellsSection = {
 
     const selected = byTradition.get(view.tradition);
     if (selected) {
-      const back = entry({
-        id: "back",
-        name: `← ${view.tradition}`,
-        action: { type: "navigate", view: {} }
-      });
+      const back = backEntry(view.tradition);
       return [back, ...spellEntries(selected)];
     }
 
@@ -230,31 +244,93 @@ const itemsSection = {
   }
 };
 
+/**
+ * Jets de caractéristique, puis les professions. Choisir une profession
+ * (`view.professionId`) propose la caractéristique à lancer ; les faveurs et
+ * fléaux éventuels se règlent dans le HUD.
+ */
 const attributesSection = {
   id: "attributes",
   label: "Caractéristiques",
   icon: "fas fa-dice-d20",
-  build(snapshot) {
+  build(snapshot, view = {}) {
+    const profession = snapshot.professions.find((candidate) => candidate.id === view.professionId);
+    if (profession) {
+      const back = backEntry(profession.name);
+      const choices = snapshot.attributes.map((attribute) => entry({
+        id: attribute.key,
+        name: attribute.label,
+        badge: attributeBadge(attribute),
+        action: { type: "rollProfession", attribute: attribute.key }
+      }));
+      return [back, ...choices];
+    }
+
     const attributes = snapshot.attributes.map((attribute) => entry({
       id: attribute.key,
       name: attribute.label,
-      badge: `${attribute.value} (${formatModifier(attribute.modifier ?? 0)})`,
+      badge: attributeBadge(attribute),
       action: { type: "rollChallenge", attribute: attribute.key }
     }));
-    const professions = snapshot.professions.map((profession) => entry({
-      id: profession.id,
-      name: profession.name,
-      img: profession.img,
+    const professions = snapshot.professions.map((item) => entry({
+      id: item.id,
+      name: item.name,
+      img: item.img,
       badge: "Profession",
-      action: { type: "rollProfession", itemId: profession.id }
+      action: { type: "navigate", view: { professionId: item.id } }
     }));
     return [...attributes, ...professions];
   }
 };
 
+// Nom affiché sans l'identifiant anglais : « Affaibli (weakened) » → « Affaibli ».
+function afflictionName(affliction) {
+  return affliction.name.replace(/\s*\([^)]*\)\s*$/, "");
+}
+
+/**
+ * Deux niveaux : les afflictions actives avec leur effet (clic pour la
+ * retirer), puis la liste des autres afflictions à ajouter (`view.adding`).
+ * Le catalogue et les descriptions viennent de l'aide de jeu du compagnon.
+ */
+const afflictionsSection = {
+  id: "afflictions",
+  label: "Afflictions",
+  icon: "fas fa-person-falling-burst",
+  build(snapshot, view = {}) {
+    const catalogue = SODL_CONFIG.afflictions.list;
+    const toEntry = (affliction, active) => entry({
+      id: affliction.id,
+      name: afflictionName(affliction),
+      description: affliction.description,
+      active,
+      action: { type: "toggleStatus", statusId: affliction.id }
+    });
+
+    if (view.adding) {
+      const back = backEntry("Afflictions actives");
+      const inactive = catalogue.filter((affliction) => !snapshot.statuses.includes(affliction.id));
+      return [back, ...inactive.map((affliction) => toEntry(affliction, false))];
+    }
+
+    const active = catalogue.filter((affliction) => snapshot.statuses.includes(affliction.id));
+    let entries = active.map((affliction) => toEntry(affliction, true));
+    if (entries.length === 0) {
+      entries = [entry({ id: "none", name: "Aucune affliction", disabled: true })];
+    }
+    const add = entry({
+      id: "add",
+      name: "Ajouter une affliction",
+      icon: "fas fa-plus",
+      action: { type: "navigate", view: { adding: true } }
+    });
+    return [...entries, add];
+  }
+};
+
 const SECTIONS_BY_ACTOR_TYPE = {
-  character: [attacksSection, equipmentSection, spellsSection, talentsSection, itemsSection, attributesSection],
-  creature: [attacksSection, spellsSection, talentsSection, attributesSection]
+  character: [attacksSection, equipmentSection, spellsSection, talentsSection, itemsSection, attributesSection, afflictionsSection],
+  creature: [attacksSection, spellsSection, talentsSection, attributesSection, afflictionsSection]
 };
 
 // Fabrique : les onglets disponibles selon le type d'acteur.

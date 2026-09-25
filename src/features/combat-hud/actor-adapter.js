@@ -5,6 +5,11 @@
  * structure, seul ce fichier est à adapter.
  */
 
+import { MODULE_ID } from "../../shared/constants.js";
+
+// Flag de l'acteur où est enregistré le cadrage du portrait.
+export const PORTRAIT_FRAME_FLAG = "portraitFrame";
+
 // Les compteurs d'utilisation sont stockés en texte par le système ("", "2"...).
 function toNumber(value) {
   return parseInt(value, 10) || 0;
@@ -31,6 +36,7 @@ function characteristics(system) {
     healthMax,
     damage,
     injured: Boolean(values.health?.injured),
+    healingRate: toNumber(values.health?.healingrate),
     defense: toNumber(values.defense),
     speed: toNumber(values.speed),
     power: toNumber(values.power),
@@ -54,6 +60,7 @@ export function toSnapshot(actor) {
   return {
     name: actor.name,
     img: actor.img,
+    portraitFrame: actor.flags?.[MODULE_ID]?.[PORTRAIT_FRAME_FLAG] ?? null,
     type: actor.type,
     characteristics: characteristics(system),
     attributes: attributes(system),
@@ -90,7 +97,9 @@ export function toSnapshot(actor) {
     consumables: itemsOfType(actor, "item")
       .filter((item) => item.system.consumabletype)
       .map((item) => ({ ...base(item), quantity: toNumber(item.system.quantity) })),
-    professions: itemsOfType(actor, "profession").map(base)
+    professions: itemsOfType(actor, "profession").map(base),
+    // Identifiants des statuts actifs (afflictions du système : "prone", "blinded"...).
+    statuses: Array.from(actor.statuses ?? [])
   };
 }
 

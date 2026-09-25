@@ -30,10 +30,12 @@ Le module regroupe quatre outils indépendants :
 
 ### HUD de combat
 - **À la place des macros et des joueurs** — Le HUD occupe le bas de l'écran, de la liste des joueurs jusqu'à la barre latérale, pour le token contrôlé (ou le personnage du joueur). Un bouton (ou un raccourci à définir dans les contrôles) bascule entre le HUD et l'interface d'origine.
-- **À gauche** — Portrait, Santé (boutons -1/+1 dégât), Folie et Corruption (boutons -1/+1), Défense, Vitesse, Pouvoir et afflictions actives.
-- **À droite** — Onglets Attaques (armes portées, munitions), Équipement, Sorts (par tradition, puis incantations restantes), Talents, Objets (consommables), Caractéristiques et Professions, plus un d20 libre, le jet de Corruption et le repos (Récupérer, 8 h, 24 h).
+- **À gauche** — Portrait (cliquer pour le recadrer : glisser pour déplacer, molette pour zoomer ; cadrage enregistré sur le personnage), Santé (boutons -1/+1 dégât), Folie et Corruption (boutons -1/+1, cliquer sur la Corruption pour son jet), Défense, Vitesse, Pouvoir, taux de guérison (cliquer pour Récupérer) et afflictions actives.
+- **À droite** — Onglets Attaques (armes portées, munitions), Équipement, Sorts (par tradition, puis incantations restantes), Talents, Objets (consommables), Caractéristiques et Professions, Afflictions, plus l'accès à la fiche du personnage (bouton ou clic sur le nom), un lanceur de dés (d2 à d100, de 1 à 8 dés) et le repos (8 h, 24 h).
+- **Couleur de l'état de santé** — Barre de Santé, cadre du portrait et mention sous le nom : Indemne (vert), Touché (jaune), Blessé à partir de la moitié de la Santé (orange), Neutralisé (rouge, portrait grisé).
+- **Onglet Afflictions** — Les afflictions actives avec leur effet (reprises de l'aide de jeu du compagnon) ; un clic en retire une, « Ajouter une affliction » ouvre la liste des autres. Les icônes d'afflictions de la colonne de gauche affichent aussi leur effet au survol.
 - **Équipement strict** — Deux mains et une armure : équiper une arme à deux mains, un bouclier ou une autre armure range automatiquement ce qui entre en conflit. Les prérequis de caractéristique non remplis sont signalés.
-- **Jets du système** — Chaque clic passe par les jets du système `demonlord` (dialogue de faveurs/fléaux, munitions, utilisations). Clic droit : ouvre la fiche de l'objet.
+- **Tout dans le HUD** — Faveurs/fléaux et modificateur se règlent dans le HUD (remis à zéro après chaque jet). Chaque clic passe par les jets du système `demonlord` (afflictions, munitions, utilisations), dont la fenêtre est remplie et validée automatiquement (réglage personnel « confirmer les jets » pour l'afficher et pouvoir annuler). Une profession propose de choisir la caractéristique concernée. Clic droit : ouvre la fiche de l'objet.
 - **Hauteur réglable** — Poignée sur le bord supérieur, mémorisée par joueur, comme le mode affiché et l'onglet ouvert.
 - **Réglage personnel** — Activé par défaut ; chaque joueur et le MJ peuvent le désactiver pour eux-mêmes dans les paramètres du module, sans recharger (lié au compte en v12+, au navigateur en v11).
 

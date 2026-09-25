@@ -20,12 +20,12 @@ test("la santé affichée est le maximum moins les dégâts subis", () => {
   const actor = actorWith([], {
     characteristics: {
       defense: 14, speed: 10, power: 1,
-      health: { value: 7, max: 20, injured: true },
+      health: { value: 7, max: 20, injured: true, healingrate: 5 },
       insanity: { value: 2, max: 10 },
       corruption: { value: 1 }
     }
   });
-  const expected = { health: 13, healthMax: 20, damage: 7, injured: true, defense: 14, speed: 10, power: 1, insanity: 2, insanityMax: 10, corruption: 1 };
+  const expected = { health: 13, healthMax: 20, damage: 7, injured: true, healingRate: 5, defense: 14, speed: 10, power: 1, insanity: 2, insanityMax: 10, corruption: 1 };
   assert.deepEqual(toSnapshot(actor).characteristics, expected);
 });
 
@@ -59,4 +59,15 @@ test("les objets d'équipement sont convertis pour les règles d'équipement", (
     { id: "a1", type: "armor", hands: undefined, isShield: true, worn: false }
   ];
   assert.deepEqual(toEquipmentItems(toSnapshot(actor)), expected);
+});
+
+test("le cadrage du portrait est lu depuis les flags du module", () => {
+  const actor = { ...actorWith([]), flags: { "sodl-companion": { portraitFrame: { x: 40, y: 20, zoom: 1.5 } } } };
+  assert.deepEqual(toSnapshot(actor).portraitFrame, { x: 40, y: 20, zoom: 1.5 });
+  assert.equal(toSnapshot(actorWith([])).portraitFrame, null);
+});
+
+test("les afflictions actives sont lues depuis les statuts de l'acteur", () => {
+  const actor = { ...actorWith([]), statuses: new Set(["prone", "blinded"]) };
+  assert.deepEqual(toSnapshot(actor).statuses, ["prone", "blinded"]);
 });

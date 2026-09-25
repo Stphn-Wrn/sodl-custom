@@ -16,15 +16,16 @@ function emptySnapshot(overrides) {
     talents: [],
     consumables: [],
     professions: [],
+    statuses: [],
     ...overrides
   };
 }
 
-test("un personnage a tous les onglets, une créature n'a pas l'équipement ni les professions", () => {
+test("un personnage a tous les onglets, une créature n'a pas l'équipement ni les objets", () => {
   const characterIds = createSections("character").map((candidate) => candidate.id);
   const creatureIds = createSections("creature").map((candidate) => candidate.id);
-  assert.deepEqual(characterIds, ["attacks", "equipment", "spells", "talents", "items", "attributes"]);
-  assert.deepEqual(creatureIds, ["attacks", "spells", "talents", "attributes"]);
+  assert.deepEqual(characterIds, ["attacks", "equipment", "spells", "talents", "items", "attributes", "afflictions"]);
+  assert.deepEqual(creatureIds, ["attacks", "spells", "talents", "attributes", "afflictions"]);
 });
 
 test("les attaques ne listent que les armes portées", () => {
@@ -99,7 +100,7 @@ test("une tradition choisie affiche un retour puis ses sorts triés par rang", (
   assert.deepEqual(
     entries.map((entry) => [entry.name, entry.badge, entry.action]),
     [
-      ["← Feu", "", { type: "navigate", view: {} }],
+      ["Feu", "Retour", { type: "navigate", view: {} }],
       ["Flamme", "R0 · 2/3", { type: "castSpell", itemId: "s3" }],
       ["Boule de feu", "R2 · 1/1", { type: "castSpell", itemId: "s1" }]
     ]
@@ -155,7 +156,57 @@ test("l'onglet caractéristiques propose les jets d'attribut puis les profession
     entries.map((entry) => [entry.name, entry.badge, entry.action]),
     [
       ["Agilité", "12 (+2)", { type: "rollChallenge", attribute: "agility" }],
-      ["Forgeron", "Profession", { type: "rollProfession", itemId: "p1" }]
+      ["Forgeron", "Profession", { type: "navigate", view: { professionId: "p1" } }]
+    ]
+  );
+});
+
+test("l'onglet afflictions liste les afflictions actives avec leur effet, puis un accès pour en ajouter", () => {
+  const snapshot = emptySnapshot({ statuses: ["prone", "injured"] });
+  const entries = section("character", "afflictions").build(snapshot, {});
+  assert.deepEqual(
+    entries.map((entry) => [entry.name, entry.active, entry.action]),
+    [
+      ["À terre", true, { type: "toggleStatus", statusId: "prone" }],
+      ["Ajouter une affliction", false, { type: "navigate", view: { adding: true } }]
+    ]
+  );
+  assert.match(entries[0].description, /Se relever coûte le déplacement/);
+});
+
+test("sans affliction active, l'onglet l'indique et propose d'en ajouter", () => {
+  const entries = section("character", "afflictions").build(emptySnapshot(), {});
+  assert.deepEqual(entries.map((entry) => entry.name), ["Aucune affliction", "Ajouter une affliction"]);
+  assert.equal(entries[0].disabled, true);
+});
+
+test("la liste d'ajout propose les afflictions inactives, précédées d'un retour", () => {
+  const snapshot = emptySnapshot({ statuses: ["weakened"] });
+  const entries = section("character", "afflictions").build(snapshot, { adding: true });
+  const names = entries.map((entry) => entry.name);
+  assert.equal(names[0], "Afflictions actives");
+  assert.equal(entries[0].variant, "back");
+  assert.equal(names.includes("Affaibli"), false);
+  assert.equal(names.includes("Aveuglé"), true);
+  const blinded = entries.find((entry) => entry.name === "Aveuglé");
+  assert.deepEqual(blinded.action, { type: "toggleStatus", statusId: "blinded" });
+});
+
+test("une profession choisie propose de lancer chaque caractéristique", () => {
+  const snapshot = emptySnapshot({
+    attributes: [
+      { key: "strength", label: "Force", value: 11, modifier: 1 },
+      { key: "intellect", label: "Intelligence", value: 10, modifier: 0 }
+    ],
+    professions: [{ id: "p1", name: "Fermière" }]
+  });
+  const entries = section("character", "attributes").build(snapshot, { professionId: "p1" });
+  assert.deepEqual(
+    entries.map((entry) => [entry.name, entry.badge, entry.action]),
+    [
+      ["Fermière", "Retour", { type: "navigate", view: {} }],
+      ["Force", "11 (+1)", { type: "rollProfession", attribute: "strength" }],
+      ["Intelligence", "10 (0)", { type: "rollProfession", attribute: "intellect" }]
     ]
   );
 });

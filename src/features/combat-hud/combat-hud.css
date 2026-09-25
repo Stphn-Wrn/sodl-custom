@@ -15,6 +15,8 @@ body.sodl-hud-active #players {
   --hud-title: #e0c9a6;
   --hud-health: #6f9e55;
   --hud-warning: #e0a44f;
+  /* Couleur de l'état de santé, surchargée par .sodl-hud-state-* */
+  --hud-state: var(--hud-muted);
 
   position: fixed;
   z-index: 60;
@@ -32,6 +34,11 @@ body.sodl-hud-active #players {
   backdrop-filter: blur(8px);
   pointer-events: auto;
 }
+
+.sodl-hud-state-full { --hud-state: #6f9e55; }
+.sodl-hud-state-hurt { --hud-state: #b9a646; }
+.sodl-hud-state-injured { --hud-state: #d9822b; }
+.sodl-hud-state-incapacitated { --hud-state: #c9544f; }
 
 .sodl-hud button {
   width: auto;
@@ -72,12 +79,67 @@ body.sodl-hud-active #players {
 }
 
 .sodl-hud-portrait {
+  position: relative;
   flex: none;
   width: 88px;
   height: 88px;
+  background: rgba(0, 0, 0, 0.3);
   border: 1px solid var(--hud-border);
   border-radius: 10px;
-  object-fit: cover;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* Sans cadrage : image entière ; les bandes éventuelles prennent le fond.
+   Un cadrage enregistré remplace ces valeurs par un style en ligne. */
+.sodl-hud-portrait img {
+  width: 100%;
+  height: 100%;
+  border: none;
+  object-fit: contain;
+  user-select: none;
+}
+
+/* Le cadre du portrait prend la couleur de l'état de santé. */
+.sodl-hud-portrait {
+  border-color: var(--hud-state);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--hud-state) 35%, transparent);
+}
+
+.sodl-hud-state-incapacitated .sodl-hud-portrait img {
+  filter: grayscale(0.7);
+}
+
+.sodl-hud-portrait.editing {
+  border-color: var(--hud-title);
+  cursor: move;
+}
+
+.sodl-hud-portrait.editing img {
+  touch-action: none;
+}
+
+.sodl-hud-portrait-tools {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+  padding: 2px;
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.sodl-hud-portrait-tools button {
+  padding: 1px 5px !important;
+  font-size: 11px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.sodl-hud-portrait-tools button:hover {
+  background: var(--hud-hover) !important;
 }
 
 .sodl-hud-vitals {
@@ -87,7 +149,29 @@ body.sodl-hud-active #players {
   min-width: 170px;
 }
 
-.sodl-hud-name {
+.sodl-hud-name-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.sodl-hud .sodl-hud-name:hover {
+  text-decoration: underline;
+}
+
+.sodl-hud-state {
+  flex: none;
+  color: var(--hud-state);
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.sodl-hud .sodl-hud-name {
+  padding: 0 !important;
+  text-align: left;
+  cursor: pointer;
   max-width: 190px;
   color: var(--hud-title);
   font-size: 13px;
@@ -115,12 +199,8 @@ body.sodl-hud-active #players {
 
 .sodl-hud-health-fill {
   height: 100%;
-  background: var(--hud-health);
-  transition: width 0.2s ease;
-}
-
-.sodl-hud-injured .sodl-hud-health-fill {
-  background: var(--hud-accent);
+  background: var(--hud-state);
+  transition: width 0.2s ease, background 0.2s ease;
 }
 
 .sodl-hud-health-bar span {
@@ -171,6 +251,33 @@ body.sodl-hud-active #players {
   border: none;
 }
 
+/* Valeurs cliquables : taux de guérison (Récupérer) et Corruption (jet). */
+.sodl-hud-recover,
+.sodl-hud-stat-roll {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 6px !important;
+  background: var(--hud-surface) !important;
+  border: 1px solid var(--hud-border) !important;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.sodl-hud-recover i {
+  color: var(--hud-accent);
+}
+
+.sodl-hud-stat-roll i {
+  color: var(--hud-muted);
+}
+
+.sodl-hud-recover:hover,
+.sodl-hud-stat-roll:hover {
+  background: var(--hud-hover) !important;
+  border-color: var(--hud-accent) !important;
+}
+
 .sodl-hud-step {
   padding: 0 3px !important;
   font-size: 9px;
@@ -218,11 +325,148 @@ body.sodl-hud-active #players {
   border-bottom-color: var(--hud-accent) !important;
 }
 
+/* Faveurs/fléaux et modificateur du prochain jet. */
+.sodl-hud-roll-options {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  padding: 0 8px;
+}
+
+.sodl-hud .sodl-hud-roll-value {
+  padding: 1px 4px !important;
+  border-radius: 4px;
+  cursor: pointer;
+  min-width: 58px;
+  color: var(--hud-muted);
+  font-size: 11px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.sodl-hud .sodl-hud-roll-value:hover {
+  background: var(--hud-hover) !important;
+}
+
+.sodl-hud .sodl-hud-tone-1 {
+  color: var(--hud-health);
+  font-weight: bold;
+}
+
+.sodl-hud .sodl-hud-tone--1 {
+  color: var(--hud-accent);
+  font-weight: bold;
+}
+
 .sodl-hud-tools {
   display: flex;
   align-items: center;
   gap: 2px;
-  margin-left: auto;
+}
+
+.sodl-hud-menu-anchor {
+  position: relative;
+}
+
+.sodl-hud-icon.active {
+  color: var(--hud-title) !important;
+  background: var(--hud-hover) !important;
+}
+
+/* Menus (dés, repos), ouverts au-dessus de leur bouton, dans le HUD. */
+.sodl-hud-menu {
+  position: absolute;
+  z-index: 1;
+  right: 0;
+  bottom: calc(100% + 6px);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 170px;
+  padding: 4px;
+  background: var(--hud-bg);
+  border: 1px solid var(--hud-border);
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+}
+
+.sodl-hud-menu button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100% !important;
+  padding: 5px 8px !important;
+  text-align: left;
+  white-space: nowrap;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.sodl-hud-menu button:hover {
+  background: var(--hud-hover) !important;
+}
+
+/* Lanceur de dés : grille type de dé × nombre de dés. */
+.sodl-hud-dice {
+  min-width: 0;
+  padding: 6px;
+}
+
+.sodl-hud-dice table {
+  margin: 0;
+  border: none;
+  border-collapse: collapse;
+  background: none;
+}
+
+.sodl-hud-dice tr {
+  background: none !important;
+  border-bottom: 1px solid var(--hud-border);
+}
+
+.sodl-hud-dice tr:last-child {
+  border-bottom: none;
+}
+
+.sodl-hud-dice th {
+  padding: 0 10px 0 4px;
+  color: var(--hud-title);
+  font-size: 12px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.sodl-hud-dice td {
+  padding: 1px;
+  border-left: 1px solid var(--hud-border);
+}
+
+.sodl-hud-menu.sodl-hud-dice button {
+  justify-content: center;
+  width: 30px !important;
+  padding: 3px 0 !important;
+  color: var(--hud-muted) !important;
+  text-align: center;
+}
+
+.sodl-hud-menu.sodl-hud-dice button:hover {
+  color: var(--hud-text) !important;
+}
+
+.sodl-hud-menu i {
+  width: 16px;
+  color: var(--hud-muted);
+  text-align: center;
+}
+
+.sodl-hud-menu span {
+  flex: 1;
+}
+
+.sodl-hud-menu small {
+  color: var(--hud-health);
+  font-size: 11px;
 }
 
 .sodl-hud-icon {
@@ -270,6 +514,17 @@ body.sodl-hud-active #players {
   border-color: var(--hud-title) !important;
 }
 
+/* Tuile de retour : se distingue des actions. */
+.sodl-hud .sodl-hud-entry-back {
+  color: var(--hud-title);
+  background: transparent !important;
+  border: 1px dashed var(--hud-title) !important;
+}
+
+.sodl-hud-entry-back .sodl-hud-badge {
+  color: var(--hud-title);
+}
+
 .sodl-hud-entry:disabled {
   opacity: 0.4;
   cursor: not-allowed;
@@ -286,6 +541,24 @@ body.sodl-hud-active #players {
 .sodl-hud-entry-icon {
   flex: none;
   color: var(--hud-title);
+}
+
+/* Tuiles avec description (afflictions) : plus larges, texte sur plusieurs lignes. */
+.sodl-hud-entries li:has(.has-description) {
+  grid-column: span 2;
+}
+
+.sodl-hud-entry.has-description {
+  flex-wrap: wrap;
+  padding: 4px 6px !important;
+}
+
+.sodl-hud-entry-desc {
+  flex-basis: 100%;
+  color: var(--hud-muted);
+  font-size: 11px;
+  line-height: 1.3;
+  white-space: normal;
 }
 
 .sodl-hud-entry-name {
