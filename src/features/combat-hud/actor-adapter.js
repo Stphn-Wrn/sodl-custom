@@ -27,6 +27,11 @@ function requirement(system) {
   return { attribute: system.requirement?.attribute ?? "", min: toNumber(system.requirement?.minvalue) };
 }
 
+// Le système ne demande faveurs/fléaux (fenêtre de jet) que pour une attaque.
+function rollsAttack(system) {
+  return Boolean(system.action?.attack);
+}
+
 function characteristics(system) {
   const values = system.characteristics;
   const damage = toNumber(values.health?.value);
@@ -87,16 +92,18 @@ export function toSnapshot(actor) {
       tradition: item.system.tradition ?? "",
       rank: toNumber(item.system.rank),
       used: toNumber(item.system.castings?.value),
-      max: toNumber(item.system.castings?.max)
+      max: toNumber(item.system.castings?.max),
+      rollsAttack: item.system.spelltype === "Attack" && rollsAttack(item.system)
     })),
     talents: itemsOfType(actor, "talent").map((item) => ({
       ...base(item),
       used: toNumber(item.system.uses?.value),
-      max: toNumber(item.system.uses?.max)
+      max: toNumber(item.system.uses?.max),
+      rollsAttack: rollsAttack(item.system)
     })),
     consumables: itemsOfType(actor, "item")
       .filter((item) => item.system.consumabletype)
-      .map((item) => ({ ...base(item), quantity: toNumber(item.system.quantity) })),
+      .map((item) => ({ ...base(item), quantity: toNumber(item.system.quantity), rollsAttack: rollsAttack(item.system) })),
     professions: itemsOfType(actor, "profession").map(base),
     // Identifiants des statuts actifs (afflictions du système : "prone", "blinded"...).
     statuses: Array.from(actor.statuses ?? [])
@@ -113,4 +120,15 @@ export function toEquipmentItems(snapshot) {
 
 export function toWearUpdates(changes) {
   return changes.map((change) => ({ _id: change.id, "system.wear": change.worn }));
+}
+
+// Mise à jour des utilisations consommées (stockées en texte par le système).
+const USES_PATH = { spell: "system.castings.value", talent: "system.uses.value" };
+
+export function limitedUsesOf(snapshot, itemId) {
+  return [...snapshot.spells, ...snapshot.talents].find((item) => item.id === itemId) ?? null;
+}
+
+export function toUsesUpdate(itemType, used) {
+  return { [USES_PATH[itemType]]: String(used) };
 }

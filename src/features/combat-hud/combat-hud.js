@@ -1,6 +1,6 @@
 import { MODULE_ID, modulePath } from "../../shared/constants.js";
 import { renderTemplate } from "../../shared/foundry-adapter.js";
-import { executeAction, isSystemRoll } from "./action-executor.js";
+import { executeAction } from "./action-executor.js";
 import { armRoll, DEFAULT_ROLL_OPTIONS, stepRollOption, takeArmedRoll } from "./roll-options.js";
 import { PORTRAIT_FRAME_FLAG, toSnapshot } from "./actor-adapter.js";
 import { computeAnchors, DEFAULT_ENTRIES_HEIGHT, resizeHeight } from "./layout.js";
@@ -19,15 +19,33 @@ const SWITCH_SIZE = 36;
 const DICE_FACES = [2, 3, 4, 6, 8, 10, 12, 20, 100];
 const DICE_MAX_COUNT = 8;
 const MENU = { DICE: "dice", REST: "rest" };
+// Intitulé du panneau de jet selon le type d'action.
+const ROLL_KIND = {
+  rollWeapon: "Attaque",
+  castSpell: "Sort",
+  useTalent: "Talent",
+  useItem: "Objet",
+  rollChallenge: "Défi",
+  rollProfession: "Profession"
+};
 const SWITCH_GAP = 8;
 
 export const MODE = { HUD: "hud", FOUNDRY: "foundry" };
 
-// Effet d'une affliction d'après l'aide de jeu du compagnon (vide si inconnue).
-function afflictionDescription(effect) {
+// Affliction de l'aide de jeu du compagnon correspondant à un effet actif.
+function catalogueAffliction(effect) {
   const statuses = Array.from(effect.statuses ?? []);
-  const affliction = SODL_CONFIG.afflictions.list.find((candidate) => statuses.includes(candidate.id));
-  return affliction?.description ?? "";
+  return SODL_CONFIG.afflictions.list.find((candidate) => statuses.includes(candidate.id));
+}
+
+function effectView(effect) {
+  const affliction = catalogueAffliction(effect);
+  return {
+    name: effect.name,
+    img: effect.img ?? effect.icon,
+    description: affliction?.description ?? "",
+    ruleId: affliction?.id ?? ""
+  };
 }
 
 function boonsLabel(boons) {
@@ -110,9 +128,9 @@ export class SODLCombatHud {
     this.instance?.toggleMode();
   }
 
-  // Fenêtre de jet du système : si le HUD vient d'armer un jet, on la remplit
-  // avec ses faveurs/fléaux et son modificateur, puis on la valide sans
-  // l'afficher — sauf si le joueur a choisi de confirmer ses jets.
+  // Fenêtre de jet du système : si le HUD vient d'armer un jet (panneau de jet
+  // validé), on la remplit avec ses faveurs/fléaux et son modificateur, puis on
+  // la valide sans l'afficher.
   static onDialogRendered(element) {
     const instance = this.instance;
     const root = element?.[0] ?? element;
@@ -130,9 +148,6 @@ export class SODLCombatHud {
     if (modifierInput) {
       modifierInput.value = options.modifier;
     }
-    if (game.settings.get(MODULE_ID, "combatHudConfirmRolls")) {
-      return;
-    }
     root.style.visibility = "hidden";
     setTimeout(() => root.querySelector('button[data-action="roll"]')?.click(), 0);
   }
@@ -147,8 +162,8 @@ export class SODLCombatHud {
     this.portraitDraft = null;
     // Menu ouvert au-dessus des outils (dés ou repos), un seul à la fois.
     this.openMenu = null;
-    // Faveurs/fléaux et modificateur du prochain jet, remis à zéro après chaque jet.
-    this.rollOptions = { ...DEFAULT_ROLL_OPTIONS };
+    // Panneau de jet ouvert : { action, title, boons, modifier } (null sinon).
+    this.rollPanel = null;
     this.armedRoll = null;
     // Numéro du dernier rendu lancé : un rendu dépassé par un plus récent s'abandonne.
     this.renderToken = 0;
@@ -187,6 +202,7 @@ export class SODLCombatHud {
     if (actor !== this.actor) {
       this.views = {};
       this.portraitDraft = null;
+      this.rollPanel = null;
     }
     this.actor = actor;
     this.requestRender();
@@ -256,12 +272,8 @@ export class SODLCombatHud {
       snapshot,
       healthPercent,
       editingPortrait: Boolean(this.portraitDraft),
-      rollOptions: {
-        boons: this.rollOptions.boons,
-        boonsLabel: boonsLabel(this.rollOptions.boons),
-        boonsTone: Math.sign(this.rollOptions.boons),
-        modifier: signed(this.rollOptions.modifier)
-      },
+      rollPanel: this.rollPanelData(),
+      detailedEntries: this.entries.some((entry) => entry.description),
       diceMenuOpen: this.openMenu === MENU.DICE,
       restMenuOpen: this.openMenu === MENU.REST,
       diceCounts: Array.from({ length: DICE_MAX_COUNT }, (_, index) => index + 1),
@@ -270,11 +282,7 @@ export class SODLCombatHud {
       portraitStyle: framePortraitStyle(portraitFrame),
       entriesHeight: this.entriesHeight,
       healthStatus: healthState(snapshot.characteristics),
-      afflictions: this.actor.temporaryEffects.map((effect) => ({
-        name: effect.name,
-        img: effect.img ?? effect.icon,
-        description: afflictionDescription(effect)
-      })),
+      afflictions: this.actor.temporaryEffects.map(effectView),
       sections: sections.map((section) => ({ id: section.id, label: section.label, icon: section.icon, active: section === current })),
       entries: this.entries
     };
@@ -354,7 +362,7 @@ export class SODLCombatHud {
 
     html.find(".sodl-hud-entry").on("click", (event) => {
       const entry = this.entries[Number(event.currentTarget.dataset.entry)];
-      if (!entry || entry.disabled) {
+      if (!entry || entry.disabled || !entry.action) {
         return;
       }
       if (entry.action.type === "navigate") {
@@ -362,47 +370,91 @@ export class SODLCombatHud {
         this.render();
         return;
       }
-      this.runAction(entry.action);
+      this.runAction(entry.action, entry.name);
     });
 
-    html.find("[data-roll-reset]").on("click", (event) => {
-      this.rollOptions[event.currentTarget.dataset.rollReset] = 0;
-      this.render();
+    this.activateRollPanelListeners(html);
+
+    // −/+ au survol d'un sort ou d'un talent : corrige ses utilisations sans le lancer.
+    html.find("[data-uses-item]").on("click", (event) => {
+      event.stopPropagation();
+      const { usesItem, amount } = event.currentTarget.dataset;
+      executeAction(this.actor, { type: "adjustUses", itemId: usesItem, amount: Number(amount) });
     });
 
-    html.find("[data-roll-option]").on("click", (event) => {
-      const { rollOption, delta } = event.currentTarget.dataset;
-      this.rollOptions[rollOption] = stepRollOption(rollOption, this.rollOptions[rollOption], Number(delta));
-      this.render();
+    // Infobulle (i) et icônes d'afflictions : postent la règle dans le chat.
+    html.find("[data-rule]").on("click", (event) => {
+      event.stopPropagation();
+      executeAction(this.actor, { type: "postRule", ruleId: event.currentTarget.dataset.rule });
     });
 
     // Clic droit : ouvrir la fiche de l'objet pour le détail.
     html.find(".sodl-hud-entry").on("contextmenu", (event) => {
       event.preventDefault();
       const entry = this.entries[Number(event.currentTarget.dataset.entry)];
-      const item = this.actor.items.get(entry?.action?.itemId);
+      const item = this.actor.items.get(entry?.action?.itemId ?? entry?.itemId);
       if (item) {
         item.sheet.render(true);
       }
     });
   }
 
-  // Les jets du système récupèrent les faveurs/fléaux du HUD (cf. onDialogRendered).
-  runAction(action) {
-    if (isSystemRoll(action)) {
-      this.armedRoll = armRoll(this.rollOptions, Date.now());
-      const wasModified = this.rollOptions.boons !== 0 || this.rollOptions.modifier !== 0;
-      this.rollOptions = { ...DEFAULT_ROLL_OPTIONS };
-      if (wasModified) {
-        this.render();
-      }
+  // Un jet pour lequel le système demande faveurs/fléaux ouvre d'abord le
+  // panneau de jet du HUD ; les autres actions s'exécutent directement.
+  runAction(action, label = "") {
+    if (action.rollOptions) {
+      this.openMenu = null;
+      this.rollPanel = { action, title: `${ROLL_KIND[action.type] ?? "Jet"} : ${label}`, ...DEFAULT_ROLL_OPTIONS };
+      this.render();
+      return undefined;
     }
+    return executeAction(this.actor, action);
+  }
+
+  rollPanelData() {
+    if (!this.rollPanel) {
+      return null;
+    }
+    return {
+      title: this.rollPanel.title,
+      boonsLabel: boonsLabel(this.rollPanel.boons),
+      boonsTone: Math.sign(this.rollPanel.boons),
+      modifier: signed(this.rollPanel.modifier)
+    };
+  }
+
+  // Lancer : on arme le jet avec les valeurs du panneau, puis le système ouvre
+  // sa fenêtre, remplie et validée automatiquement (cf. onDialogRendered).
+  confirmRoll() {
+    const { action, boons, modifier } = this.rollPanel;
+    this.rollPanel = null;
+    this.armedRoll = armRoll({ boons, modifier }, Date.now());
     // Après le jet d'une profession, on revient à la liste des caractéristiques.
     if (action.type === "rollProfession") {
       this.views[this.currentSectionId] = {};
-      this.render();
     }
+    this.render();
     return executeAction(this.actor, action);
+  }
+
+  activateRollPanelListeners(html) {
+    if (!this.rollPanel) {
+      return;
+    }
+    html.find("[data-roll-option]").on("click", (event) => {
+      const { rollOption, delta } = event.currentTarget.dataset;
+      this.rollPanel[rollOption] = stepRollOption(rollOption, this.rollPanel[rollOption], Number(delta));
+      this.render();
+    });
+    html.find("[data-roll-reset]").on("click", (event) => {
+      this.rollPanel[event.currentTarget.dataset.rollReset] = 0;
+      this.render();
+    });
+    html.find("[data-roll-confirm]").on("click", () => this.confirmRoll());
+    html.find("[data-roll-cancel]").on("click", () => {
+      this.rollPanel = null;
+      this.render();
+    });
   }
 
   // Clic : passe en recadrage. Glisser déplace l'image, la molette zoome ;

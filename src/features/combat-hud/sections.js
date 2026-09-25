@@ -6,13 +6,20 @@ import { SODL_CONFIG } from "../companion/config.js";
  * il ne touche jamais à Foundry. Une entrée décrit ce qu'on affiche et l'action
  * déclenchée au clic, exécutée ensuite par l'adapter.
  *
- * Entrée : { id, name, img, icon, badge, description, variant, disabled, active, warning, action }
+ * Une action avec `rollOptions: true` passe d'abord par le panneau de jet du
+ * HUD (faveurs/fléaux, modificateur), que le système demandera. `ruleId`
+ * (affliction) permet de poster sa règle dans le chat.
+ * `newRow` force l'entrée à commencer une nouvelle ligne de la grille ;
+ * `isHeading` en fait un intitulé de catégorie (non cliquable). `itemId` sert
+ * au clic droit (fiche de l'objet) quand l'entrée n'a pas d'action ;
+ * `usesItemId` permet de rendre ou retirer une utilisation à la main.
+ * Entrée : { id, name, img, icon, badge, description, variant, newRow, disabled, active, warning, action }
  * Une action `navigate` ne touche pas l'acteur : elle remplace la vue de
  * l'onglet (`view`, passée en second argument de `build`), gérée par le HUD.
  */
 
 function entry(fields) {
-  return { img: "", icon: "", badge: "", description: "", variant: "", disabled: false, active: false, warning: "", ...fields };
+  return { img: "", icon: "", badge: "", description: "", ruleId: "", variant: "", newRow: false, isHeading: false, itemId: "", usesItemId: "", disabled: false, active: false, warning: "", ...fields };
 }
 
 // Tuile de retour à la vue principale de l'onglet (annule sans rien lancer).
@@ -27,6 +34,14 @@ function backEntry(label) {
   });
 }
 
+// Action qui ouvrira la fenêtre de faveurs/fléaux du système.
+function withRollOptions(action, needed) {
+  if (!needed) {
+    return action;
+  }
+  return { ...action, rollOptions: true };
+}
+
 function formatModifier(modifier) {
   if (modifier > 0) {
     return `+${modifier}`;
@@ -36,6 +51,14 @@ function formatModifier(modifier) {
 
 function attributeBadge(attribute) {
   return `${attribute.value} (${formatModifier(attribute.modifier ?? 0)})`;
+}
+
+// Objet dont on peut corriger les utilisations (limitées) à la main.
+function usesItemId(item) {
+  if (item.max > 0) {
+    return item.id;
+  }
+  return "";
 }
 
 function limitedUses(used, max) {
@@ -85,7 +108,7 @@ const attacksSection = {
         name: weapon.name,
         img: weapon.img,
         ...ammoStatus(weapon, snapshot.ammo),
-        action: { type: "rollWeapon", itemId: weapon.id }
+        action: withRollOptions({ type: "rollWeapon", itemId: weapon.id }, true)
       }));
   }
 };
@@ -102,20 +125,53 @@ function equipmentBadge(item) {
   return "Armure";
 }
 
+// Intitulé de catégorie en début de ligne (ex. « Armes »).
+function headingEntry(label) {
+  return entry({ id: `heading-${label}`, name: label, isHeading: true, newRow: true, action: null });
+}
+
+function wearableEntry(item, attributes) {
+  return entry({
+    id: item.id,
+    name: item.name,
+    img: item.img,
+    badge: equipmentBadge(item),
+    active: item.worn,
+    warning: requirementWarning(item, attributes),
+    action: { type: "toggleWear", itemId: item.id }
+  });
+}
+
+// Munitions : stock affiché, sans action (clic droit : fiche).
+function ammoEntry(ammo) {
+  return entry({
+    id: ammo.id,
+    name: ammo.name,
+    img: ammo.img,
+    badge: `×${ammo.quantity}`,
+    disabled: ammo.quantity < 1,
+    itemId: ammo.id,
+    action: null
+  });
+}
+
+/**
+ * Une ligne par catégorie : armes, protections (armures et boucliers), puis
+ * munitions. Les catégories vides ne sont pas affichées.
+ */
 const equipmentSection = {
   id: "equipment",
   label: "Équipement",
   icon: "fas fa-shield-halved",
   build(snapshot) {
-    return [...snapshot.weapons, ...snapshot.armors].map((item) => entry({
-      id: item.id,
-      name: item.name,
-      img: item.img,
-      badge: equipmentBadge(item),
-      active: item.worn,
-      warning: requirementWarning(item, snapshot.attributes),
-      action: { type: "toggleWear", itemId: item.id }
-    }));
+    const groups = [
+      ["Armes", snapshot.weapons.map((item) => wearableEntry(item, snapshot.attributes))],
+      ["Protections", snapshot.armors.map((item) => wearableEntry(item, snapshot.attributes))],
+      ["Munitions", snapshot.ammo.map(ammoEntry)]
+    ];
+    return groups
+      .filter(([, entries]) => entries.length > 0)
+      .flatMap(([label, entries]) => [headingEntry(label), ...entries]);
   }
 };
 
@@ -166,7 +222,8 @@ function spellEntries(spells) {
       img: spell.img,
       badge: spellBadge(spell, uses),
       disabled: uses.exhausted,
-      action: { type: "castSpell", itemId: spell.id }
+      usesItemId: usesItemId(spell),
+      action: withRollOptions({ type: "castSpell", itemId: spell.id }, spell.rollsAttack)
     });
   });
 }
@@ -222,7 +279,8 @@ const talentsSection = {
         img: talent.img,
         badge: uses.badge,
         disabled: uses.exhausted,
-        action: { type: "useTalent", itemId: talent.id }
+        usesItemId: usesItemId(talent),
+        action: withRollOptions({ type: "useTalent", itemId: talent.id }, talent.rollsAttack)
       });
     });
   }
@@ -239,7 +297,7 @@ const itemsSection = {
       img: item.img,
       badge: `×${item.quantity}`,
       disabled: item.quantity < 1,
-      action: { type: "useItem", itemId: item.id }
+      action: withRollOptions({ type: "useItem", itemId: item.id }, item.rollsAttack)
     }));
   }
 };
@@ -261,7 +319,7 @@ const attributesSection = {
         id: attribute.key,
         name: attribute.label,
         badge: attributeBadge(attribute),
-        action: { type: "rollProfession", attribute: attribute.key }
+        action: withRollOptions({ type: "rollProfession", attribute: attribute.key }, true)
       }));
       return [back, ...choices];
     }
@@ -270,10 +328,11 @@ const attributesSection = {
       id: attribute.key,
       name: attribute.label,
       badge: attributeBadge(attribute),
-      action: { type: "rollChallenge", attribute: attribute.key }
+      action: withRollOptions({ type: "rollChallenge", attribute: attribute.key }, true)
     }));
-    const professions = snapshot.professions.map((item) => entry({
+    const professions = snapshot.professions.map((item, index) => entry({
       id: item.id,
+      newRow: index === 0,
       name: item.name,
       img: item.img,
       badge: "Profession",
@@ -284,7 +343,7 @@ const attributesSection = {
 };
 
 // Nom affiché sans l'identifiant anglais : « Affaibli (weakened) » → « Affaibli ».
-function afflictionName(affliction) {
+export function afflictionName(affliction) {
   return affliction.name.replace(/\s*\([^)]*\)\s*$/, "");
 }
 
@@ -303,6 +362,7 @@ const afflictionsSection = {
       id: affliction.id,
       name: afflictionName(affliction),
       description: affliction.description,
+      ruleId: affliction.id,
       active,
       action: { type: "toggleStatus", statusId: affliction.id }
     });

@@ -325,24 +325,76 @@ body.sodl-hud-active #players {
   border-bottom-color: var(--hud-accent) !important;
 }
 
-/* Faveurs/fléaux et modificateur du prochain jet. */
-.sodl-hud-roll-options {
+/* Panneau de jet (faveurs/fléaux, modificateur), au-dessus de la zone d'actions. */
+.sodl-hud-main {
+  position: relative;
+}
+
+.sodl-hud-roll-panel {
+  position: absolute;
+  z-index: 2;
+  bottom: calc(100% + 6px);
+  left: 8px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-left: auto;
-  padding: 0 8px;
+  gap: 12px;
+  padding: 6px 8px 6px 12px;
+  background: var(--hud-bg);
+  border: 1px solid var(--hud-title);
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+}
+
+.sodl-hud-roll-title {
+  color: var(--hud-title);
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.sodl-hud-roll-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.sodl-hud .sodl-hud-roll-confirm,
+.sodl-hud .sodl-hud-roll-cancel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px !important;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.sodl-hud .sodl-hud-roll-confirm {
+  color: #1b1b1e;
+  font-weight: bold;
+  background: var(--hud-title) !important;
+}
+
+.sodl-hud .sodl-hud-roll-confirm:hover {
+  filter: brightness(1.1);
+}
+
+.sodl-hud .sodl-hud-roll-cancel {
+  color: var(--hud-muted);
+  background: var(--hud-surface) !important;
+}
+
+.sodl-hud .sodl-hud-roll-cancel:hover {
+  color: var(--hud-text);
+  background: var(--hud-hover) !important;
 }
 
 .sodl-hud .sodl-hud-roll-value {
+  min-width: 64px;
   padding: 1px 4px !important;
-  border-radius: 4px;
-  cursor: pointer;
-  min-width: 58px;
   color: var(--hud-muted);
   font-size: 11px;
   text-align: center;
   white-space: nowrap;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .sodl-hud .sodl-hud-roll-value:hover {
@@ -479,14 +531,16 @@ body.sodl-hud-active #players {
   background: var(--hud-hover) !important;
 }
 
+/* La zone d'actions remplit toute la hauteur du HUD (souvent fixée par la
+   colonne de gauche) ; la poignée règle sa hauteur minimale. Base 0 : son
+   contenu ne l'agrandit pas, il défile au-delà. */
 .sodl-hud-entries {
-  flex: 1;
+  flex: 1 1 0;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   align-content: start;
   gap: 4px;
   min-height: var(--hud-entries-height, 84px);
-  max-height: var(--hud-entries-height, 84px);
   margin: 0;
   padding: 6px 8px;
   overflow-y: auto;
@@ -506,7 +560,7 @@ body.sodl-hud-active #players {
   cursor: pointer;
 }
 
-.sodl-hud-entry:hover:not(:disabled) {
+.sodl-hud-entry:hover:not(.is-disabled) {
   background: var(--hud-hover) !important;
 }
 
@@ -525,7 +579,8 @@ body.sodl-hud-active #players {
   color: var(--hud-title);
 }
 
-.sodl-hud-entry:disabled {
+/* Grisé sans l'attribut disabled, pour garder le clic droit (fiche). */
+.sodl-hud-entry.is-disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
@@ -543,9 +598,21 @@ body.sodl-hud-active #players {
   color: var(--hud-title);
 }
 
-/* Tuiles avec description (afflictions) : plus larges, texte sur plusieurs lignes. */
-.sodl-hud-entries li:has(.has-description) {
-  grid-column: span 2;
+/* Liste détaillée (afflictions) : colonnes régulières, description sur 2 lignes
+   (le texte complet est dans l'infobulle et dans l'aide de jeu). */
+.sodl-hud-entries-detailed {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-auto-rows: 1fr;
+}
+
+.sodl-hud-entry {
+  height: auto;
+  min-height: 28px;
+}
+
+.sodl-hud-entries-detailed .sodl-hud-entry {
+  height: 100%;
+  align-content: flex-start;
 }
 
 .sodl-hud-entry.has-description {
@@ -553,8 +620,91 @@ body.sodl-hud-active #players {
   padding: 4px 6px !important;
 }
 
+.sodl-hud-entries .sodl-hud-new-row {
+  grid-column-start: 1;
+}
+
+/* Intitulé de catégorie (Armes, Protections, Munitions) en début de ligne. */
+.sodl-hud-heading {
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  color: var(--hud-title);
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-right: 1px solid var(--hud-border);
+}
+
+/* −/+ des utilisations (sorts, talents), visibles au survol de la tuile. */
+.sodl-hud-entry-uses {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  display: flex;
+  gap: 1px;
+  transform: translateY(-50%);
+  background: var(--hud-bg);
+  border: 1px solid var(--hud-border);
+  border-radius: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease;
+}
+
+.sodl-hud-entries li:hover .sodl-hud-entry-uses {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sodl-hud .sodl-hud-entry-uses button {
+  padding: 2px 5px !important;
+  color: var(--hud-muted);
+  font-size: 9px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.sodl-hud .sodl-hud-entry-uses button:hover {
+  color: var(--hud-text);
+  background: var(--hud-hover) !important;
+}
+
+/* Infobulle (i) : poste la règle dans le chat, dans le coin de la tuile. */
+.sodl-hud-entries li {
+  position: relative;
+}
+
+.sodl-hud .sodl-hud-entry-help {
+  position: absolute;
+  top: 3px;
+  right: 4px;
+  padding: 2px !important;
+  color: var(--hud-muted);
+  font-size: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.sodl-hud .sodl-hud-entry-help:hover {
+  color: var(--hud-title);
+}
+
+.sodl-hud-entry.has-description .sodl-hud-entry-name {
+  padding-right: 18px;
+}
+
+.sodl-hud-has-help {
+  cursor: pointer;
+}
+
 .sodl-hud-entry-desc {
   flex-basis: 100%;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
   color: var(--hud-muted);
   font-size: 11px;
   line-height: 1.3;

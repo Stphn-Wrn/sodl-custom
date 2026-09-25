@@ -63,7 +63,7 @@ test("l'équipement signale un prérequis de caractéristique non rempli", () =>
     attributes: [{ key: "strength", label: "Force", value: 10 }],
     weapons: [{ id: "xbow", name: "Arbalète lourde", worn: false, hands: "two", requirement: { attribute: "strength", min: 12 }, ammo: { required: false } }]
   });
-  const [entry] = section("character", "equipment").build(snapshot);
+  const entry = section("character", "equipment").build(snapshot).find((candidate) => candidate.id === "xbow");
   assert.equal(entry.warning, "Requiert Force 12 : 1 fléau");
   assert.deepEqual(entry.action, { type: "toggleWear", itemId: "xbow" });
 });
@@ -155,7 +155,7 @@ test("l'onglet caractéristiques propose les jets d'attribut puis les profession
   assert.deepEqual(
     entries.map((entry) => [entry.name, entry.badge, entry.action]),
     [
-      ["Agilité", "12 (+2)", { type: "rollChallenge", attribute: "agility" }],
+      ["Agilité", "12 (+2)", { type: "rollChallenge", attribute: "agility", rollOptions: true }],
       ["Forgeron", "Profession", { type: "navigate", view: { professionId: "p1" } }]
     ]
   );
@@ -172,6 +172,7 @@ test("l'onglet afflictions liste les afflictions actives avec leur effet, puis u
     ]
   );
   assert.match(entries[0].description, /Se relever coûte le déplacement/);
+  assert.equal(entries[0].ruleId, "prone");
 });
 
 test("sans affliction active, l'onglet l'indique et propose d'en ajouter", () => {
@@ -205,8 +206,78 @@ test("une profession choisie propose de lancer chaque caractéristique", () => {
     entries.map((entry) => [entry.name, entry.badge, entry.action]),
     [
       ["Fermière", "Retour", { type: "navigate", view: {} }],
-      ["Force", "11 (+1)", { type: "rollProfession", attribute: "strength" }],
-      ["Intelligence", "10 (0)", { type: "rollProfession", attribute: "intellect" }]
+      ["Force", "11 (+1)", { type: "rollProfession", attribute: "strength", rollOptions: true }],
+      ["Intelligence", "10 (0)", { type: "rollProfession", attribute: "intellect", rollOptions: true }]
     ]
   );
+});
+
+test("seuls les jets qui demandent des faveurs/fléaux au système ouvrent le panneau de jet", () => {
+  const snapshot = emptySnapshot({
+    weapons: [{ id: "w1", name: "Épée", worn: true, ammo: { required: false } }],
+    spells: [
+      { id: "s1", name: "Éclair", tradition: "Tempête", rank: 1, used: 0, max: 2, rollsAttack: true },
+      { id: "s2", name: "Lueur", tradition: "Tempête", rank: 0, used: 0, max: 0, rollsAttack: false }
+    ],
+    talents: [{ id: "t1", name: "Riposte", used: 0, max: 0, rollsAttack: true }],
+    consumables: [{ id: "p1", name: "Potion", quantity: 1, rollsAttack: false }]
+  });
+  const flag = (id) => section("character", id).build(snapshot, {}).map((entry) => [entry.name, Boolean(entry.action.rollOptions)]);
+  assert.deepEqual(flag("attacks"), [["Épée", true]]);
+  assert.deepEqual(flag("spells"), [["Lueur", false], ["Éclair", true]]);
+  assert.deepEqual(flag("talents"), [["Riposte", true]]);
+  assert.deepEqual(flag("items"), [["Potion", false]]);
+});
+
+test("les professions commencent sur une nouvelle ligne, après les caractéristiques", () => {
+  const snapshot = emptySnapshot({
+    attributes: [{ key: "strength", label: "Force", value: 10, modifier: 0 }],
+    professions: [{ id: "p1", name: "Ouvrier" }, { id: "p2", name: "Évangéliste" }]
+  });
+  const entries = section("character", "attributes").build(snapshot, {});
+  assert.deepEqual(entries.map((entry) => [entry.name, entry.newRow]), [["Force", false], ["Ouvrier", true], ["Évangéliste", false]]);
+});
+
+test("l'équipement est rangé en armes, protections puis munitions, chaque catégorie sur sa ligne", () => {
+  const snapshot = emptySnapshot({
+    weapons: [{ id: "bow", name: "Arc", worn: true, hands: "two", ammo: { required: true, itemId: "arrows", amount: 1 } }],
+    armors: [{ id: "leather", name: "Cuir", worn: true, isShield: false }],
+    ammo: [{ id: "arrows", name: "Flèches", quantity: 0 }]
+  });
+  const entries = section("character", "equipment").build(snapshot);
+  assert.deepEqual(
+    entries.map((entry) => [entry.name, entry.isHeading, entry.newRow, entry.badge]),
+    [
+      ["Armes", true, true, ""],
+      ["Arc", false, false, "2 mains"],
+      ["Protections", true, true, ""],
+      ["Cuir", false, false, "Armure"],
+      ["Munitions", true, true, ""],
+      ["Flèches", false, false, "×0"]
+    ]
+  );
+  const arrows = entries.find((entry) => entry.id === "arrows");
+  assert.equal(arrows.disabled, true);
+  assert.equal(arrows.action, null);
+  assert.equal(arrows.itemId, "arrows");
+});
+
+test("une catégorie d'équipement vide n'est pas affichée", () => {
+  const snapshot = emptySnapshot({ weapons: [{ id: "knife", name: "Couteau", worn: false, hands: "one", ammo: { required: false } }] });
+  const names = section("character", "equipment").build(snapshot).map((entry) => entry.name);
+  assert.deepEqual(names, ["Armes", "Couteau"]);
+});
+
+test("seuls les sorts et talents à utilisations limitées peuvent être corrigés à la main", () => {
+  const snapshot = emptySnapshot({
+    spells: [
+      { id: "s1", name: "Éclair", tradition: "Tempête", rank: 1, used: 1, max: 2 },
+      { id: "s2", name: "Lueur", tradition: "Tempête", rank: 0, used: 0, max: 0 }
+    ],
+    talents: [{ id: "t1", name: "Riposte", used: 0, max: 1 }]
+  });
+  const spells = section("character", "spells").build(snapshot, {}).map((entry) => [entry.name, entry.usesItemId]);
+  const talents = section("character", "talents").build(snapshot, {}).map((entry) => [entry.name, entry.usesItemId]);
+  assert.deepEqual(spells, [["Lueur", ""], ["Éclair", "s1"]]);
+  assert.deepEqual(talents, [["Riposte", "t1"]]);
 });

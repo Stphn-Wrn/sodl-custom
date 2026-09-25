@@ -1,6 +1,9 @@
 import { escapeHTML } from "../../shared/foundry-adapter.js";
-import { toEquipmentItems, toSnapshot, toWearUpdates } from "./actor-adapter.js";
+import { SODL_CONFIG } from "../companion/config.js";
+import { limitedUsesOf, toEquipmentItems, toSnapshot, toUsesUpdate, toWearUpdates } from "./actor-adapter.js";
+import { adjustUsed } from "./uses.js";
 import { planEquip, planUnequip } from "./equipment-rules.js";
+import { afflictionName } from "./sections.js";
 
 /**
  * Exécute les actions du HUD en déléguant au système `demonlord` : jets,
@@ -52,6 +55,32 @@ async function recover(actor) {
   });
 }
 
+// Rend (+1) ou retire (-1) une utilisation d'un sort ou d'un talent, sans le lancer.
+function adjustUses(actor, { itemId, amount }) {
+  const uses = limitedUsesOf(toSnapshot(actor), itemId);
+  const item = actor.items.get(itemId);
+  if (!uses || !item) {
+    return undefined;
+  }
+  const used = adjustUsed(uses, amount);
+  if (used === uses.used) {
+    return undefined;
+  }
+  return item.update(toUsesUpdate(item.type, used));
+}
+
+// Poste dans le chat la règle d'une affliction (aide de jeu du compagnon).
+function postRule(actor, { ruleId }) {
+  const affliction = SODL_CONFIG.afflictions.list.find((candidate) => candidate.id === ruleId);
+  if (!affliction) {
+    return undefined;
+  }
+  return ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<h3>${escapeHTML(afflictionName(affliction))}</h3><p>${escapeHTML(affliction.description)}</p>`
+  });
+}
+
 // Repos de 8 ou 24 h du système : rend talents et incantations et soigne.
 function rest(actor, action) {
   return actor.restActor(action.amount, true, true, true);
@@ -71,6 +100,8 @@ const ACTION_STRATEGIES = {
   rollCorruption: (actor) => actor.rollCorruption(),
   rollDice,
   toggleStatus: (actor, action) => actor.toggleStatusEffect(action.statusId),
+  postRule,
+  adjustUses,
   recover,
   rest
 };
@@ -82,12 +113,4 @@ export function executeAction(actor, action) {
     return undefined;
   }
   return strategy(actor, action);
-}
-
-// Actions qui ouvrent la fenêtre de faveurs/fléaux du système, que le HUD
-// remplit et valide à la place du joueur.
-const SYSTEM_ROLL_ACTIONS = ["rollWeapon", "castSpell", "useTalent", "useItem", "rollChallenge", "rollProfession"];
-
-export function isSystemRoll(action) {
-  return SYSTEM_ROLL_ACTIONS.includes(action.type);
 }
