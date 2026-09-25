@@ -1,43 +1,64 @@
-<section class="sodl-hud {{#if collapsed}}sodl-hud-collapsed{{/if}}">
-  <header class="sodl-hud-header">
+<section class="sodl-hud" style="--hud-entries-height: {{entriesHeight}}px;">
+  <div class="sodl-hud-grip" title="Glisser pour changer la hauteur"></div>
+
+  <aside class="sodl-hud-identity">
     <img class="sodl-hud-portrait" src="{{snapshot.img}}" alt="">
-    <span class="sodl-hud-name">{{snapshot.name}}</span>
 
-    <div class="sodl-hud-health {{#if snapshot.characteristics.injured}}sodl-hud-injured{{/if}}" title="Santé (dégâts : {{snapshot.characteristics.damage}})">
-      <button type="button" class="sodl-hud-icon" data-damage="1" title="Subir 1 dégât"><i class="fas fa-minus"></i></button>
-      <div class="sodl-hud-health-bar">
-        <div class="sodl-hud-health-fill" style="width: {{healthPercent}}%"></div>
-        <span>{{snapshot.characteristics.health}} / {{snapshot.characteristics.healthMax}}</span>
+    <div class="sodl-hud-vitals">
+      <span class="sodl-hud-name" title="{{snapshot.name}}">{{snapshot.name}}</span>
+
+      <div class="sodl-hud-stepper sodl-hud-health {{#if snapshot.characteristics.injured}}sodl-hud-injured{{/if}}" title="Santé (dégâts : {{snapshot.characteristics.damage}})">
+        <button type="button" class="sodl-hud-step" data-action-type="changeDamage" data-amount="1" title="Subir 1 dégât"><i class="fas fa-minus"></i></button>
+        <div class="sodl-hud-health-bar">
+          <div class="sodl-hud-health-fill" style="width: {{healthPercent}}%"></div>
+          <span>{{snapshot.characteristics.health}} / {{snapshot.characteristics.healthMax}}</span>
+        </div>
+        <button type="button" class="sodl-hud-step" data-action-type="changeDamage" data-amount="-1" title="Soigner 1 dégât"><i class="fas fa-plus"></i></button>
       </div>
-      <button type="button" class="sodl-hud-icon" data-damage="-1" title="Soigner 1 dégât"><i class="fas fa-plus"></i></button>
+
+      <div class="sodl-hud-trackers">
+        <div class="sodl-hud-stepper" title="Folie">
+          <button type="button" class="sodl-hud-step" data-action-type="changeInsanity" data-amount="-1" title="Folie -1"><i class="fas fa-minus"></i></button>
+          <span class="sodl-hud-stat"><i class="fas fa-brain"></i>{{snapshot.characteristics.insanity}}/{{snapshot.characteristics.insanityMax}}</span>
+          <button type="button" class="sodl-hud-step" data-action-type="changeInsanity" data-amount="1" title="Folie +1"><i class="fas fa-plus"></i></button>
+        </div>
+        <div class="sodl-hud-stepper" title="Corruption">
+          <button type="button" class="sodl-hud-step" data-action-type="changeCorruption" data-amount="-1" title="Corruption -1"><i class="fas fa-minus"></i></button>
+          <span class="sodl-hud-stat"><i class="fas fa-skull"></i>{{snapshot.characteristics.corruption}}</span>
+          <button type="button" class="sodl-hud-step" data-action-type="changeCorruption" data-amount="1" title="Corruption +1"><i class="fas fa-plus"></i></button>
+        </div>
+      </div>
+
+      <ul class="sodl-hud-stats">
+        <li title="Défense"><i class="fas fa-shield"></i>{{snapshot.characteristics.defense}}</li>
+        <li title="Vitesse"><i class="fas fa-person-running"></i>{{snapshot.characteristics.speed}}</li>
+        <li title="Pouvoir"><i class="fas fa-bolt"></i>{{snapshot.characteristics.power}}</li>
+      </ul>
+
+      {{#if afflictions.length}}
+      <ul class="sodl-hud-afflictions">
+        {{#each afflictions}}
+        <li title="{{this.name}}"><img src="{{this.img}}" alt="{{this.name}}"></li>
+        {{/each}}
+      </ul>
+      {{/if}}
     </div>
+  </aside>
 
-    <ul class="sodl-hud-stats">
-      <li title="Défense"><i class="fas fa-shield"></i>{{snapshot.characteristics.defense}}</li>
-      <li title="Vitesse"><i class="fas fa-person-running"></i>{{snapshot.characteristics.speed}}</li>
-      <li title="Pouvoir"><i class="fas fa-bolt"></i>{{snapshot.characteristics.power}}</li>
-      <li title="Folie"><i class="fas fa-brain"></i>{{snapshot.characteristics.insanity}}/{{snapshot.characteristics.insanityMax}}</li>
-      <li title="Corruption"><i class="fas fa-skull"></i>{{snapshot.characteristics.corruption}}</li>
-    </ul>
-
-    <ul class="sodl-hud-afflictions">
-      {{#each afflictions}}
-      <li title="{{this.name}}"><img src="{{this.img}}" alt="{{this.name}}"></li>
-      {{/each}}
-    </ul>
-
-    <button type="button" class="sodl-hud-icon sodl-hud-collapse" title="Réduire / agrandir">
-      <i class="fas {{#if collapsed}}fa-chevron-up{{else}}fa-chevron-down{{/if}}"></i>
-    </button>
-  </header>
-
-  <div class="sodl-hud-body">
+  <div class="sodl-hud-main">
     <nav class="sodl-hud-tabs">
       {{#each sections}}
-      <button type="button" class="sodl-hud-tab {{#if this.active}}active{{/if}}" data-section="{{this.id}}">
-        <i class="{{this.icon}}"></i> {{this.label}}
+      <button type="button" class="sodl-hud-tab {{#if this.active}}active{{/if}}" data-section="{{this.id}}" title="{{this.label}}">
+        <i class="{{this.icon}}"></i><span class="sodl-hud-tab-label">{{this.label}}</span>
       </button>
       {{/each}}
+
+      <div class="sodl-hud-tools">
+        <button type="button" class="sodl-hud-icon" data-action-type="rollD20" title="Lancer un d20"><i class="fas fa-dice-d20"></i></button>
+        <button type="button" class="sodl-hud-icon" data-action-type="rollCorruption" title="Jet de Corruption (d20)"><i class="fas fa-skull-crossbones"></i></button>
+        <button type="button" class="sodl-hud-icon" data-action-type="rest" title="Récupérer / se reposer"><i class="fas fa-bed"></i></button>
+        <button type="button" class="sodl-hud-icon sodl-hud-to-foundry" title="Afficher les macros et les joueurs"><i class="fas fa-table-cells"></i></button>
+      </div>
     </nav>
 
     <ul class="sodl-hud-entries">
@@ -49,6 +70,7 @@
           title="{{this.name}}{{#if this.warning}} — {{this.warning}}{{/if}}"
           {{#if this.disabled}}disabled{{/if}}>
           {{#if this.img}}<img src="{{this.img}}" alt="">{{/if}}
+          {{#if this.icon}}<i class="{{this.icon}} sodl-hud-entry-icon"></i>{{/if}}
           <span class="sodl-hud-entry-name">{{this.name}}</span>
           {{#if this.badge}}<span class="sodl-hud-badge">{{this.badge}}</span>{{/if}}
           {{#if this.warning}}<i class="fas fa-triangle-exclamation sodl-hud-warning"></i>{{/if}}

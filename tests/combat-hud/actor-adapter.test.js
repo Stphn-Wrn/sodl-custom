@@ -31,11 +31,11 @@ test("la santé affichée est le maximum moins les dégâts subis", () => {
 
 test("les incantations et utilisations stockées en texte sont converties en nombres", () => {
   const actor = actorWith([
-    { id: "s1", type: "spell", name: "Éclair", img: "", system: { rank: 1, castings: { value: "1", max: "3" } } },
+    { id: "s1", type: "spell", name: "Éclair", img: "", system: { rank: 1, tradition: "Tempête", castings: { value: "1", max: "3" } } },
     { id: "t1", type: "talent", name: "Riposte", img: "", system: { uses: { value: "", max: "" } } }
   ]);
   const snapshot = toSnapshot(actor);
-  assert.deepEqual(snapshot.spells[0], { id: "s1", name: "Éclair", img: "", rank: 1, used: 1, max: 3 });
+  assert.deepEqual(snapshot.spells[0], { id: "s1", name: "Éclair", img: "", tradition: "Tempête", rank: 1, used: 1, max: 3 });
   assert.deepEqual(snapshot.talents[0], { id: "t1", name: "Riposte", img: "", used: 0, max: 0 });
 });
 

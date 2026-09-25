@@ -19,8 +19,9 @@ function onEffectChanged(effect) {
 }
 
 /**
- * HUD de combat : barre en bas de l'écran reprenant armes, équipement, sorts,
- * talents, consommables et caractéristiques du token contrôlé.
+ * HUD de combat : occupe le bas de l'écran à la place de la barre de macros et
+ * de la liste des joueurs (bascule par bouton ou raccourci), et reprend armes,
+ * équipement, sorts, talents, consommables et caractéristiques du token contrôlé.
  */
 export const combatHudFeature = {
   init() {
@@ -28,7 +29,7 @@ export const combatHudFeature = {
 
     game.settings.register(MODULE_ID, "combatHudEnabled", {
       name: "HUD de combat : activer",
-      hint: "Affiche en bas de l'écran une barre d'actions pour le token contrôlé (attaques, équipement, sorts, talents, objets, caractéristiques). Nécessite de rafraîchir la partie.",
+      hint: "Affiche en bas de l'écran, à la place des macros et de la liste des joueurs, un HUD pour le token contrôlé (attaques, équipement, sorts, talents, objets, caractéristiques). Un bouton permet de revenir aux macros. Nécessite de rafraîchir la partie.",
       scope: "client",
       config: true,
       type: Boolean,
@@ -36,7 +37,17 @@ export const combatHudFeature = {
       requiresReload: true
     });
 
-    // Onglet ouvert et état réduit, propres à chaque client.
+    game.keybindings.register(MODULE_ID, "combatHudToggle", {
+      name: "HUD de combat : basculer HUD / macros",
+      hint: "Alterne entre le HUD de combat et la barre de macros avec la liste des joueurs.",
+      editable: [],
+      onDown: () => {
+        SODLCombatHud.toggleMode();
+        return true;
+      }
+    });
+
+    // Onglet ouvert, mode affiché et hauteur des actions, propres à chaque client.
     game.settings.register(MODULE_ID, "combatHudLayout", {
       scope: "client",
       config: false,
@@ -60,5 +71,7 @@ export const combatHudFeature = {
     Hooks.on("createActiveEffect", onEffectChanged);
     Hooks.on("updateActiveEffect", onEffectChanged);
     Hooks.on("deleteActiveEffect", onEffectChanged);
+    Hooks.on("collapseSidebar", () => SODLCombatHud.onViewportChanged());
+    window.addEventListener("resize", () => SODLCombatHud.onViewportChanged());
   }
 };

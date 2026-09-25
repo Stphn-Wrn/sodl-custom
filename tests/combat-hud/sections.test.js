@@ -67,25 +67,68 @@ test("l'équipement signale un prérequis de caractéristique non rempli", () =>
   assert.deepEqual(entry.action, { type: "toggleWear", itemId: "xbow" });
 });
 
-test("les sorts sont triés par rang et affichent les incantations restantes", () => {
+test("avec plusieurs traditions, l'onglet sorts liste d'abord les traditions", () => {
   const snapshot = emptySnapshot({
     spells: [
-      { id: "s2", name: "Boule de feu", rank: 2, used: 0, max: 1 },
-      { id: "s0", name: "Flamme", rank: 0, used: 1, max: 3 }
+      { id: "s1", name: "Mort lente", tradition: "Nécromancie", rank: 1, used: 0, max: 2 },
+      { id: "s2", name: "Flamme", tradition: "Feu", rank: 0, used: 0, max: 3 },
+      { id: "s3", name: "Boule de feu", tradition: "Feu", rank: 2, used: 0, max: 1 },
+      { id: "s4", name: "Lueur", tradition: "", rank: 0, used: 0, max: 0 }
     ]
   });
-  const entries = section("character", "spells").build(snapshot);
+  const entries = section("character", "spells").build(snapshot, {});
   assert.deepEqual(
-    entries.map((entry) => [entry.name, entry.badge, entry.disabled]),
-    [["Flamme", "2/3", false], ["Boule de feu", "1/1", false]]
+    entries.map((entry) => [entry.name, entry.badge, entry.action]),
+    [
+      ["Feu", "2 sorts", { type: "navigate", view: { tradition: "Feu" } }],
+      ["Nécromancie", "1 sort", { type: "navigate", view: { tradition: "Nécromancie" } }],
+      ["Sans tradition", "1 sort", { type: "navigate", view: { tradition: "Sans tradition" } }]
+    ]
   );
 });
 
-test("un sort sans incantation restante est désactivé", () => {
-  const snapshot = emptySnapshot({ spells: [{ id: "s1", name: "Éclair", rank: 1, used: 2, max: 2 }] });
-  const [entry] = section("character", "spells").build(snapshot);
-  assert.equal(entry.badge, "0/2");
-  assert.equal(entry.disabled, true);
+test("une tradition choisie affiche un retour puis ses sorts triés par rang", () => {
+  const snapshot = emptySnapshot({
+    spells: [
+      { id: "s1", name: "Boule de feu", tradition: "Feu", rank: 2, used: 0, max: 1 },
+      { id: "s2", name: "Mort lente", tradition: "Nécromancie", rank: 1, used: 0, max: 2 },
+      { id: "s3", name: "Flamme", tradition: "Feu", rank: 0, used: 1, max: 3 }
+    ]
+  });
+  const entries = section("character", "spells").build(snapshot, { tradition: "Feu" });
+  assert.deepEqual(
+    entries.map((entry) => [entry.name, entry.badge, entry.action]),
+    [
+      ["← Feu", "", { type: "navigate", view: {} }],
+      ["Flamme", "R0 · 2/3", { type: "castSpell", itemId: "s3" }],
+      ["Boule de feu", "R2 · 1/1", { type: "castSpell", itemId: "s1" }]
+    ]
+  );
+});
+
+test("avec une seule tradition, les sorts sont affichés directement", () => {
+  const snapshot = emptySnapshot({
+    spells: [
+      { id: "s1", name: "Éclair", tradition: "Tempête", rank: 1, used: 2, max: 2 },
+      { id: "s2", name: "Lueur", tradition: "Tempête", rank: 0, used: 0, max: 0 }
+    ]
+  });
+  const entries = section("character", "spells").build(snapshot, {});
+  assert.deepEqual(
+    entries.map((entry) => [entry.name, entry.badge, entry.disabled]),
+    [["Lueur", "R0", false], ["Éclair", "R1 · 0/2", true]]
+  );
+});
+
+test("une tradition choisie qui n'existe plus ramène à la liste des traditions", () => {
+  const snapshot = emptySnapshot({
+    spells: [
+      { id: "s1", name: "Flamme", tradition: "Feu", rank: 0, used: 0, max: 1 },
+      { id: "s2", name: "Mort lente", tradition: "Nécromancie", rank: 1, used: 0, max: 1 }
+    ]
+  });
+  const names = section("character", "spells").build(snapshot, { tradition: "Ombre" }).map((entry) => entry.name);
+  assert.deepEqual(names, ["Feu", "Nécromancie"]);
 });
 
 test("un talent sans limite d'utilisation n'affiche pas de compteur", () => {

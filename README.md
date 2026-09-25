@@ -29,11 +29,12 @@ Le module regroupe quatre outils indépendants :
 - **Désactivé par défaut** — À activer dans les paramètres du module.
 
 ### HUD de combat
-- **Barre ancrée en bas de l'écran** — Elle suit le token contrôlé (ou le personnage du joueur), sans ouvrir la fiche.
-- **En-tête** — Santé (boutons -1/+1 dégât), Défense, Vitesse, Pouvoir, Folie, Corruption et afflictions actives.
-- **Onglets** — Attaques (armes portées, munitions), Équipement, Sorts (incantations restantes), Talents, Objets (consommables), Caractéristiques et Professions.
+- **À la place des macros et des joueurs** — Le HUD occupe le bas de l'écran, de la liste des joueurs jusqu'à la barre latérale, pour le token contrôlé (ou le personnage du joueur). Un bouton (ou un raccourci à définir dans les contrôles) bascule entre le HUD et l'interface d'origine.
+- **À gauche** — Portrait, Santé (boutons -1/+1 dégât), Folie et Corruption (boutons -1/+1), Défense, Vitesse, Pouvoir et afflictions actives.
+- **À droite** — Onglets Attaques (armes portées, munitions), Équipement, Sorts (par tradition, puis incantations restantes), Talents, Objets (consommables), Caractéristiques et Professions, plus un d20 libre, le jet de Corruption et le repos (Récupérer, 8 h, 24 h).
 - **Équipement strict** — Deux mains et une armure : équiper une arme à deux mains, un bouclier ou une autre armure range automatiquement ce qui entre en conflit. Les prérequis de caractéristique non remplis sont signalés.
 - **Jets du système** — Chaque clic passe par les jets du système `demonlord` (dialogue de faveurs/fléaux, munitions, utilisations). Clic droit : ouvre la fiche de l'objet.
+- **Hauteur réglable** — Poignée sur le bord supérieur, mémorisée par joueur, comme le mode affiché et l'onglet ouvert.
 - **Activé par défaut** — Désactivable par joueur dans les paramètres du module.
 
 ## Installation

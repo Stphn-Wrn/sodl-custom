@@ -4,11 +4,13 @@
  * il ne touche jamais à Foundry. Une entrée décrit ce qu'on affiche et l'action
  * déclenchée au clic, exécutée ensuite par l'adapter.
  *
- * Entrée : { id, name, img, badge, disabled, active, warning, action }
+ * Entrée : { id, name, img, icon, badge, disabled, active, warning, action }
+ * Une action `navigate` ne touche pas l'acteur : elle remplace la vue de
+ * l'onglet (`view`, passée en second argument de `build`), gérée par le HUD.
  */
 
 function entry(fields) {
-  return { img: "", badge: "", disabled: false, active: false, warning: "", ...fields };
+  return { img: "", icon: "", badge: "", disabled: false, active: false, warning: "", ...fields };
 }
 
 function formatModifier(modifier) {
@@ -99,24 +101,97 @@ const equipmentSection = {
   }
 };
 
+const NO_TRADITION = "Sans tradition";
+
+function traditionOf(spell) {
+  return spell.tradition?.trim() || NO_TRADITION;
+}
+
+// Traditions par ordre alphabétique, les sorts sans tradition à la fin.
+function compareTraditions(a, b) {
+  if (a === NO_TRADITION) {
+    return 1;
+  }
+  if (b === NO_TRADITION) {
+    return -1;
+  }
+  return a.localeCompare(b);
+}
+
+function compareSpells(a, b) {
+  if (a.rank !== b.rank) {
+    return a.rank - b.rank;
+  }
+  return a.name.localeCompare(b.name);
+}
+
+function spellBadge(spell, uses) {
+  if (uses.badge) {
+    return `R${spell.rank} · ${uses.badge}`;
+  }
+  return `R${spell.rank}`;
+}
+
+function spellCountLabel(count) {
+  if (count > 1) {
+    return `${count} sorts`;
+  }
+  return `${count} sort`;
+}
+
+function spellEntries(spells) {
+  return [...spells].sort(compareSpells).map((spell) => {
+    const uses = limitedUses(spell.used, spell.max);
+    return entry({
+      id: spell.id,
+      name: spell.name,
+      img: spell.img,
+      badge: spellBadge(spell, uses),
+      disabled: uses.exhausted,
+      action: { type: "castSpell", itemId: spell.id }
+    });
+  });
+}
+
+/**
+ * Deux niveaux : la liste des traditions, puis les sorts de la tradition
+ * choisie (`view.tradition`). Une seule tradition : on montre les sorts directement.
+ */
 const spellsSection = {
   id: "spells",
   label: "Sorts",
   icon: "fas fa-wand-sparkles",
-  build(snapshot) {
-    return [...snapshot.spells]
-      .sort((a, b) => a.rank - b.rank)
-      .map((spell) => {
-        const uses = limitedUses(spell.used, spell.max);
-        return entry({
-          id: spell.id,
-          name: spell.name,
-          img: spell.img,
-          badge: uses.badge,
-          disabled: uses.exhausted,
-          action: { type: "castSpell", itemId: spell.id }
-        });
+  build(snapshot, view = {}) {
+    const byTradition = new Map();
+    for (const spell of snapshot.spells) {
+      const tradition = traditionOf(spell);
+      if (!byTradition.has(tradition)) {
+        byTradition.set(tradition, []);
+      }
+      byTradition.get(tradition).push(spell);
+    }
+
+    if (byTradition.size <= 1) {
+      return spellEntries(snapshot.spells);
+    }
+
+    const selected = byTradition.get(view.tradition);
+    if (selected) {
+      const back = entry({
+        id: "back",
+        name: `← ${view.tradition}`,
+        action: { type: "navigate", view: {} }
       });
+      return [back, ...spellEntries(selected)];
+    }
+
+    return [...byTradition.keys()].sort(compareTraditions).map((tradition) => entry({
+      id: tradition,
+      name: tradition,
+      icon: "fas fa-book-open",
+      badge: spellCountLabel(byTradition.get(tradition).length),
+      action: { type: "navigate", view: { tradition } }
+    }));
   }
 };
 

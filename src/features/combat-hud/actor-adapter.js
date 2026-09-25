@@ -77,6 +77,7 @@ export function toSnapshot(actor) {
     ammo: itemsOfType(actor, "ammo").map((item) => ({ ...base(item), quantity: toNumber(item.system.quantity) })),
     spells: itemsOfType(actor, "spell").map((item) => ({
       ...base(item),
+      tradition: item.system.tradition ?? "",
       rank: toNumber(item.system.rank),
       used: toNumber(item.system.castings?.value),
       max: toNumber(item.system.castings?.max)

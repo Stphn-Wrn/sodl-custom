@@ -69,6 +69,39 @@ function rollProfession(actor, { itemId }) {
   }).render(true);
 }
 
+function rollD20(actor) {
+  const roll = new Roll("1d20");
+  return roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor: "Jet de d20" });
+}
+
+// Le jeu n'a pas de repos court : on propose l'action Récupérer (soins du taux
+// de guérison) et les repos du système, qui rendent talents et incantations.
+function rest(actor) {
+  const DialogClass = getDialogClass();
+  new DialogClass({
+    title: `${actor.name} : repos`,
+    content: "<p>Récupérer soigne un montant égal au taux de guérison. Un repos rend aussi les talents et les incantations.</p>",
+    buttons: {
+      recover: {
+        icon: '<i class="fas fa-heart-pulse"></i>',
+        label: "Récupérer",
+        callback: () => actor.applyHealing(true)
+      },
+      rest8: {
+        icon: '<i class="fas fa-bed"></i>',
+        label: "Repos 8 h",
+        callback: () => actor.restActor(8, true, true, true)
+      },
+      rest24: {
+        icon: '<i class="fas fa-campground"></i>',
+        label: "Repos 24 h",
+        callback: () => actor.restActor(24, true, true, true)
+      }
+    },
+    default: "recover"
+  }).render(true);
+}
+
 const ACTION_STRATEGIES = {
   rollWeapon: (actor, action) => actor.rollWeaponAttack(action.itemId),
   castSpell: (actor, action) => actor.rollSpell(action.itemId),
@@ -76,7 +109,13 @@ const ACTION_STRATEGIES = {
   useItem: (actor, action) => actor.rollItem(action.itemId),
   rollChallenge: (actor, action) => actor.rollChallenge(action.attribute),
   rollProfession,
-  toggleWear
+  toggleWear,
+  changeDamage: (actor, action) => actor.increaseDamage(action.amount),
+  changeInsanity: (actor, action) => actor.increaseInsanity(action.amount),
+  changeCorruption: (actor, action) => actor.increaseCorruption(action.amount),
+  rollCorruption: (actor) => actor.rollCorruption(),
+  rollD20,
+  rest
 };
 
 export function executeAction(actor, action) {
@@ -86,8 +125,4 @@ export function executeAction(actor, action) {
     return undefined;
   }
   return strategy(actor, action);
-}
-
-export function changeDamage(actor, increment) {
-  return actor.increaseDamage(increment);
 }
