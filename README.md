@@ -35,7 +35,7 @@ Le module regroupe quatre outils indépendants :
 - **Équipement strict** — Deux mains et une armure : équiper une arme à deux mains, un bouclier ou une autre armure range automatiquement ce qui entre en conflit. Les prérequis de caractéristique non remplis sont signalés.
 - **Jets du système** — Chaque clic passe par les jets du système `demonlord` (dialogue de faveurs/fléaux, munitions, utilisations). Clic droit : ouvre la fiche de l'objet.
 - **Hauteur réglable** — Poignée sur le bord supérieur, mémorisée par joueur, comme le mode affiché et l'onglet ouvert.
-- **Activé par défaut** — Désactivable par joueur dans les paramètres du module.
+- **Réglage personnel** — Activé par défaut ; chaque joueur et le MJ peuvent le désactiver pour eux-mêmes dans les paramètres du module, sans recharger (lié au compte en v12+, au navigateur en v11).
 
 ## Installation
 

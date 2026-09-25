@@ -45,6 +45,15 @@ export class SODLCombatHud {
     return this.instance;
   }
 
+  // Désactivation en cours de partie : on retire le HUD et on rend l'interface d'origine.
+  static unmount() {
+    if (!this.instance) {
+      return;
+    }
+    this.instance.destroy();
+    this.instance = null;
+  }
+
   static onTokenControlChanged() {
     this.instance?.refreshActor();
   }
@@ -77,6 +86,13 @@ export class SODLCombatHud {
     this.entriesHeight = layout.entriesHeight ?? DEFAULT_ENTRIES_HEIGHT;
     this.requestRender = foundry.utils.debounce(() => this.render(), RENDER_DEBOUNCE_MS);
     this.switchButton = this.createSwitchButton();
+  }
+
+  destroy() {
+    this.element?.remove();
+    this.element = null;
+    this.switchButton.remove();
+    document.body.classList.remove(HUD_ACTIVE_CLASS);
   }
 
   get isShown() {
@@ -117,6 +133,9 @@ export class SODLCombatHud {
   }
 
   async render() {
+    if (SODLCombatHud.instance !== this) {
+      return;
+    }
     this.element?.remove();
     this.element = null;
     document.body.classList.toggle(HUD_ACTIVE_CLASS, this.isShown);

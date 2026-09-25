@@ -65,6 +65,7 @@ body.sodl-hud-active #players {
 .sodl-hud-identity {
   flex: none;
   display: flex;
+  align-items: center;
   gap: 10px;
   padding: 8px 10px;
   border-right: 1px solid var(--hud-border);
