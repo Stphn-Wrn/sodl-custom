@@ -1,9 +1,11 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createSections } from "../../src/features/combat-hud/sections.js";
+import { t } from "../helpers/i18n.js";
 
 function section(actorType, id) {
-  return createSections(actorType).find((candidate) => candidate.id === id);
+  const found = createSections(actorType).find((candidate) => candidate.id === id);
+  return { build: (snapshot, view = {}) => found.build(snapshot, view, t) };
 }
 
 function emptySnapshot(overrides) {
@@ -84,7 +86,7 @@ test("avec plusieurs traditions, l'onglet sorts liste d'abord les traditions", (
     [
       ["Feu", "2 sorts", { type: "navigate", view: { tradition: "Feu" } }],
       ["Nécromancie", "1 sort", { type: "navigate", view: { tradition: "Nécromancie" } }],
-      ["Sans tradition", "1 sort", { type: "navigate", view: { tradition: "Sans tradition" } }]
+      ["Sans tradition", "1 sort", { type: "navigate", view: { tradition: "" } }]
     ]
   );
 });

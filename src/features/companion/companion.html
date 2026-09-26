@@ -2,7 +2,7 @@
   <!-- Recherche rapide -->
   <div class="sodl-search-bar">
     <i class="fas fa-search"></i>
-    <input type="text" class="sodl-search-input" placeholder="Rechercher une affliction, une action, une règle...">
+    <input type="text" class="sodl-search-input" placeholder="{{localize 'SODL.Companion.SearchPlaceholder'}}">
   </div>
 
   <div class="sodl-search-results" style="display: none;"></div>
@@ -11,16 +11,16 @@
   <!-- Navigation des onglets -->
   <nav class="sodl-tab-nav">
     <button type="button" class="tab-button {{#if (eq activeTab 'resources')}}active{{/if}}" data-tab="resources">
-      <i class="fas fa-coins"></i> Ressources
+      <i class="fas fa-coins"></i> {{localize "SODL.Companion.Tabs.Resources"}}
     </button>
     <button type="button" class="tab-button {{#if (eq activeTab 'rules')}}active{{/if}}" data-tab="rules">
-      <i class="fas fa-scroll"></i> Règles
+      <i class="fas fa-scroll"></i> {{localize "SODL.Companion.Tabs.Rules"}}
     </button>
     <button type="button" class="tab-button {{#if (eq activeTab 'actions')}}active{{/if}}" data-tab="actions">
-      <i class="fas fa-sword"></i> Actions
+      <i class="fas fa-sword"></i> {{localize "SODL.Companion.Tabs.Actions"}}
     </button>
     <button type="button" class="tab-button {{#if (eq activeTab 'help')}}active{{/if}}" data-tab="help">
-      <i class="fas fa-question-circle"></i> Aide
+      <i class="fas fa-question-circle"></i> {{localize "SODL.Companion.Tabs.Help"}}
     </button>
   </nav>
 
@@ -31,15 +31,15 @@
     {{#if (eq activeTab 'resources')}}
     <div class="tab-content resources-tab">
       <div class="resources-header">
-        <h2>Gestion des points de chances</h2>
-        <p class="resources-subtitle">Réserve partagée par tout le groupe</p>
+        <h2>{{localize "SODL.Companion.Resources.Title"}}</h2>
+        <p class="resources-subtitle">{{localize "SODL.Companion.Resources.Subtitle"}}</p>
       </div>
 
       <div class="chance-points-section">
         <div class="resource-card">
           <div class="resource-header">
             <i class="fas fa-star"></i>
-            <h3>Points de Chance du Groupe</h3>
+            <h3>{{localize "SODL.Companion.Resources.GroupPoints"}}</h3>
           </div>
 
           {{#if canEdit}}
@@ -52,7 +52,7 @@
           {{else}}
           <div class="chance-hidden">
             <i class="fas fa-eye-slash"></i>
-            <p>Le MJ garde le compte de la réserve de Fortune. Votre bonne étoile vous accompagne, ou pas.</p>
+            <p>{{localize "SODL.Companion.Resources.Hidden"}}</p>
           </div>
           {{/if}}
 
@@ -62,7 +62,7 @@
               <i class="fas fa-minus"></i> -1
             </button>
             <button type="button" class="chance-reset btn btn-sm">
-              <i class="fas fa-undo"></i> Réinitialiser
+              <i class="fas fa-undo"></i> {{localize "SODL.Companion.Resources.Reset"}}
             </button>
             <button type="button" class="chance-increment btn btn-sm">
               <i class="fas fa-plus"></i> +1
@@ -73,10 +73,10 @@
         </div>
 
         <div class="resource-info">
-          <h4>Réserve</h4>
+          <h4>{{localize "SODL.Companion.Resources.Pool"}}</h4>
           <p>{{tabs.resources.rules.gains}}</p>
 
-          <h4>Effets Étendus</h4>
+          <h4>{{localize "SODL.Companion.Resources.ExtendedEffects"}}</h4>
           <p>{{tabs.resources.rules.extendedIntro}}</p>
           <div class="sodl-fortune-uses">
             {{#each tabs.resources.rules.extendedUses}}
@@ -88,7 +88,7 @@
           </div>
 
           {{#if canEdit}}
-          <h4><i class="fas fa-eye"></i> {{tabs.resources.awardsTable.title}} (MJ uniquement)</h4>
+          <h4><i class="fas fa-eye"></i> {{tabs.resources.awardsTable.title}} {{localize "SODL.Companion.Resources.GmOnly"}}</h4>
           <p>{{tabs.resources.awardsTable.subtitle}}</p>
           <table class="sodl-spell-table">
             <thead>
@@ -119,7 +119,7 @@
     {{#if (eq activeTab 'rules')}}
     <div class="tab-content rules-tab">
       <div class="rules-header">
-        <h2>Résumé des Règles</h2>
+        <h2>{{localize "SODL.Companion.RulesTitle"}}</h2>
       </div>
 
       <div class="rules-sections">
@@ -139,7 +139,7 @@
     {{#if (eq activeTab 'actions')}}
     <div class="tab-content actions-tab">
       <div class="actions-header">
-        <h2>Actions Disponibles</h2>
+        <h2>{{localize "SODL.Companion.ActionsTitle"}}</h2>
       </div>
 
       <div class="actions-sections">
@@ -159,7 +159,7 @@
     {{#if (eq activeTab 'help')}}
     <div class="tab-content help-tab">
       <div class="help-header">
-        <h2>Aide et Information</h2>
+        <h2>{{localize "SODL.Companion.HelpTitle"}}</h2>
       </div>
 
       <div class="help-sections">

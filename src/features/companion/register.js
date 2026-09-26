@@ -1,5 +1,5 @@
 import { MODULE_ID } from "../../shared/constants.js";
-import { rerenderOpenApps } from "../../shared/foundry-adapter.js";
+import { rerenderOpenApps, t } from "../../shared/foundry-adapter.js";
 import { SODL_CONFIG } from "./config.js";
 import { SODLDataManager } from "./data-manager.js";
 import { SODLCompanionApp } from "./companion-app.js";
@@ -32,13 +32,13 @@ export const companionFeature = {
   getSceneControlButtons(controls) {
     controls.sodl = {
       name: "sodl",
-      title: "SODL Companion",
+      title: t("SODL.Companion.ControlTitle"),
       icon: "fas fa-book",
       order: 100,
       tools: {
         open: {
           name: "open",
-          title: "Ouvrir le Compagnon SODL",
+          title: t("SODL.Companion.OpenTool"),
           icon: "fas fa-book",
           button: true,
           onChange: (event, active) => {

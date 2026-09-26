@@ -1,15 +1,8 @@
-import { escapeHTML } from "../../shared/foundry-adapter.js";
-import { SODL_CONFIG } from "../companion/config.js";
+import { escapeHTML, t } from "../../shared/foundry-adapter.js";
 import { limitedUsesOf, toEquipmentItems, toSnapshot, toUsesUpdate, toWearUpdates } from "./actor-adapter.js";
 import { adjustUsed } from "./uses.js";
 import { planEquip, planUnequip } from "./equipment-rules.js";
-import { afflictionName } from "./sections.js";
-
-/**
- * Exécute les actions du HUD en déléguant au système `demonlord` : jets,
- * dialogues de faveurs/fléaux, consommation de munitions et d'utilisations
- * restent gérés par le système. Une stratégie par type d'action.
- */
+import { afflictionCatalogue, afflictionName } from "./sections.js";
 
 async function toggleWear(actor, { itemId }) {
   const equipmentItems = toEquipmentItems(toSnapshot(actor));
@@ -29,62 +22,56 @@ async function toggleWear(actor, { itemId }) {
     .filter((change) => !change.worn && change.id !== itemId)
     .map((change) => actor.items.get(change.id)?.name);
   if (stowed.length > 0) {
-    ui.notifications.info(`Rangé : ${stowed.join(", ")}`);
+    ui.notifications.info(t("SODL.Hud.Notify.Stowed", { items: stowed.join(", ") }));
   }
 }
 
-// Défi sur la caractéristique choisie pour la profession.
 function rollProfession(actor, { attribute }) {
   return actor.rollChallenge(attribute);
 }
 
-// Jet libre de `amount` dés à `faces` faces (ex. 3d6), posté au nom du personnage.
 function rollDice(actor, { amount, faces }) {
   const formula = `${amount}d${faces}`;
-  return new Roll(formula).toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor: `Jet de ${formula}` });
+  return new Roll(formula).toMessage({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    flavor: t("SODL.Hud.Chat.DiceRoll", { formula })
+  });
 }
 
-// Action Récupérer : soigne le taux de guérison (règle : une fois par repos,
-// non vérifiée par le système). Le système ne poste rien, on l'annonce au chat.
 async function recover(actor) {
   const { healingRate } = toSnapshot(actor).characteristics;
   await actor.applyHealing(true);
   return ChatMessage.create({
     speaker: ChatMessage.getSpeaker({ actor }),
-    content: `<p><strong>${escapeHTML(actor.name)}</strong> récupère et soigne ${healingRate} dégât(s).</p>`
+    content: `<p>${t("SODL.Hud.Chat.Recover", { name: escapeHTML(actor.name), amount: healingRate })}</p>`
   });
 }
 
-// Ajoute ou retire une affliction comme le fait le système (findAddEffect) :
-// l'effet est créé depuis CONFIG.statusEffects avec un statut explicite, car
-// Actor#toggleStatusEffect refuse les effets du système sans _id statique.
 async function toggleStatus(actor, { statusId }) {
   const existing = actor.effects.find((effect) => effect.statuses?.has(statusId));
   if (existing) {
     return existing.delete();
   }
   if (actor.isImmuneToAffliction?.(statusId)) {
-    ui.notifications.warn(`${actor.name} est immunisé contre cette affliction.`);
+    ui.notifications.warn(t("SODL.Hud.Notify.Immune", { name: actor.name }));
     return undefined;
   }
   const definition = CONFIG.statusEffects[statusId];
   if (!definition) {
-    ui.notifications.error(`Affliction inconnue du système : ${statusId}`);
+    ui.notifications.error(t("SODL.Hud.Notify.UnknownAffliction", { id: statusId }));
     return undefined;
   }
   const data = { ...foundry.utils.deepClone(definition), statuses: [statusId] };
   return ActiveEffect.create(data, { parent: actor });
 }
 
-// Effets temporaires : activer/désactiver, créer (puis configurer dans sa
-// fiche), supprimer.
 function toggleEffect(actor, { effectId }) {
   const effect = actor.effects.get(effectId);
   return effect?.update({ disabled: !effect.disabled });
 }
 
 async function createEffect(actor) {
-  const [effect] = await actor.createEmbeddedDocuments("ActiveEffect", [{ name: "Nouvel effet", img: "icons/svg/aura.svg" }]);
+  const [effect] = await actor.createEmbeddedDocuments("ActiveEffect", [{ name: t("SODL.Hud.NewEffect"), img: "icons/svg/aura.svg" }]);
   effect?.sheet.render(true);
   return effect;
 }
@@ -93,7 +80,6 @@ function deleteEffect(actor, { effectId }) {
   return actor.effects.get(effectId)?.delete();
 }
 
-// Rend (+1) ou retire (-1) une utilisation d'un sort ou d'un talent, sans le lancer.
 function adjustUses(actor, { itemId, amount }) {
   const uses = limitedUsesOf(toSnapshot(actor), itemId);
   const item = actor.items.get(itemId);
@@ -107,9 +93,8 @@ function adjustUses(actor, { itemId, amount }) {
   return item.update(toUsesUpdate(item.type, used));
 }
 
-// Poste dans le chat la règle d'une affliction (aide de jeu du compagnon).
 function postRule(actor, { ruleId }) {
-  const affliction = SODL_CONFIG.afflictions.list.find((candidate) => candidate.id === ruleId);
+  const affliction = afflictionCatalogue(t).find((candidate) => candidate.id === ruleId);
   if (!affliction) {
     return undefined;
   }
@@ -119,7 +104,6 @@ function postRule(actor, { ruleId }) {
   });
 }
 
-// Repos de 8 ou 24 h du système : rend talents et incantations et soigne.
 function rest(actor, action) {
   return actor.restActor(action.amount, true, true, true);
 }
@@ -150,7 +134,7 @@ const ACTION_STRATEGIES = {
 export function executeAction(actor, action) {
   const strategy = ACTION_STRATEGIES[action.type];
   if (!strategy) {
-    console.warn(`SODL Companion | Action de HUD inconnue : ${action.type}`);
+    console.warn(`SODL Companion | Unknown HUD action: ${action.type}`);
     return undefined;
   }
   return strategy(actor, action);

@@ -1,41 +1,654 @@
 {
   "SODL": {
-    "AppTitle": "Shadow of the Demon Lord - Companion",
-    "Tabs": {
-      "Resources": "Resources",
-      "Rules": "Rules",
-      "Actions": "Actions",
-      "Help": "Help"
+    "Companion": {
+      "ControlTitle": "SODL Companion",
+      "OpenTool": "Open the SODL Companion",
+      "WindowTitle": "Shadow of the Demon Lord - Companion",
+      "SearchPlaceholder": "Search an affliction, an action, a rule...",
+      "NoResults": "No results for \"{query}\".",
+      "Tabs": {
+        "Resources": "Resources",
+        "Rules": "Rules",
+        "Actions": "Actions",
+        "Help": "Help"
+      },
+      "Resources": {
+        "Title": "Fortune management",
+        "Subtitle": "Pool shared by the whole group",
+        "GroupPoints": "Group Fortune",
+        "Hidden": "The GM keeps track of the Fortune pool. Luck may be with you, or not.",
+        "Reset": "Reset",
+        "Pool": "Pool",
+        "ExtendedEffects": "Extended Uses",
+        "GmOnly": "(GM only)"
+      },
+      "RulesTitle": "Rules Summary",
+      "ActionsTitle": "Available Actions",
+      "HelpTitle": "Help and Information",
+      "Sections": {
+        "Afflictions": "Afflictions",
+        "Situational": "Situational Rules",
+        "OutOfCombat": "Out of Combat",
+        "Madness": "Madness",
+        "Corruption": "Corruption",
+        "ActionsList": "Actions (not exhaustive)",
+        "Melee": "Melee Options",
+        "Ranged": "Ranged Options",
+        "OtherAttacks": "Other Attack Types",
+        "CastSpell": "Cast a Spell",
+        "UseIncantation": "Use an Incantation",
+        "About": "About this Module",
+        "Access": "Access Control"
+      },
+      "Spell": {
+        "Formula": "Formula",
+        "Focus": "Focus",
+        "SpendCasting": "Spend a casting",
+        "Incantation": "Incantation"
+      },
+      "Categories": {
+        "Affliction": "Affliction",
+        "Action": "Action",
+        "Melee": "Melee",
+        "Ranged": "Ranged",
+        "Attack": "Attack",
+        "Rule": "Rule",
+        "Fortune": "Fortune",
+        "Spell": "Spell"
+      },
+      "ChancePoints": "Fortune",
+      "About": {
+        "Intro": "This companion module for <strong>Shadow of the Demon Lord</strong> lets you:",
+        "Item1": "Manage the group's Fortune",
+        "Item2": "Browse rules summaries",
+        "Item3": "Read action descriptions",
+        "Item4": "Instantly search an affliction, an action or a rule",
+        "Note": "<strong>Note:</strong> Only the GM can change Fortune."
+      },
+      "Access": {
+        "Players": "<strong>Players:</strong> read-only access to every tab",
+        "Gm": "<strong>GM:</strong> full access, with editing"
+      },
+      "Notify": {
+        "Increased": "Group Fortune increased by {amount}",
+        "Decreased": "Group Fortune decreased by {amount}",
+        "Reset": "Group Fortune reset",
+        "PermissionDenied": "You do not have permission to edit this"
+      }
     },
-    "Resources": {
-      "Title": "Resource Management",
-      "Character": "Character",
-      "ChancePoints": "Chance Points",
-      "Max": "Maximum per adventure",
-      "Recovery": "Recovery",
-      "Usage": "Usage",
-      "NoCharacter": "No character selected. Please select your character to access resource management.",
-      "ReadOnly": "Read-only - Only the GM can modify",
-      "PointsIncreased": "Chance points increased by {amount}",
-      "PointsDecreased": "Chance points decreased by {amount}",
-      "PointsReset": "Chance points reset",
-      "NoCharacterSelected": "No character selected",
-      "PermissionDenied": "You do not have permissions to modify"
+    "Common": {
+      "Cancel": "Cancel"
+    },
+    "DiceClock": {
+      "Title": "Dice Clock",
+      "OpenTool": "Open the Dice Clock",
+      "HourFormat": "{hour}:00",
+      "Expired": "The clock has run out.",
+      "Room": "Room / Floor",
+      "RoomHint": "Search a room / Change floor (-1 point)",
+      "ShortRest": "Short rest",
+      "ShortRestHint": "Short rest (-1 hour)",
+      "Adjust": "Adjust",
+      "Reset": "Reset",
+      "ReadOnly": "The GM controls the clock.",
+      "ResetDialog": {
+        "Title": "Reset the clock",
+        "Content": "Reset the clock to its starting state?"
+      },
+      "Chat": {
+        "ResetTitle": "The clock has been reset.",
+        "ResetBody": "It is {hour}. The dice show their maximum value.",
+        "ChimeTitle": "Ding... Dong...",
+        "ChimeBody": "The clock strikes. It is now {hour}."
+      },
+      "DefaultCriticalMessage": "A dull rumble rises from the walls of the house... The Mound of Flesh (Walter) awakens and attacks!"
+    },
+    "Youtube": {
+      "Title": "YouTube Player",
+      "Unsorted": "Unsorted",
+      "VideoFallback": "Video {id}",
+      "ConfirmClick": "Click again to confirm",
+      "Expand": "Expand the player",
+      "Move": "Move",
+      "SearchAndLibrary": "Search and library",
+      "Collapse": "Collapse",
+      "PlayPause": "Play / pause",
+      "Join": "Join the broadcast",
+      "Placeholder": "Search for a video or pick one from the library to broadcast it.",
+      "Volume": "Volume (only for you)",
+      "Fullscreen": "Fullscreen",
+      "Stop": "Stop the broadcast for everyone",
+      "SearchPlaceholder": "Search YouTube or paste one or more links",
+      "Search": "Search",
+      "Library": "Library",
+      "NewFolder": "New folder",
+      "FolderName": "Folder name",
+      "Create": "Create",
+      "RenameFolder": "Rename the folder",
+      "DeleteFolder": "Delete the folder (its videos move to \"Unsorted\")",
+      "VideoHint": "{title} — click to broadcast, drag to change folder",
+      "RenameVideo": "Rename the video",
+      "DeleteVideo": "Delete the video",
+      "EmptyFolder": "Empty folder — drag videos here",
+      "EmptyLibrary": "No videos yet. Search for one above.",
+      "Searching": "Searching…",
+      "Results": "Results ({count})",
+      "TargetFolder": "Folder to add the videos to",
+      "AddAll": "Add the {count} videos to the library",
+      "CloseResults": "Close the results",
+      "PlayNow": "Broadcast now",
+      "AlreadySaved": "Already in the library",
+      "AddToLibrary": "Add to the library",
+      "NoResults": "No results.",
+      "Errors": {
+        "EmptyFolderName": "The folder name cannot be empty.",
+        "EmptyVideoTitle": "The video title cannot be empty.",
+        "EmptyVideoId": "The YouTube ID cannot be empty.",
+        "InvalidLink": "Invalid YouTube link.",
+        "ApiRefused": "YouTube search refused ({reason}): check the API key.",
+        "NoProvider": "No search service responded. Set a YouTube API key in the module settings.",
+        "IframeApi": "Could not load the YouTube API."
+      }
+    },
+    "Hud": {
+      "Tabs": {
+        "Attacks": "Attacks",
+        "Equipment": "Equipment",
+        "Spells": "Spells",
+        "Talents": "Talents",
+        "Items": "Items",
+        "Attributes": "Attributes",
+        "Afflictions": "Afflictions",
+        "Effects": "Effects"
+      },
+      "Back": "Back",
+      "RequirementBane": "Requires {attribute} {min}: 1 bane",
+      "NoAmmoLinked": "No ammunition linked",
+      "OutOfAmmo": "Out of {name}",
+      "Hands": {
+        "One": "1 hand",
+        "Two": "2 hands",
+        "Off": "Off hand"
+      },
+      "Shield": "Shield",
+      "Armor": "Armor",
+      "Groups": {
+        "Weapons": "Weapons",
+        "Protections": "Protection",
+        "Ammunition": "Ammunition"
+      },
+      "NoTradition": "No tradition",
+      "SpellCount": {
+        "One": "{count} spell",
+        "Many": "{count} spells"
+      },
+      "Profession": "Profession",
+      "ActiveAfflictions": "Active afflictions",
+      "AddAffliction": "Add an affliction",
+      "NoAffliction": "No afflictions",
+      "Inactive": "Inactive",
+      "NewEffect": "New effect",
+      "Health": {
+        "full": "Unhurt",
+        "hurt": "Hurt",
+        "injured": "Injured",
+        "incapacitated": "Incapacitated",
+        "unknown": "Health not set"
+      },
+      "RollKind": {
+        "Attack": "Attack",
+        "Spell": "Spell",
+        "Talent": "Talent",
+        "Item": "Item",
+        "Challenge": "Challenge",
+        "Profession": "Profession",
+        "Default": "Roll"
+      },
+      "RollTitle": "{kind}: {name}",
+      "Roll": {
+        "BoonsOne": "{count} boon",
+        "BoonsMany": "{count} boons",
+        "BanesOne": "{count} bane",
+        "BanesMany": "{count} banes",
+        "Modifier": "Mod {value}",
+        "MoreBanes": "One more bane",
+        "MoreBoons": "One more boon",
+        "ModifierMinus": "Modifier -1",
+        "ModifierPlus": "Modifier +1",
+        "ResetHint": "Click to reset to 0",
+        "Confirm": "Roll"
+      },
+      "Notify": {
+        "Stowed": "Stowed: {items}",
+        "SelectToken": "Select a token to show the combat HUD.",
+        "Immune": "{name} is immune to this affliction.",
+        "UnknownAffliction": "Affliction unknown to the system: {id}"
+      },
+      "Chat": {
+        "DiceRoll": "{formula} roll",
+        "Recover": "<strong>{name}</strong> recovers and heals {amount} damage."
+      },
+      "ShowHud": "Show the combat HUD",
+      "ShowFoundry": "Show the macros and players",
+      "ResizeHint": "Drag to change the height",
+      "Portrait": {
+        "Edit": "Click to crop the portrait",
+        "Save": "Save the crop",
+        "Reset": "Show the whole image"
+      },
+      "OpenSheet": "Open the character sheet",
+      "OpenSheetOf": "Open {name}'s sheet",
+      "HealthHint": "{state} — Health (damage: {damage})",
+      "TakeDamage": "Take 1 damage",
+      "HealDamage": "Heal 1 damage",
+      "Insanity": "Insanity",
+      "InsanityMinus": "Insanity -1",
+      "InsanityPlus": "Insanity +1",
+      "Corruption": "Corruption",
+      "CorruptionMinus": "Corruption -1",
+      "CorruptionPlus": "Corruption +1",
+      "CorruptionRoll": "Corruption {value}: click for the Corruption roll (d20)",
+      "Defense": "Defense",
+      "Speed": "Speed",
+      "Power": "Power",
+      "RecoverHint": "Recover: heals {amount} damage (healing rate). Once per rest.",
+      "SendRuleHint": "(click to send it to chat)",
+      "SendRule": "Send the rule to chat",
+      "Dice": {
+        "Title": "Roll dice",
+        "Roll": "Roll {count}d{faces}"
+      },
+      "Rest": {
+        "Title": "Rest",
+        "Rest8": "Rest 8 h",
+        "Rest24": "Rest 24 h",
+        "Hint8": "Restores talents and castings, heals the healing rate.",
+        "Hint24": "Restores talents and castings, heals twice the healing rate.",
+        "Heal": "+{amount} HP"
+      },
+      "Uses": {
+        "Remove": "Remove a use",
+        "Restore": "Restore a use"
+      },
+      "DeleteEffect": "Delete the effect",
+      "EmptyTab": "Nothing in this tab."
+    },
+    "Settings": {
+      "DiceClockEnabled": {
+        "Name": "Dice Clock: enable",
+        "Hint": "Shows or hides the Dice Clock button and window. Reopen/refresh the game for the button to appear or disappear."
+      },
+      "DiceClockDiceCount": {
+        "Name": "Dice Clock: number of dice",
+        "Hint": "Number of dice used by the clock."
+      },
+      "DiceClockFaces": {
+        "Name": "Dice Clock: faces per die",
+        "Hint": "Number of faces on each die (6 for d6)."
+      },
+      "DiceClockPipMinutes": {
+        "Name": "Dice Clock: minutes per point",
+        "Hint": "Duration in minutes represented by one point (pip) removed."
+      },
+      "DiceClockStartHour": {
+        "Name": "Dice Clock: starting hour",
+        "Hint": "Hour shown at the start of the countdown (18 for 18:00)."
+      },
+      "DiceClockSoundPath": {
+        "Name": "Dice Clock: chime sound",
+        "Hint": "Path to the audio file played on every full hour (e.g. modules/sodl-companion/sounds/chime.mp3). Leave empty to disable the sound."
+      },
+      "DiceClockCriticalMessage": {
+        "Name": "Dice Clock: final message",
+        "Hint": "Message sent to chat when all the clock's points are spent."
+      },
+      "YoutubePlayerEnabled": {
+        "Name": "YouTube Player: enable",
+        "Hint": "Shows a floating player letting the GM broadcast YouTube videos to every player. Requires a refresh."
+      },
+      "YoutubeApiKey": {
+        "Name": "YouTube Player: API key (search)",
+        "Hint": "Optional. A \"YouTube Data API v3\" key (Google Cloud Console) for reliable search. Without a key, search uses public Invidious instances, which are sometimes unavailable."
+      },
+      "YoutubeInvidiousInstances": {
+        "Name": "YouTube Player: Invidious instances",
+        "Hint": "Used for search when no API key is set, in order, separated by commas."
+      },
+      "CombatHudEnabled": {
+        "Name": "Combat HUD: enable",
+        "Hint": "Personal setting (each player and the GM choose for themselves). Shows at the bottom of the screen, in place of the macros and player list, a HUD for the controlled token (attacks, equipment, spells, talents, items, attributes). A button brings the macros back."
+      },
+      "CombatHudToggle": {
+        "Name": "Combat HUD: toggle HUD / macros",
+        "Hint": "Switches between the combat HUD and the macro bar with the player list."
+      }
     },
     "Rules": {
-      "Title": "Rules Summary",
-      "Afflictions": "Afflictions Summary",
-      "Actions": "Actions (Non-exhaustive)"
-    },
-    "Actions": {
-      "Title": "Available Actions",
-      "CastSpell": "Cast a Spell",
-      "UseIncantation": "Use an Incantation"
-    },
-    "Help": {
-      "Title": "Help and Information",
-      "About": "About this Module",
-      "Access": "Access Control"
+      "Resources": {
+        "ChancePoints": {
+          "Description": "Fortune points the players can spend"
+        }
+      },
+      "ChancePointsRules": {
+        "Gains": "Fortune can be earned through remarkable actions, good ideas, good roleplaying and other praiseworthy behaviour...",
+        "ExtendedUses": {
+          "0": {
+            "Name": "Impose banes",
+            "Description": "A player can spend Fortune to impose 2 banes on any d20 roll. It is a great way to save someone's life by targeting a monster's attack roll or cancelling its boons. Or to give 2 banes to the Agility roll of an enemy pushed off a cliff so they miss their grip. One's Fortune is another's misfortune."
+          },
+          "1": {
+            "Name": "Roll low",
+            "Description": "A player can spend Fortune to change the result of any d6 to a 1. This neutralizes an opponent's boon by reducing its bonus to 1, forces someone to fail a fate roll in the worst possible way, or reduces incoming damage to avoid falling unconscious. Bringing bad luck on others may not be honourable, but neither are these times."
+          },
+          "2": {
+            "Name": "Remove an affliction",
+            "Description": "When a member of the group is about to gain an affliction (other than defenseless or unconscious), any player can spend Fortune to immediately cancel that affliction on that character, avoiding disastrous consequences."
+          },
+          "3": {
+            "Name": "Refuse a Mark of Darkness",
+            "Description": "A player whose character would gain a Mark of Darkness can spend Fortune to refuse it. Not every practitioner of the dark arts wants to display their depravity. It lets them hide their Corruption from the Inquisition... or from their own companions."
+          },
+          "4": {
+            "Name": "Control Madness",
+            "Description": "A player about to go mad can spend Fortune to take the Revelation result instead of the result rolled on the d20 Madness table. Revelation strengthens the character's resolve against monstrosities, at least for a while."
+          },
+          "5": {
+            "Name": "Stay Death's hand",
+            "Description": "A player whose character takes damage equal to or greater than their Health can spend Fortune to become merely incapacitated instead of dying instantly. If there is one reason to keep Fortune, this is it. Instant death rules remind players they are not invincible; this option saves them from a crushing attack or a tragic fall, even if it does not protect them from what comes next."
+          },
+          "6": {
+            "Name": "Improvised magic",
+            "Description": "A player who has discovered at least one magic tradition can spend Fortune to sacrifice a casting of a learned spell and instead cast any other spell of equal or lower rank from a tradition they have discovered. It lets them cast exactly the right spell at the right time."
+          },
+          "7": {
+            "Name": "Alter reality",
+            "Description": "A player can spend Fortune to slightly alter the story to keep the narrative moving. This is the most open use and requires strict GM control. Usually it gets around a complication: finding the key to a locked door, discovering a 20-metre rope when 10 were missing, or finding a witness in a crowded street. As it can completely defuse a plot, the GM is free to refuse or adjust the result to fit the story."
+          }
+        }
+      },
+      "FortuneAwardsTable": {
+        "Title": "Fortune Award Frequency",
+        "Subtitle": "Maximum awards by group size",
+        "Header": {
+          "0": "Tier",
+          "1": "Small",
+          "2": "Medium",
+          "3": "Large"
+        },
+        "Rows": {
+          "0": {
+            "0": "Starting"
+          },
+          "1": {
+            "0": "Novice"
+          },
+          "2": {
+            "0": "Expert"
+          },
+          "3": {
+            "0": "Master"
+          }
+        },
+        "Note": "A small group has three characters or fewer, a large group has six or more."
+      },
+      "Afflictions": {
+        "List": {
+          "Impaired": {
+            "Name": "Impaired",
+            "Description": "Rolls take 1 bane."
+          },
+          "Deafened": {
+            "Name": "Deafened",
+            "Description": "Cannot hear anything (Perception rolls based on hearing fail)."
+          },
+          "Prone": {
+            "Name": "Prone",
+            "Description": "1 bane on Strength/Agility rolls. Enemies get 1 boon to attack in melee and 1 bane at range. Standing up costs the move or an action."
+          },
+          "Blinded": {
+            "Name": "Blinded",
+            "Description": "Speed 2 at most, cannot see anything."
+          },
+          "Charmed": {
+            "Name": "Charmed",
+            "Description": "Considers the source a trusted ally and cannot target it."
+          },
+          "Compelled": {
+            "Name": "Compelled",
+            "Description": "Cannot act or move; on each fast turn, the source can force it to move or use an action."
+          },
+          "Frightened": {
+            "Name": "Frightened",
+            "Description": "1 bane on rolls (3 if it can see the source), cannot take fast turns."
+          },
+          "Poisoned": {
+            "Name": "Poisoned",
+            "Description": "1 bane on rolls."
+          },
+          "Asleep": {
+            "Name": "Asleep",
+            "Description": "Prone and unconscious. A creature can use an action to wake the character. Taking damage wakes it."
+          },
+          "Dazed": {
+            "Name": "Dazed",
+            "Description": "Cannot use actions."
+          },
+          "Fatigued": {
+            "Name": "Fatigued",
+            "Description": "1 bane on rolls."
+          },
+          "Grabbed": {
+            "Name": "Grabbed",
+            "Description": "If its Size is equal to or smaller than the attacker's, cannot move away from it; otherwise the attacker can follow its movement or let go."
+          },
+          "Immobilized": {
+            "Name": "Immobilized",
+            "Description": "Speed 0 and 1 boon to attack the character."
+          },
+          "Unconscious": {
+            "Name": "Unconscious",
+            "Description": "Defense 5, no actions or movement."
+          },
+          "Diseased": {
+            "Name": "Diseased",
+            "Description": "1 bane on rolls."
+          },
+          "Slowed": {
+            "Name": "Slowed",
+            "Description": "Speed halved, slow turns only."
+          },
+          "Stunned": {
+            "Name": "Stunned",
+            "Description": "Cannot act or move, 1 boon to attack it."
+          },
+          "Surprised": {
+            "Name": "Surprised",
+            "Description": "Cannot act or move (for this round)."
+          },
+          "Horrified": {
+            "Name": "Horrified",
+            "Description": "3 banes on rolls while it can see the source of its horror."
+          },
+          "Defenseless": {
+            "Name": "Defenseless",
+            "Description": "Cannot act, Defense 5, every roll fails (except Perception)."
+          }
+        }
+      },
+      "Actions": {
+        "List": {
+          "0": {
+            "Name": "Attack / Cast a spell / Reload a weapon",
+            "Description": "Perform an action not listed here, as the player imagines it."
+          },
+          "1": {
+            "Name": "Help",
+            "Description": "Intellect roll to give 1 boon to a creature."
+          },
+          "2": {
+            "Name": "Prepare",
+            "Description": "Declare an action and a trigger. If the action triggers, the rolls for that action get 1 boon."
+          },
+          "3": {
+            "Name": "Retreat",
+            "Description": "Half Speed, avoids free attacks."
+          },
+          "4": {
+            "Name": "Search",
+            "Description": "Find and share the location of a hidden creature."
+          },
+          "5": {
+            "Name": "Concentrate",
+            "Description": "On a spell. It is lost if the character takes damage and fails a Will roll, or does something else."
+          },
+          "6": {
+            "Name": "Dismiss",
+            "Description": "End the effect of a still-active spell cast by the character."
+          },
+          "7": {
+            "Name": "Hide",
+            "Description": "Behind cover, in the shadows... A creature that cannot see the character has 3 banes against it, and the character 1 boon against it."
+          },
+          "8": {
+            "Name": "Defend",
+            "Description": "Enemy attacks take 1 bane and the character gets 1 boon on defensive rolls."
+          },
+          "9": {
+            "Name": "Rush",
+            "Description": "Move at double Speed."
+          },
+          "10": {
+            "Name": "Stabilize",
+            "Description": "Intellect roll (1 bane if the creature is dying) to heal 1 damage on an incapacitated creature."
+          },
+          "11": {
+            "Name": "Use an item / Reload",
+            "Description": "Use an item or reload a weapon."
+          }
+        }
+      },
+      "MeleeOptions": {
+        "List": {
+          "0": {
+            "Name": "Disengaging attack",
+            "Description": "1 bane. On a success, the target gets no free attack against the character this round."
+          },
+          "1": {
+            "Name": "Defensive attack",
+            "Description": "1 bane; the next attack targeting the character takes 1 bane."
+          },
+          "2": {
+            "Name": "Staggering attack",
+            "Description": "1 bane; a target of equal or smaller Size falls prone if it fails its Agility roll."
+          },
+          "3": {
+            "Name": "Lunging attack",
+            "Description": "1 bane, Reach +1 metre."
+          },
+          "4": {
+            "Name": "Driving attack",
+            "Description": "1 bane, move [Strength mod] metres, dragging the target along."
+          }
+        }
+      },
+      "RangedOptions": {
+        "List": {
+          "0": {
+            "Name": "Called shot",
+            "Description": "2 banes to aim at a specific part (for example the eyes, to impose 1 bane)."
+          },
+          "1": {
+            "Name": "Long shot",
+            "Description": "1 bane to shoot beyond normal range."
+          },
+          "2": {
+            "Name": "Knockdown shot",
+            "Description": "2 banes against a target of equal or smaller Size; it falls prone if it fails its Agility roll."
+          }
+        }
+      },
+      "OtherAttacks": {
+        "List": {
+          "0": {
+            "Name": "Two weapons",
+            "Description": "2 banes, deals the damage of both weapons. Or 3 banes for 2 attacks against 2 different targets."
+          },
+          "1": {
+            "Name": "Disarm",
+            "Description": "Agility/Strength roll against Agility/Strength (2 banes if unarmed)."
+          },
+          "2": {
+            "Name": "Distract",
+            "Description": "Intellect attack roll to impose 2 banes on the target's next roll."
+          },
+          "3": {
+            "Name": "Grab",
+            "Description": "Agility/Strength roll against Agility. Costs an action each round to maintain."
+          },
+          "4": {
+            "Name": "Escape",
+            "Description": "If grabbed: Agility/Strength roll against Strength."
+          },
+          "5": {
+            "Name": "Feint",
+            "Description": "Agility against Perception. Grants 2 boons on the character's next roll against the target's Defense or Agility, or avoids free attacks."
+          },
+          "6": {
+            "Name": "Knock down (standing)",
+            "Description": "Strength against Agility (1 bane per larger Size, 1 boon if smaller) to knock the target prone."
+          },
+          "7": {
+            "Name": "Knock down (grabbed)",
+            "Description": "Strength against Strength for a grabbed target no larger. On a success, move at half Speed."
+          },
+          "8": {
+            "Name": "Shove",
+            "Description": "Strength against Strength (1 bane per larger Size, 1 boon if smaller). Pushes 1 + [Strength mod] metres."
+          },
+          "9": {
+            "Name": "Charge",
+            "Description": "Move, taking 1 bane on all rolls this round. Allows an attack, shove or knock down."
+          }
+        }
+      },
+      "SituationalRules": {
+        "List": {
+          "0": {
+            "Name": "Cover",
+            "Description": "Can impose 1 or 2 banes on enemy attacks, or make them fail against total cover."
+          },
+          "1": {
+            "Name": "Darkness",
+            "Description": "A dim / dark / totally dark area imposes 1 / 2 / 3 banes on attacks."
+          }
+        }
+      },
+      "OutOfCombat": {
+        "Content": "An incapacitated character is defenseless and makes a fate roll (1d6) each round. They can start dying (1), get back up impaired (6), or stay unconscious for a few hours (after 3 rounds). A dying character keeps rolling and can die (1), or become incapacitated again (6). Injured: from half Health."
+      },
+      "Madness": {
+        "Content": "Gaining Insanity: when the character gains Insanity, they become frightened for rounds equal to their total Insanity. If already frightened, Will roll or be stunned for one round. Going mad: if total Insanity reaches Will, the character suffers a Madness then loses 1d6 + [Will mod] Insanity."
+      },
+      "Corruption": {
+        "Content": "Gaining Corruption: by committing atrocious acts. Then roll 1d20 and gain a Mark of Darkness if the roll does not exceed total Corruption. Effects: from 4 Corruption, the character suffers additional effects."
+      },
+      "Spellcasting": {
+        "Formula": "It must be spoken, so the caster must be able to speak.",
+        "Focus": "It must be brandished. It is an item such as a wand, an amulet, a grimoire...",
+        "UseCost": "Spend a casting, regained after a rest.",
+        "NonConsenting": "Unwilling target: make an attack roll (Intellect or Will) against the target's Agility.",
+        "Incantation": {
+          "Description": "These are formulas written on a scroll, carved, painted...",
+          "Cast": "To use it: Intellect roll. The incantation is then destroyed.",
+          "PowerVsLevel": "If the spell's rank exceeds the character's Power, the roll takes banes equal to the difference.",
+          "HigherPower": "If the character's Power is higher, no roll is needed."
+        },
+        "UsesTable": {
+          "Header": {
+            "0": "Power \\ Rank"
+          }
+        }
+      }
     }
   }
 }

@@ -1,14 +1,3 @@
-/**
- * Règles d'équipement strictes, indépendantes de Foundry.
- *
- * Un personnage a deux mains et une seule armure (le bouclier compte comme un
- * objet tenu en main secondaire). Équiper un objet range automatiquement ce qui
- * entre en conflit avec lui. Les fonctions renvoient la liste des changements
- * `{ id, worn }` à appliquer, dans l'ordre des objets reçus, l'objet ciblé en dernier.
- *
- * Objets attendus : { id, type: "weapon" | "armor", hands?, isShield?, worn }.
- */
-
 const HAND_CAPACITY = 2;
 
 const KIND = {
@@ -52,7 +41,6 @@ function totalHands(items) {
   return items.reduce((sum, item) => sum + handsNeeded(kindOf(item)), 0);
 }
 
-// Objets en main à ranger pour faire de la place à un objet de ce type.
 function handConflicts(wornInHands, targetKind) {
   if (targetKind === KIND.TWO_HANDED) {
     return wornInHands;
@@ -64,7 +52,7 @@ function handConflicts(wornInHands, targetKind) {
   }
 
   const kept = wornInHands.filter((item) => !dropped.includes(item));
-  // On range d'abord le plus récent du même type (changement d'arme), puis les autres.
+
   const candidates = [
     ...kept.filter((item) => kindOf(item) === targetKind).reverse(),
     ...kept.filter((item) => kindOf(item) !== targetKind).reverse()

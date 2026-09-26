@@ -35,3 +35,14 @@ export function rerenderOpenApps(AppClass) {
     }
   }
 }
+
+export function t(key, data) {
+  if (data) {
+    return game.i18n.format(key, data);
+  }
+  return game.i18n.localize(key);
+}
+
+export function errorMessage(err) {
+  return t(err.message, err.data);
+}

@@ -5,8 +5,6 @@ function isEnabled() {
   return game.settings.get(MODULE_ID, "combatHudEnabled");
 }
 
-// Réglage personnel : lié à l'utilisateur (tous ses appareils) depuis la v12,
-// au navigateur en v11 où la portée « user » n'existe pas.
 function personalScope() {
   if (game.release?.generation >= 12) {
     return "user";
@@ -26,7 +24,6 @@ function onItemChanged(item) {
   SODLCombatHud.onDocumentChanged(item.parent);
 }
 
-// Un effet peut appartenir à l'acteur ou à l'un de ses objets.
 function onEffectChanged(effect) {
   let owner = effect.parent;
   if (owner?.documentName === "Item") {
@@ -35,18 +32,13 @@ function onEffectChanged(effect) {
   SODLCombatHud.onDocumentChanged(owner);
 }
 
-/**
- * HUD de combat : occupe le bas de l'écran à la place de la barre de macros et
- * de la liste des joueurs (bascule par bouton ou raccourci), et reprend armes,
- * équipement, sorts, talents, consommables et caractéristiques du token contrôlé.
- */
 export const combatHudFeature = {
   init() {
     window.SODLCombatHud = SODLCombatHud;
 
     game.settings.register(MODULE_ID, "combatHudEnabled", {
-      name: "HUD de combat : activer",
-      hint: "Réglage personnel (chaque joueur et le MJ choisissent pour eux-mêmes). Affiche en bas de l'écran, à la place des macros et de la liste des joueurs, un HUD pour le token contrôlé (attaques, équipement, sorts, talents, objets, caractéristiques). Un bouton permet de revenir aux macros.",
+      name: "SODL.Settings.CombatHudEnabled.Name",
+      hint: "SODL.Settings.CombatHudEnabled.Hint",
       scope: personalScope(),
       config: true,
       type: Boolean,
@@ -55,8 +47,8 @@ export const combatHudFeature = {
     });
 
     game.keybindings.register(MODULE_ID, "combatHudToggle", {
-      name: "HUD de combat : basculer HUD / macros",
-      hint: "Alterne entre le HUD de combat et la barre de macros avec la liste des joueurs.",
+      name: "SODL.Settings.CombatHudToggle.Name",
+      hint: "SODL.Settings.CombatHudToggle.Hint",
       editable: [],
       onDown: () => {
         if (!isEnabled()) {
@@ -67,7 +59,6 @@ export const combatHudFeature = {
       }
     });
 
-    // Onglet ouvert, mode affiché et hauteur des actions, propres à chaque client.
     game.settings.register(MODULE_ID, "combatHudLayout", {
       scope: "client",
       config: false,
@@ -76,8 +67,6 @@ export const combatHudFeature = {
     });
   },
 
-  // Les hooks sont posés dans tous les cas : ils ne font rien tant que le HUD
-  // n'est pas monté, ce qui permet de l'activer en cours de partie.
   ready() {
     applyEnabled(isEnabled());
 

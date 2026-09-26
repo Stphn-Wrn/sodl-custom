@@ -1,3 +1,4 @@
+import { LocalizedError } from "../../shared/i18n.js";
 import { parseYoutubeVideoId } from "./url-parser.js";
 
 /**
@@ -116,7 +117,7 @@ function createDataApiProvider({ apiKey, fetch }) {
       try {
         body = await fetchJson(fetch, url.toString());
       } catch (err) {
-        throw new Error(`Recherche YouTube refusée (${err.message}) : vérifiez la clé API.`);
+        throw new LocalizedError("SODL.Youtube.Errors.ApiRefused", { reason: err.message });
       }
       return parseDataApiResults(body);
     }
@@ -140,10 +141,10 @@ function createInvidiousProvider({ instances, fetch }) {
           const body = await fetchJson(fetch, url.toString(), options);
           return parseInvidiousResults(body).slice(0, SEARCH_RESULTS_LIMIT);
         } catch (err) {
-          console.warn(`SODL Companion | Instance Invidious indisponible : ${instance}`, err);
+          console.warn(`SODL Companion | Invidious instance unavailable: ${instance}`, err);
         }
       }
-      throw new Error("Aucun service de recherche n'a répondu. Renseignez une clé API YouTube dans les paramètres du module.");
+      throw new LocalizedError("SODL.Youtube.Errors.NoProvider");
     }
   };
 }

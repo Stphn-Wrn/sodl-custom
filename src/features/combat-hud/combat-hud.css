@@ -1,4 +1,3 @@
-/* -------- HUD de combat (bas de l'écran, à la place des macros et des joueurs) -------- */
 body.sodl-hud-active #hotbar,
 body.sodl-hud-active #players {
   display: none !important;
@@ -15,13 +14,13 @@ body.sodl-hud-active #players {
   --hud-title: #e0c9a6;
   --hud-health: #6f9e55;
   --hud-warning: #e0a44f;
-  /* Couleur de l'état de santé, surchargée par .sodl-hud-state-* */
+
   --hud-state: var(--hud-muted);
 
   position: fixed;
   z-index: 60;
   bottom: 12px;
-  /* left / right sont calculés en JS (liste des joueurs → barre latérale). */
+
   left: 16px;
   right: 16px;
   display: flex;
@@ -50,7 +49,6 @@ body.sodl-hud-active #players {
   box-shadow: none;
 }
 
-/* Poignée : bord supérieur, glisser verticalement pour changer la hauteur. */
 .sodl-hud-grip {
   position: absolute;
   top: -4px;
@@ -68,7 +66,6 @@ body.sodl-hud-active #players {
   background: var(--hud-title);
 }
 
-/* -------- Colonne de gauche : portrait et état du personnage -------- */
 .sodl-hud-identity {
   flex: none;
   display: flex;
@@ -90,8 +87,6 @@ body.sodl-hud-active #players {
   cursor: pointer;
 }
 
-/* Sans cadrage : image entière ; les bandes éventuelles prennent le fond.
-   Un cadrage enregistré remplace ces valeurs par un style en ligne. */
 .sodl-hud-portrait img {
   width: 100%;
   height: 100%;
@@ -100,7 +95,6 @@ body.sodl-hud-active #players {
   user-select: none;
 }
 
-/* Le cadre du portrait prend la couleur de l'état de santé. */
 .sodl-hud-portrait {
   border-color: var(--hud-state);
   box-shadow: 0 0 8px color-mix(in srgb, var(--hud-state) 35%, transparent);
@@ -251,7 +245,6 @@ body.sodl-hud-active #players {
   border: none;
 }
 
-/* Valeurs cliquables : taux de guérison (Récupérer) et Corruption (jet). */
 .sodl-hud-recover,
 .sodl-hud-stat-roll {
   display: flex;
@@ -291,7 +284,6 @@ body.sodl-hud-active #players {
   background: var(--hud-hover) !important;
 }
 
-/* -------- Partie droite : onglets et actions -------- */
 .sodl-hud-main {
   flex: 1;
   min-width: 0;
@@ -325,7 +317,6 @@ body.sodl-hud-active #players {
   border-bottom-color: var(--hud-accent) !important;
 }
 
-/* Panneau de jet (faveurs/fléaux, modificateur), au-dessus de la zone d'actions. */
 .sodl-hud-main {
   position: relative;
 }
@@ -427,7 +418,6 @@ body.sodl-hud-active #players {
   background: var(--hud-hover) !important;
 }
 
-/* Menus (dés, repos), ouverts au-dessus de leur bouton, dans le HUD. */
 .sodl-hud-menu {
   position: absolute;
   z-index: 1;
@@ -460,7 +450,6 @@ body.sodl-hud-active #players {
   background: var(--hud-hover) !important;
 }
 
-/* Lanceur de dés : grille type de dé × nombre de dés. */
 .sodl-hud-dice {
   min-width: 0;
   padding: 6px;
@@ -532,9 +521,6 @@ body.sodl-hud-active #players {
   background: var(--hud-hover) !important;
 }
 
-/* La zone d'actions remplit toute la hauteur du HUD (souvent fixée par la
-   colonne de gauche) ; la poignée règle sa hauteur minimale. Base 0 : son
-   contenu ne l'agrandit pas, il défile au-delà. */
 .sodl-hud-entries {
   flex: 1 1 0;
   display: grid;
@@ -569,7 +555,6 @@ body.sodl-hud-active #players {
   border-color: var(--hud-title) !important;
 }
 
-/* Tuile de retour : se distingue des actions. */
 .sodl-hud .sodl-hud-entry-back {
   color: var(--hud-title);
   background: transparent !important;
@@ -580,7 +565,6 @@ body.sodl-hud-active #players {
   color: var(--hud-title);
 }
 
-/* Grisé sans l'attribut disabled, pour garder le clic droit (fiche). */
 .sodl-hud-entry.is-disabled {
   opacity: 0.4;
   cursor: not-allowed;
@@ -604,7 +588,6 @@ body.sodl-hud-active #players {
   min-height: 28px;
 }
 
-/* Place pour le bouton de coin ((i) d'une affliction, ✕ d'un effet). */
 .sodl-hud-entry.has-corner {
   padding-right: 22px !important;
 }
@@ -621,7 +604,6 @@ body.sodl-hud-active #players {
   grid-column-start: 1;
 }
 
-/* Intitulé de catégorie (Armes, Protections, Munitions) en début de ligne. */
 .sodl-hud-heading {
   display: flex;
   align-items: center;
@@ -634,7 +616,6 @@ body.sodl-hud-active #players {
   border-right: 1px solid var(--hud-border);
 }
 
-/* Bouton de coin : (i) d'une affliction (règle dans le chat), ✕ d'un effet. */
 .sodl-hud .sodl-hud-entry-help {
   position: absolute;
   top: 50%;
@@ -651,7 +632,6 @@ body.sodl-hud-active #players {
   color: var(--hud-title);
 }
 
-/* −/+ des utilisations (sorts, talents), visibles au survol de la tuile. */
 .sodl-hud-entry-uses {
   position: absolute;
   top: 50%;
@@ -712,14 +692,12 @@ body.sodl-hud-active #players {
   font-style: italic;
 }
 
-/* Partie droite étroite : on ne garde que les icônes des onglets. */
 @container (max-width: 620px) {
   .sodl-hud-tab-label {
     display: none;
   }
 }
 
-/* -------- Bouton pour revenir au HUD (mode macros + joueurs) -------- */
 .sodl-hud-switch {
   position: fixed;
   z-index: 60;

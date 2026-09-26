@@ -21,27 +21,27 @@
   </div>
 
   {{#if isMidnight}}
-  <p class="dice-clock-alert"><i class="fas fa-skull"></i> L'horloge est arrivée à son terme.</p>
+  <p class="dice-clock-alert"><i class="fas fa-skull"></i> {{localize "SODL.DiceClock.Expired"}}</p>
   {{/if}}
 
   {{#if isGM}}
   <div class="dice-clock-controls">
-    <button type="button" class="dice-clock-room btn btn-sm" title="Fouiller une pièce / Changer d'étage (-1 point)">
-      <i class="fas fa-door-open"></i> Pièce / Étage
+    <button type="button" class="dice-clock-room btn btn-sm" title="{{localize 'SODL.DiceClock.RoomHint'}}">
+      <i class="fas fa-door-open"></i> {{localize "SODL.DiceClock.Room"}}
     </button>
-    <button type="button" class="dice-clock-rest btn btn-sm" title="Repos court (-1 heure)">
-      <i class="fas fa-bed"></i> Repos court
+    <button type="button" class="dice-clock-rest btn btn-sm" title="{{localize 'SODL.DiceClock.ShortRestHint'}}">
+      <i class="fas fa-bed"></i> {{localize "SODL.DiceClock.ShortRest"}}
     </button>
     <div class="dice-clock-manual">
       <button type="button" class="dice-clock-minus btn btn-sm" title="-1 point"><i class="fas fa-minus"></i></button>
-      <span>Ajustement</span>
+      <span>{{localize "SODL.DiceClock.Adjust"}}</span>
       <button type="button" class="dice-clock-plus btn btn-sm" title="+1 point"><i class="fas fa-plus"></i></button>
     </div>
-    <button type="button" class="dice-clock-reset btn btn-sm" title="Réinitialiser l'horloge">
-      <i class="fas fa-undo"></i> Réinitialiser
+    <button type="button" class="dice-clock-reset btn btn-sm" title="{{localize 'SODL.DiceClock.ResetDialog.Title'}}">
+      <i class="fas fa-undo"></i> {{localize "SODL.DiceClock.Reset"}}
     </button>
   </div>
   {{else}}
-  <p class="dice-clock-readonly"><i class="fas fa-eye"></i> Le MJ contrôle l'horloge.</p>
+  <p class="dice-clock-readonly"><i class="fas fa-eye"></i> {{localize "SODL.DiceClock.ReadOnly"}}</p>
   {{/if}}
 </div>

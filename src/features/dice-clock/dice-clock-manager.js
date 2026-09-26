@@ -1,5 +1,5 @@
 import { MODULE_ID } from "../../shared/constants.js";
-import { playSound } from "../../shared/foundry-adapter.js";
+import { playSound, t } from "../../shared/foundry-adapter.js";
 
 // Icônes Font Awesome pour les faces 1 à 6 (utilisées seulement quand le nombre
 // de faces par dé est 6, pour un rendu générique au-delà on affiche un chiffre).
@@ -71,7 +71,7 @@ export class SODLDiceClockManager {
 
   static getHourLabel(hour) {
     const h = ((Math.round(hour) % 24) + 24) % 24;
-    return `${String(h).padStart(2, "0")}h00`;
+    return t("SODL.DiceClock.HourFormat", { hour: String(h).padStart(2, "0") });
   }
 
   static async resetClock() {
@@ -81,8 +81,8 @@ export class SODLDiceClockManager {
     await ChatMessage.create({
       content: `
         <div class="sodl-clock-message">
-          <p><strong>🕰️ L'horloge est remise à zéro.</strong></p>
-          <p>Il est ${this.getHourLabel(state.hour)}. Les dés affichent leur valeur maximale.</p>
+          <p><strong>🕰️ ${t("SODL.DiceClock.Chat.ResetTitle")}</strong></p>
+          <p>${t("SODL.DiceClock.Chat.ResetBody", { hour: this.getHourLabel(state.hour) })}</p>
         </div>
       `
     });
@@ -94,7 +94,7 @@ export class SODLDiceClockManager {
     try {
       await playSound({ src: soundPath, volume: 0.8, autoplay: true, loop: false });
     } catch (err) {
-      console.warn("SODL Companion | Impossible de jouer le son de l'horloge", err);
+      console.warn("SODL Companion | Could not play the clock chime", err);
     }
   }
 
@@ -113,15 +113,15 @@ export class SODLDiceClockManager {
       await ChatMessage.create({
         content: `
           <div class="sodl-clock-message">
-            <p><strong>🕰️ Ding... Dong...</strong></p>
-            <p>L'horloge sonne. Il est maintenant <strong>${this.getHourLabel(state.hour)}</strong>.</p>
+            <p><strong>🕰️ ${t("SODL.DiceClock.Chat.ChimeTitle")}</strong></p>
+            <p>${t("SODL.DiceClock.Chat.ChimeBody", { hour: `<strong>${this.getHourLabel(state.hour)}</strong>` })}</p>
           </div>
         `
       });
     }
 
     if (state.remaining === 0) {
-      const criticalMessage = game.settings.get(MODULE_ID, "diceClockCriticalMessage");
+      const criticalMessage = t(game.settings.get(MODULE_ID, "diceClockCriticalMessage"));
       await ChatMessage.create({
         content: `
           <div class="sodl-clock-message sodl-clock-critical">

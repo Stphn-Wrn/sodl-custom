@@ -1,41 +1,654 @@
 {
   "SODL": {
-    "AppTitle": "L'Ombre du Seigneur Démon - Compagnon",
-    "Tabs": {
-      "Resources": "Ressources",
-      "Rules": "Règles",
-      "Actions": "Actions",
-      "Help": "Aide"
-    },
-    "Resources": {
-      "Title": "Gestion des Ressources",
-      "Character": "Personnage",
+    "Companion": {
+      "ControlTitle": "Compagnon OSD",
+      "OpenTool": "Ouvrir le Compagnon OSD",
+      "WindowTitle": "L'Ombre du Seigneur Démon - Compagnon",
+      "SearchPlaceholder": "Rechercher une affliction, une action, une règle...",
+      "NoResults": "Aucun résultat pour « {query} ».",
+      "Tabs": {
+        "Resources": "Ressources",
+        "Rules": "Règles",
+        "Actions": "Actions",
+        "Help": "Aide"
+      },
+      "Resources": {
+        "Title": "Gestion des points de chance",
+        "Subtitle": "Réserve partagée par tout le groupe",
+        "GroupPoints": "Points de Chance du Groupe",
+        "Hidden": "Le MJ garde le compte de la réserve de Fortune. Votre bonne étoile vous accompagne, ou pas.",
+        "Reset": "Réinitialiser",
+        "Pool": "Réserve",
+        "ExtendedEffects": "Effets Étendus",
+        "GmOnly": "(MJ uniquement)"
+      },
+      "RulesTitle": "Résumé des Règles",
+      "ActionsTitle": "Actions Disponibles",
+      "HelpTitle": "Aide et Information",
+      "Sections": {
+        "Afflictions": "Afflictions",
+        "Situational": "Règles Situationnelles",
+        "OutOfCombat": "Hors de Combat",
+        "Madness": "Folie",
+        "Corruption": "Corruption",
+        "ActionsList": "Actions (Non-exhaustif)",
+        "Melee": "Options en Mêlée",
+        "Ranged": "Options de Tir",
+        "OtherAttacks": "Autres Types d'Attaques",
+        "CastSpell": "Lancer un Sort",
+        "UseIncantation": "Utiliser une Incantation",
+        "About": "À propos de ce Module",
+        "Access": "Contrôle d'Accès"
+      },
+      "Spell": {
+        "Formula": "Formule",
+        "Focus": "Focale",
+        "SpendCasting": "Dépenser une utilisation",
+        "Incantation": "Incantation"
+      },
+      "Categories": {
+        "Affliction": "Affliction",
+        "Action": "Action",
+        "Melee": "Mêlée",
+        "Ranged": "Tir",
+        "Attack": "Attaque",
+        "Rule": "Règle",
+        "Fortune": "Fortune",
+        "Spell": "Sort"
+      },
       "ChancePoints": "Points de Chance",
-      "Max": "Maximum par aventure",
-      "Recovery": "Récupération",
-      "Usage": "Utilisation",
-      "NoCharacter": "Aucun personnage sélectionné. Veuillez sélectionner votre personnage pour accéder à la gestion des ressources.",
-      "ReadOnly": "Lecture seule - Seul le MJ peut modifier",
-      "PointsIncreased": "Points de chance augmentés de {amount}",
-      "PointsDecreased": "Points de chance diminués de {amount}",
-      "PointsReset": "Points de chance réinitialisés",
-      "NoCharacterSelected": "Aucun personnage sélectionné",
-      "PermissionDenied": "Vous n'avez pas les permissions pour modifier"
+      "About": {
+        "Intro": "Ce module compagnon pour <strong>L'Ombre du Seigneur Démon</strong> vous permet de :",
+        "Item1": "Gérer les points de chance du groupe",
+        "Item2": "Accéder à des résumés de règles",
+        "Item3": "Consulter les descriptions d'actions",
+        "Item4": "Rechercher instantanément une affliction, une action ou une règle",
+        "Note": "<strong>Note :</strong> Seul le MJ peut modifier les points de chance."
+      },
+      "Access": {
+        "Players": "<strong>Joueurs :</strong> Accès en lecture seule à tous les onglets",
+        "Gm": "<strong>MJ :</strong> Accès complet avec possibilité de modification"
+      },
+      "Notify": {
+        "Increased": "Points de chance du groupe augmentés de {amount}",
+        "Decreased": "Points de chance du groupe diminués de {amount}",
+        "Reset": "Points de chance du groupe réinitialisés",
+        "PermissionDenied": "Vous n'avez pas les permissions pour modifier"
+      }
+    },
+    "Common": {
+      "Cancel": "Annuler"
+    },
+    "DiceClock": {
+      "Title": "Horloge à Dés",
+      "OpenTool": "Ouvrir l'Horloge à Dés",
+      "HourFormat": "{hour}h00",
+      "Expired": "L'horloge est arrivée à son terme.",
+      "Room": "Pièce / Étage",
+      "RoomHint": "Fouiller une pièce / Changer d'étage (-1 point)",
+      "ShortRest": "Repos court",
+      "ShortRestHint": "Repos court (-1 heure)",
+      "Adjust": "Ajustement",
+      "Reset": "Réinitialiser",
+      "ReadOnly": "Le MJ contrôle l'horloge.",
+      "ResetDialog": {
+        "Title": "Réinitialiser l'horloge",
+        "Content": "Remettre l'horloge à son état de départ ?"
+      },
+      "Chat": {
+        "ResetTitle": "L'horloge est remise à zéro.",
+        "ResetBody": "Il est {hour}. Les dés affichent leur valeur maximale.",
+        "ChimeTitle": "Ding... Dong...",
+        "ChimeBody": "L'horloge sonne. Il est maintenant {hour}."
+      },
+      "DefaultCriticalMessage": "Un grondement sourd s'élève des murs de la maison... Le Monticule de Chair (Walter) s'éveille et attaque !"
+    },
+    "Youtube": {
+      "Title": "Lecteur YouTube",
+      "Unsorted": "Non classé",
+      "VideoFallback": "Vidéo {id}",
+      "ConfirmClick": "Cliquer à nouveau pour confirmer",
+      "Expand": "Agrandir le lecteur",
+      "Move": "Déplacer",
+      "SearchAndLibrary": "Recherche et bibliothèque",
+      "Collapse": "Réduire",
+      "PlayPause": "Lecture / pause",
+      "Join": "Rejoindre la diffusion",
+      "Placeholder": "Recherchez une vidéo ou choisissez-en une dans la bibliothèque pour la diffuser.",
+      "Volume": "Volume (uniquement pour vous)",
+      "Fullscreen": "Plein écran",
+      "Stop": "Arrêter la diffusion pour tout le monde",
+      "SearchPlaceholder": "Rechercher sur YouTube ou coller un ou plusieurs liens",
+      "Search": "Rechercher",
+      "Library": "Bibliothèque",
+      "NewFolder": "Nouveau dossier",
+      "FolderName": "Nom du dossier",
+      "Create": "Créer",
+      "RenameFolder": "Renommer le dossier",
+      "DeleteFolder": "Supprimer le dossier (ses vidéos passent dans « Non classé »)",
+      "VideoHint": "{title} — cliquer pour diffuser, glisser pour changer de dossier",
+      "RenameVideo": "Renommer la vidéo",
+      "DeleteVideo": "Supprimer la vidéo",
+      "EmptyFolder": "Dossier vide — glissez-y des vidéos",
+      "EmptyLibrary": "Aucune vidéo pour le moment. Recherchez-en une ci-dessus.",
+      "Searching": "Recherche en cours…",
+      "Results": "Résultats ({count})",
+      "TargetFolder": "Dossier dans lequel ajouter les vidéos",
+      "AddAll": "Ajouter les {count} vidéos à la bibliothèque",
+      "CloseResults": "Fermer les résultats",
+      "PlayNow": "Diffuser maintenant",
+      "AlreadySaved": "Déjà dans la bibliothèque",
+      "AddToLibrary": "Ajouter à la bibliothèque",
+      "NoResults": "Aucun résultat.",
+      "Errors": {
+        "EmptyFolderName": "Le nom du dossier ne peut pas être vide.",
+        "EmptyVideoTitle": "Le titre de la vidéo ne peut pas être vide.",
+        "EmptyVideoId": "L'identifiant YouTube ne peut pas être vide.",
+        "InvalidLink": "Lien YouTube invalide.",
+        "ApiRefused": "Recherche YouTube refusée ({reason}) : vérifiez la clé API.",
+        "NoProvider": "Aucun service de recherche n'a répondu. Renseignez une clé API YouTube dans les paramètres du module.",
+        "IframeApi": "Impossible de charger l'API YouTube."
+      }
+    },
+    "Hud": {
+      "Tabs": {
+        "Attacks": "Attaques",
+        "Equipment": "Équipement",
+        "Spells": "Sorts",
+        "Talents": "Talents",
+        "Items": "Objets",
+        "Attributes": "Caractéristiques",
+        "Afflictions": "Afflictions",
+        "Effects": "Effets"
+      },
+      "Back": "Retour",
+      "RequirementBane": "Requiert {attribute} {min} : 1 fléau",
+      "NoAmmoLinked": "Aucune munition associée",
+      "OutOfAmmo": "Plus de {name}",
+      "Hands": {
+        "One": "1 main",
+        "Two": "2 mains",
+        "Off": "Main faible"
+      },
+      "Shield": "Bouclier",
+      "Armor": "Armure",
+      "Groups": {
+        "Weapons": "Armes",
+        "Protections": "Protections",
+        "Ammunition": "Munitions"
+      },
+      "NoTradition": "Sans tradition",
+      "SpellCount": {
+        "One": "{count} sort",
+        "Many": "{count} sorts"
+      },
+      "Profession": "Profession",
+      "ActiveAfflictions": "Afflictions actives",
+      "AddAffliction": "Ajouter une affliction",
+      "NoAffliction": "Aucune affliction",
+      "Inactive": "Inactif",
+      "NewEffect": "Nouvel effet",
+      "Health": {
+        "full": "Indemne",
+        "hurt": "Touché",
+        "injured": "Blessé",
+        "incapacitated": "Neutralisé",
+        "unknown": "Santé non renseignée"
+      },
+      "RollKind": {
+        "Attack": "Attaque",
+        "Spell": "Sort",
+        "Talent": "Talent",
+        "Item": "Objet",
+        "Challenge": "Défi",
+        "Profession": "Profession",
+        "Default": "Jet"
+      },
+      "RollTitle": "{kind} : {name}",
+      "Roll": {
+        "BoonsOne": "{count} faveur",
+        "BoonsMany": "{count} faveurs",
+        "BanesOne": "{count} fléau",
+        "BanesMany": "{count} fléaux",
+        "Modifier": "Mod {value}",
+        "MoreBanes": "Un fléau de plus",
+        "MoreBoons": "Une faveur de plus",
+        "ModifierMinus": "Modificateur -1",
+        "ModifierPlus": "Modificateur +1",
+        "ResetHint": "Cliquer pour remettre à 0",
+        "Confirm": "Lancer"
+      },
+      "Notify": {
+        "Stowed": "Rangé : {items}",
+        "SelectToken": "Sélectionnez un token pour afficher le HUD de combat.",
+        "Immune": "{name} est immunisé contre cette affliction.",
+        "UnknownAffliction": "Affliction inconnue du système : {id}"
+      },
+      "Chat": {
+        "DiceRoll": "Jet de {formula}",
+        "Recover": "<strong>{name}</strong> récupère et soigne {amount} dégât(s)."
+      },
+      "ShowHud": "Afficher le HUD de combat",
+      "ShowFoundry": "Afficher les macros et les joueurs",
+      "ResizeHint": "Glisser pour changer la hauteur",
+      "Portrait": {
+        "Edit": "Cliquer pour recadrer le portrait",
+        "Save": "Enregistrer le cadrage",
+        "Reset": "Afficher l'image entière"
+      },
+      "OpenSheet": "Ouvrir la fiche du personnage",
+      "OpenSheetOf": "Ouvrir la fiche de {name}",
+      "HealthHint": "{state} — Santé (dégâts : {damage})",
+      "TakeDamage": "Subir 1 dégât",
+      "HealDamage": "Soigner 1 dégât",
+      "Insanity": "Folie",
+      "InsanityMinus": "Folie -1",
+      "InsanityPlus": "Folie +1",
+      "Corruption": "Corruption",
+      "CorruptionMinus": "Corruption -1",
+      "CorruptionPlus": "Corruption +1",
+      "CorruptionRoll": "Corruption {value} : cliquer pour le jet de Corruption (d20)",
+      "Defense": "Défense",
+      "Speed": "Vitesse",
+      "Power": "Pouvoir",
+      "RecoverHint": "Récupérer : soigne {amount} PV (taux de guérison). Une fois par repos.",
+      "SendRuleHint": "(cliquer pour l'envoyer dans le chat)",
+      "SendRule": "Envoyer la règle dans le chat",
+      "Dice": {
+        "Title": "Lancer des dés",
+        "Roll": "Lancer {count}d{faces}"
+      },
+      "Rest": {
+        "Title": "Se reposer",
+        "Rest8": "Repos 8 h",
+        "Rest24": "Repos 24 h",
+        "Hint8": "Rend talents et incantations, soigne le taux de guérison.",
+        "Hint24": "Rend talents et incantations, soigne deux fois le taux de guérison.",
+        "Heal": "+{amount} PV"
+      },
+      "Uses": {
+        "Remove": "Retirer une utilisation",
+        "Restore": "Rendre une utilisation"
+      },
+      "DeleteEffect": "Supprimer l'effet",
+      "EmptyTab": "Rien dans cet onglet."
+    },
+    "Settings": {
+      "DiceClockEnabled": {
+        "Name": "Horloge à Dés : activer le module",
+        "Hint": "Active ou désactive le bouton et la fenêtre de l'Horloge à Dés. Nécessite de rouvrir/rafraîchir la partie pour que le bouton apparaisse ou disparaisse."
+      },
+      "DiceClockDiceCount": {
+        "Name": "Horloge à Dés : nombre de dés",
+        "Hint": "Nombre de dés utilisés par l'horloge."
+      },
+      "DiceClockFaces": {
+        "Name": "Horloge à Dés : faces par dé",
+        "Hint": "Nombre de faces de chaque dé (6 pour des d6)."
+      },
+      "DiceClockPipMinutes": {
+        "Name": "Horloge à Dés : minutes par point",
+        "Hint": "Durée en minutes représentée par un point (pip) retiré."
+      },
+      "DiceClockStartHour": {
+        "Name": "Horloge à Dés : heure de départ",
+        "Hint": "Heure affichée au début du compte à rebours (18 pour 18h00)."
+      },
+      "DiceClockSoundPath": {
+        "Name": "Horloge à Dés : son du carillon",
+        "Hint": "Chemin vers le fichier audio joué à chaque heure pleine (ex: modules/sodl-companion/sounds/carillon.mp3). Laisser vide pour désactiver le son."
+      },
+      "DiceClockCriticalMessage": {
+        "Name": "Horloge à Dés : message final",
+        "Hint": "Message envoyé dans le chat lorsque tous les points de l'horloge sont épuisés."
+      },
+      "YoutubePlayerEnabled": {
+        "Name": "Lecteur YouTube : activer le module",
+        "Hint": "Affiche un lecteur flottant permettant au MJ de diffuser des vidéos YouTube à tous les joueurs. Nécessite de rafraîchir la partie."
+      },
+      "YoutubeApiKey": {
+        "Name": "Lecteur YouTube : clé API (recherche)",
+        "Hint": "Facultatif. Clé « YouTube Data API v3 » (Google Cloud Console) pour une recherche fiable. Sans clé, la recherche passe par des instances publiques Invidious, parfois indisponibles."
+      },
+      "YoutubeInvidiousInstances": {
+        "Name": "Lecteur YouTube : instances Invidious",
+        "Hint": "Utilisées pour la recherche quand aucune clé API n'est renseignée, dans l'ordre, séparées par des virgules."
+      },
+      "CombatHudEnabled": {
+        "Name": "HUD de combat : activer",
+        "Hint": "Réglage personnel (chaque joueur et le MJ choisissent pour eux-mêmes). Affiche en bas de l'écran, à la place des macros et de la liste des joueurs, un HUD pour le token contrôlé (attaques, équipement, sorts, talents, objets, caractéristiques). Un bouton permet de revenir aux macros."
+      },
+      "CombatHudToggle": {
+        "Name": "HUD de combat : basculer HUD / macros",
+        "Hint": "Alterne entre le HUD de combat et la barre de macros avec la liste des joueurs."
+      }
     },
     "Rules": {
-      "Title": "Résumé des Règles",
-      "Afflictions": "Résumé des Afflictions",
-      "Actions": "Actions (Non-exhaustif)"
-    },
-    "Actions": {
-      "Title": "Actions Disponibles",
-      "CastSpell": "Lancer un Sort",
-      "UseIncantation": "Utiliser une Incantation"
-    },
-    "Help": {
-      "Title": "Aide et Information",
-      "About": "À propos de ce Module",
-      "Access": "Contrôle d'Accès"
+      "Resources": {
+        "ChancePoints": {
+          "Description": "Points de chance utilisables par les joueurs"
+        }
+      },
+      "ChancePointsRules": {
+        "Gains": "Les points de chance peuvent être gagnés par des actions remarquables, de bonnes idées, une bonne interprétation et d'autres comportements méritoires...",
+        "ExtendedUses": {
+          "0": {
+            "Name": "Imposer des fléaux",
+            "Description": "Un joueur peut dépenser de la Fortune pour imposer 2 fléaux sur n'importe quel jet de d20. C'est un excellent moyen de sauver la vie de quelqu'un en ciblant le jet d'attaque d'un monstre ou en annulant ses atouts. Ou encore pour donner 2 fléaux au jet d'Agilité d'un ennemi poussé d'une falaise afin qu'il rate sa prise. La Fortune de l'un fait le malheur de l'autre."
+          },
+          "1": {
+            "Name": "Obtenir un résultat faible",
+            "Description": "Un joueur peut dépenser de la Fortune pour remplacer le résultat de n'importe quel d6 par un 1. Cette option permet de neutraliser un atout adverse en réduisant son bonus à 1, de forcer quelqu'un à rater un jet de destin de la pire des manières, ou de réduire les dégâts entrants pour éviter de tomber inconscient. Provoquer la guigne chez les autres n'est peut-être pas honorable, mais l'époque ne l'est pas non plus."
+          },
+          "2": {
+            "Name": "Supprimer une affliction",
+            "Description": "Lorsqu'un membre du groupe s'apprête à subir une affliction (autre que sans défense ou inconscient), tout joueur peut dépenser de la Fortune pour annuler immédiatement cette affliction sur ce personnage, évitant ainsi des conséquences désastreuses."
+          },
+          "3": {
+            "Name": "Refuser la Marque des Ténèbres",
+            "Description": "Un joueur dont le personnage devrait gagner une Marque des Ténèbres peut dépenser de la Fortune pour la refuser. Tous les pratiquants des arts sombres ne veulent pas afficher leur perversité. Cela permet de cacher sa Corruption aux yeux de l'Inquisition... ou de ses propres camarades."
+          },
+          "4": {
+            "Name": "Contrôler la Folie",
+            "Description": "Un joueur sur le point de devenir fou peut dépenser de la Fortune pour subir le résultat de Révélation à la place du résultat déterminé par le d20 sur la table de Folie. La Révélation renforce la résolution du personnage face aux monstruosités, du moins pour un temps."
+          },
+          "5": {
+            "Name": "Retenir la main de la Mort",
+            "Description": "Un joueur dont le personnage subit des dégâts égaux ou supérieurs à sa valeur de Santé peut dépenser de la Fortune pour devenir simplement incapacité au lieu de mourir instantanément. S'il y a bien une raison de garder de la Fortune, c'est celle-ci. Les règles de mort instantanée rappellent aux joueurs qu'ils ne sont pas invincibles ; cette option les sauve d'une attaque écrasante ou d'une chute tragique, même si cela ne les protège pas de ce qui viendra juste après."
+          },
+          "6": {
+            "Name": "Magie improvisée",
+            "Description": "Un joueur ayant découvert au moins une tradition magique peut dépenser de la Fortune pour sacrifier l'utilisation d'un sort appris afin de lancer à la place n'importe quel autre sort de rang équivalent ou inférieur provenant d'une tradition qu'il a découverte. Cela permet de lancer précisément le bon sort au bon moment."
+          },
+          "7": {
+            "Name": "Altérer la réalité",
+            "Description": "Un joueur peut dépenser de la Fortune pour modifier légèrement l'histoire afin de continuer à faire progresser le récit. C'est l'utilisation la plus libre, qui nécessite un contrôle strict du MJ. Généralement, cela permet de contourner une complication : trouver la clé d'une porte verrouillée, découvrir une corde de 20 mètres quand il en manquait 10, ou trouver un témoin dans une rue bondée. Comme cela peut complètement désamorcer une intrigue, le MJ est libre de refuser ou de modifier le résultat pour qu'il colle à l'histoire."
+          }
+        }
+      },
+      "FortuneAwardsTable": {
+        "Title": "Fréquence des Récompenses de Fortune",
+        "Subtitle": "Maximum de récompenses selon la taille du groupe",
+        "Header": {
+          "0": "Palier",
+          "1": "Petit",
+          "2": "Moyen",
+          "3": "Grand"
+        },
+        "Rows": {
+          "0": {
+            "0": "Départ"
+          },
+          "1": {
+            "0": "Novice"
+          },
+          "2": {
+            "0": "Expert"
+          },
+          "3": {
+            "0": "Maître"
+          }
+        },
+        "Note": "Un petit groupe compte trois personnages ou moins, un grand groupe en compte six ou plus."
+      },
+      "Afflictions": {
+        "List": {
+          "Impaired": {
+            "Name": "Affaibli (impaired)",
+            "Description": "Les jets subissent +1 Desav (Désavantage)."
+          },
+          "Deafened": {
+            "Name": "Assourdi (deafened)",
+            "Description": "N'entends rien (les jets de Perception basés sur l'ouïe échouent)."
+          },
+          "Prone": {
+            "Name": "À terre (prone)",
+            "Description": "Force/Agilité +1 Desav. Les adversaires gagnent 1 Av pour attaquer le PJ en mêlée, et 1 Desav à distance. Se relever coûte le déplacement ou une action."
+          },
+          "Blinded": {
+            "Name": "Aveuglé (blinded)",
+            "Description": "Vitesse maximum 2, ne voit rien."
+          },
+          "Charmed": {
+            "Name": "Charmé (charmed)",
+            "Description": "Considère la source comme un allié de confiance et ne peut pas la prendre pour cible."
+          },
+          "Compelled": {
+            "Name": "Contraint (compelled)",
+            "Description": "Ne peut ni agir ni se déplacer ; à chaque tour rapide, la source peut le forcer à se déplacer ou à utiliser une action."
+          },
+          "Frightened": {
+            "Name": "Effrayé (frightened)",
+            "Description": "Jet +1 Desav (+3 si en voit la source), ne peut pas faire de tours rapides."
+          },
+          "Poisoned": {
+            "Name": "Empoisonné (poisoned)",
+            "Description": "Jets +1 Desav."
+          },
+          "Asleep": {
+            "Name": "Endormi (asleep)",
+            "Description": "À terre + inconscient. Une créature peut utiliser une action pour réveiller le PJ. Prendre des dégâts réveille."
+          },
+          "Dazed": {
+            "Name": "Étourdi (dazed)",
+            "Description": "Aucune action possible."
+          },
+          "Fatigued": {
+            "Name": "Fatigué (fatigued)",
+            "Description": "Jets +1 Desav."
+          },
+          "Grabbed": {
+            "Name": "Saisi (grabbed)",
+            "Description": "Si son Gabarit est inférieur ou égal à celui de l'agresseur, ne peut pas s'éloigner de lui ; sinon, l'agresseur peut suivre ses déplacements ou le lâcher."
+          },
+          "Immobilized": {
+            "Name": "Immobilisé (immobilized)",
+            "Description": "Vitesse 0 et +1 Av pour attaquer le PJ."
+          },
+          "Unconscious": {
+            "Name": "Inconscient (unconscious)",
+            "Description": "Défense 5, aucune action ni déplacement."
+          },
+          "Diseased": {
+            "Name": "Malade (diseased)",
+            "Description": "Jets +1 Desav."
+          },
+          "Slowed": {
+            "Name": "Ralenti (slowed)",
+            "Description": "Vitesse/2, tours lents uniquement."
+          },
+          "Stunned": {
+            "Name": "Stupéfait (stunned)",
+            "Description": "Ne peut pas agir/se déplacer, +1 Av pour l'attaquer."
+          },
+          "Surprised": {
+            "Name": "Surpris (surprised)",
+            "Description": "Ne peut pas agir/se déplacer (pour ce round)."
+          },
+          "Horrified": {
+            "Name": "Terrifié (horrified)",
+            "Description": "Jets +3 Desav tant qu'il voit la source de sa terreur."
+          },
+          "Defenseless": {
+            "Name": "Vulnérable (defenseless)",
+            "Description": "Ne peut pas agir, Défense de 5, tout jet échoue (sauf Perception)."
+          }
+        }
+      },
+      "Actions": {
+        "List": {
+          "0": {
+            "Name": "Attaquer / Lancer un sort / Recharger une arme",
+            "Description": "Effectue une action non-listée ici selon ce qu'imagine le joueur."
+          },
+          "1": {
+            "Name": "Aider",
+            "Description": "Test d'Intellect pour donner +1 Av à une créature."
+          },
+          "2": {
+            "Name": "Se préparer",
+            "Description": "Déclarer une action et un déclencheur. Si l'action se déclenche, les jets liés à cette action ont +1 Av."
+          },
+          "3": {
+            "Name": "Battre en retraite",
+            "Description": "Vitesse/2, évite les attaques gratuites."
+          },
+          "4": {
+            "Name": "Chercher",
+            "Description": "Trouver et partager la position d'une créature dissimulée."
+          },
+          "5": {
+            "Name": "Garder la concentration",
+            "Description": "Sur un sort. Elle est perdue si le personnage prend des dégâts et échoue un jet de Volonté, ou fait autre chose."
+          },
+          "6": {
+            "Name": "Révoquer",
+            "Description": "L'effet d'un sort encore actif lancé par le PJ."
+          },
+          "7": {
+            "Name": "Se cacher",
+            "Description": "Derrière un abri, dans l'ombre... Une créature ne voyant pas le PJ a 3 Desav contre lui, et le PJ +1 Av contre elle."
+          },
+          "8": {
+            "Name": "Se défendre",
+            "Description": "Les attaques des adversaires subissent +1 Desav et le PJ gagne +1 Av pour ses jets défensifs."
+          },
+          "9": {
+            "Name": "Sprinter",
+            "Description": "Se déplacer au double de la Vitesse."
+          },
+          "10": {
+            "Name": "Stabiliser",
+            "Description": "Jet d'Intellect (1 Desav si la créature agonise) pour soigner 1 dégât sur une créature hors-combat."
+          },
+          "11": {
+            "Name": "Utiliser un objet / Recharger",
+            "Description": "Utilise un objet ou recharge une arme."
+          }
+        }
+      },
+      "MeleeOptions": {
+        "List": {
+          "0": {
+            "Name": "Attaque de dégagement",
+            "Description": "+1 Desav. Si réussie, pas d'attaque gratuite de la cible contre le PJ durant ce round."
+          },
+          "1": {
+            "Name": "Attaque défensive",
+            "Description": "+1 Desav, la prochaine attaque ciblant le PJ subit 1 Desav."
+          },
+          "2": {
+            "Name": "Attaque déstabilisante",
+            "Description": "+1 Désav, une cible de gabarit inférieur ou égal tombe si elle échoue son jet d'Agilité."
+          },
+          "3": {
+            "Name": "Attaque en fente",
+            "Description": "+1 Désav, Allonge +1 mètre."
+          },
+          "4": {
+            "Name": "Attaque entraînante",
+            "Description": "+1 Désav, mouvement de [mod Force] mètres entraînant la cible."
+          }
+        }
+      },
+      "RangedOptions": {
+        "List": {
+          "0": {
+            "Name": "Tir de précision",
+            "Description": "+2 Desav pour viser une partie précise (par exemple les yeux pour imposer 1 Désavantage)."
+          },
+          "1": {
+            "Name": "Tir distant",
+            "Description": "+1 Desav pour tirer au-delà de la portée normale."
+          },
+          "2": {
+            "Name": "Tir renversant",
+            "Description": "+2 Desav contre une cible de gabarit inférieur ou égal ; elle tombe si elle échoue son jet d'Agilité."
+          }
+        }
+      },
+      "OtherAttacks": {
+        "List": {
+          "0": {
+            "Name": "Avec deux armes",
+            "Description": "+2 Desav, inflige les dégâts des 2 armes. Ou 3 Desav si 2 attaques contre 2 cibles différentes."
+          },
+          "1": {
+            "Name": "Désarmer",
+            "Description": "Jet d'Agilité/Force contre Agilité/Force (2 Desav si effectué sans arme)."
+          },
+          "2": {
+            "Name": "Distraire",
+            "Description": "Jet d'attaque d'Intellect pour imposer 2 Desav sur le prochain jet de la cible."
+          },
+          "3": {
+            "Name": "Saisir",
+            "Description": "Jet Agilité/Force contre Agilité. Coûte une action à chaque round pour maintenir."
+          },
+          "4": {
+            "Name": "Se libérer",
+            "Description": "Si saisi : jet Agilité/Force contre Force."
+          },
+          "5": {
+            "Name": "Feinter",
+            "Description": "Agilité contre Perception. Donne 2 Avantages pour le prochain jet du personnage contre la Défense ou l'Agilité de la cible, ou évite les attaques gratuites."
+          },
+          "6": {
+            "Name": "Renverser (debout)",
+            "Description": "Force contre Agilité (+1 Desav par gabarit plus grand, +1 Av si plus petit) pour faire chuter la cible."
+          },
+          "7": {
+            "Name": "Renverser (saisi)",
+            "Description": "Force contre Force pour une cible saisie pas plus grande. Si succès, déplacement à Vitesse/2."
+          },
+          "8": {
+            "Name": "Pousser",
+            "Description": "Force contre Force (+1 Desav par gabarit plus grand, +1 Av si plus petit). Pousse de 1 + [mod Force] mètres."
+          },
+          "9": {
+            "Name": "Charger",
+            "Description": "Déplacement, inflige 1 Desav sur tous les jets ce round-ci. Donne le droit d'attaquer, pousser ou renverser."
+          }
+        }
+      },
+      "SituationalRules": {
+        "List": {
+          "0": {
+            "Name": "Abris / Couvert",
+            "Description": "Peut donner 1 ou 2 Désavantages aux attaques des adversaires, voire les faire échouer si c'est un abri total."
+          },
+          "1": {
+            "Name": "Obscurité",
+            "Description": "Une zone partiellement / fortement / totalement obscure inflige 1 / 2 / 3 Désavantages aux attaques."
+          }
+        }
+      },
+      "OutOfCombat": {
+        "Content": "Un PJ hors de combat est vulnérable et doit faire des jets de destinée (1d6) chaque round. Il peut devenir agonisant (1), se relever affaibli (6), ou rester inconscient quelques heures (au bout de 3 rounds). Un PJ agonisant effectue ses jets et peut mourir (1), ou redevenir hors de combat (6). État blessé : à partir de Santé/2."
+      },
+      "Madness": {
+        "Content": "Cumuler de la folie : au moment où le PJ gagne des points de Folie, il devient effrayé durant Folie totale rounds. S'il l'est déjà, jet de Volonté pour ne pas être stupéfait durant un round. Devenir fou : si la Folie totale atteint la Volonté, le PJ subit une Démence puis perd 1d6 + [mod Volonté] points de folie."
+      },
+      "Corruption": {
+        "Content": "Cumuler de la corruption : en commettant des actes atroces. Tirez ensuite 1d20 et obtenez une Marque des ténèbres si le jet ne dépasse pas la Corruption totale. Effets : à partir de 4 Corruption, le PJ subit des effets supplémentaires."
+      },
+      "Spellcasting": {
+        "Formula": "Il faut la prononcer, donc pouvoir parler.",
+        "Focus": "Il faut la brandir. C'est un objet comme une baguette, une amulette, un grimoire...",
+        "UseCost": "Dépenser une utilisation, regagnée après un repos.",
+        "NonConsenting": "Cible non consentante : faire un jet d'Attaque (d'Intellect ou de Volonté) contre l'Agilité de la cible.",
+        "Incantation": {
+          "Description": "Ce sont des formules écrites sur un parchemin, gravées, peintes...",
+          "Cast": "Pour la lancer : jet d'Intellect. Ensuite, l'incantation est détruite.",
+          "PowerVsLevel": "Si le niveau du sort dépasse la Puissance du PJ, le jet subit autant de Désavantages que de différence.",
+          "HigherPower": "Si la Puissance du PJ est plus grande, pas besoin de faire de jet."
+        },
+        "UsesTable": {
+          "Header": {
+            "0": "Puissance \\ Niveau"
+          }
+        }
+      }
     }
   }
 }

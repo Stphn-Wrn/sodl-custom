@@ -1,16 +1,7 @@
-/**
- * Adapter vers les acteurs du système `demonlord`. C'est le seul fichier qui
- * connaît la forme de `actor.system` et des objets : le reste du HUD travaille
- * sur la vue normalisée renvoyée par `toSnapshot`. Si le système change de
- * structure, seul ce fichier est à adapter.
- */
-
 import { MODULE_ID } from "../../shared/constants.js";
 
-// Flag de l'acteur où est enregistré le cadrage du portrait.
 export const PORTRAIT_FRAME_FLAG = "portraitFrame";
 
-// Les compteurs d'utilisation sont stockés en texte par le système ("", "2"...).
 function toNumber(value) {
   return parseInt(value, 10) || 0;
 }
@@ -27,7 +18,6 @@ function requirement(system) {
   return { attribute: system.requirement?.attribute ?? "", min: toNumber(system.requirement?.minvalue) };
 }
 
-// Le système ne demande faveurs/fléaux (fenêtre de jet) que pour une attaque.
 function rollsAttack(system) {
   return Boolean(system.action?.attack);
 }
@@ -105,7 +95,7 @@ export function toSnapshot(actor) {
       .filter((item) => item.system.consumabletype)
       .map((item) => ({ ...base(item), quantity: toNumber(item.system.quantity), rollsAttack: rollsAttack(item.system) })),
     professions: itemsOfType(actor, "profession").map(base),
-    // Identifiants des statuts actifs (afflictions du système : "prone", "blinded"...).
+
     statuses: Array.from(actor.statuses ?? []),
     effects: Array.from(actor.effects ?? []).map((effect) => ({
       id: effect.id,
@@ -118,7 +108,6 @@ export function toSnapshot(actor) {
   };
 }
 
-// Armes et armures sous la forme attendue par equipment-rules.js.
 export function toEquipmentItems(snapshot) {
   return [
     ...snapshot.weapons.map((weapon) => ({ id: weapon.id, type: "weapon", hands: weapon.hands, isShield: false, worn: weapon.worn })),
@@ -130,7 +119,6 @@ export function toWearUpdates(changes) {
   return changes.map((change) => ({ _id: change.id, "system.wear": change.worn }));
 }
 
-// Mise à jour des utilisations consommées (stockées en texte par le système).
 const USES_PATH = { spell: "system.castings.value", talent: "system.uses.value" };
 
 export function limitedUsesOf(snapshot, itemId) {

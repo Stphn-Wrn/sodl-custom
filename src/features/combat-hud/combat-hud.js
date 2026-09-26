@@ -1,41 +1,35 @@
 import { MODULE_ID, modulePath } from "../../shared/constants.js";
-import { renderTemplate } from "../../shared/foundry-adapter.js";
+import { renderTemplate, t } from "../../shared/foundry-adapter.js";
 import { executeAction } from "./action-executor.js";
 import { armRoll, DEFAULT_ROLL_OPTIONS, stepRollOption, takeArmedRoll } from "./roll-options.js";
 import { PORTRAIT_FRAME_FLAG, toSnapshot } from "./actor-adapter.js";
 import { computeAnchors, DEFAULT_ENTRIES_HEIGHT, resizeHeight } from "./layout.js";
 import { DEFAULT_FRAME, framePortraitStyle, panFrame, zoomFrame } from "./portrait-frame.js";
-import { createSections } from "./sections.js";
+import { afflictionCatalogue, createSections } from "./sections.js";
 import { healthState } from "./health-state.js";
-import { SODL_CONFIG } from "../companion/config.js";
 
 const HUD_TEMPLATE = modulePath("src/features/combat-hud/combat-hud.html");
-// Plusieurs mises à jour arrivent souvent d'un coup (équiper = plusieurs objets).
 const RENDER_DEBOUNCE_MS = 50;
-// Classe posée sur <body> quand le HUD remplace la barre de macros et les joueurs.
 const HUD_ACTIVE_CLASS = "sodl-hud-active";
 const SWITCH_SIZE = 36;
-// Grille du lanceur de dés : un type de dé par ligne, un nombre de dés par colonne.
 const DICE_FACES = [2, 3, 4, 6, 8, 10, 12, 20, 100];
 const DICE_MAX_COUNT = 8;
 const MENU = { DICE: "dice", REST: "rest" };
-// Intitulé du panneau de jet selon le type d'action.
 const ROLL_KIND = {
-  rollWeapon: "Attaque",
-  castSpell: "Sort",
-  useTalent: "Talent",
-  useItem: "Objet",
-  rollChallenge: "Défi",
-  rollProfession: "Profession"
+  rollWeapon: "SODL.Hud.RollKind.Attack",
+  castSpell: "SODL.Hud.RollKind.Spell",
+  useTalent: "SODL.Hud.RollKind.Talent",
+  useItem: "SODL.Hud.RollKind.Item",
+  rollChallenge: "SODL.Hud.RollKind.Challenge",
+  rollProfession: "SODL.Hud.RollKind.Profession"
 };
 const SWITCH_GAP = 8;
 
 export const MODE = { HUD: "hud", FOUNDRY: "foundry" };
 
-// Affliction de l'aide de jeu du compagnon correspondant à un effet actif.
 function catalogueAffliction(effect) {
   const statuses = Array.from(effect.statuses ?? []);
-  return SODL_CONFIG.afflictions.list.find((candidate) => statuses.includes(candidate.id));
+  return afflictionCatalogue(t).find((candidate) => statuses.includes(candidate.id));
 }
 
 function effectView(effect) {
@@ -49,17 +43,16 @@ function effectView(effect) {
 }
 
 function boonsLabel(boons) {
+  const count = Math.abs(boons);
+  let kind = "Boons";
   if (boons < 0) {
-    return `${-boons} fléau${pluralSuffix(-boons, "x")}`;
+    kind = "Banes";
   }
-  return `${boons} faveur${pluralSuffix(boons, "s")}`;
-}
-
-function pluralSuffix(count, suffix) {
+  let form = "One";
   if (count > 1) {
-    return suffix;
+    form = "Many";
   }
-  return "";
+  return t(`SODL.Hud.Roll.${kind}${form}`, { count });
 }
 
 function signed(value) {
@@ -77,17 +70,6 @@ function measureLeft(elementId) {
   return rect.left;
 }
 
-/**
- * HUD de combat du token contrôlé (ou, à défaut, du personnage du joueur).
- *
- * Deux modes, basculés par un bouton (et un raccourci clavier) :
- * - « HUD » : le HUD occupe le bas de l'écran, de la liste des joueurs
- *   jusqu'à la barre latérale, et masque la barre de macros et les joueurs ;
- * - « Foundry » : l'interface d'origine, avec un bouton pour revenir au HUD.
- *
- * Pas de surveillance continue : le HUD se redessine uniquement sur les hooks
- * Foundry qui concernent l'acteur affiché (cf. register.js).
- */
 export class SODLCombatHud {
   static instance = null;
 
@@ -99,7 +81,6 @@ export class SODLCombatHud {
     return this.instance;
   }
 
-  // Désactivation en cours de partie : on retire le HUD et on rend l'interface d'origine.
   static unmount() {
     if (!this.instance) {
       return;
@@ -112,14 +93,12 @@ export class SODLCombatHud {
     this.instance?.refreshActor();
   }
 
-  // Appelé par les hooks d'acteur, d'objet et d'effet.
   static onDocumentChanged(actor) {
     if (this.instance && actor && actor === this.instance.actor) {
       this.instance.requestRender();
     }
   }
 
-  // Taille de l'écran ou barre latérale repliée/dépliée.
   static onViewportChanged() {
     this.instance?.applyPosition();
   }
@@ -128,9 +107,6 @@ export class SODLCombatHud {
     this.instance?.toggleMode();
   }
 
-  // Fenêtre de jet du système : si le HUD vient d'armer un jet (panneau de jet
-  // validé), on la remplit avec ses faveurs/fléaux et son modificateur, puis on
-  // la valide sans l'afficher.
   static onDialogRendered(element) {
     const instance = this.instance;
     const root = element?.[0] ?? element;
@@ -156,16 +132,11 @@ export class SODLCombatHud {
     this.element = null;
     this.actor = null;
     this.entries = [];
-    // Vue courante de chaque onglet (ex. tradition ouverte), propre à l'acteur affiché.
     this.views = {};
-    // Cadrage du portrait en cours d'édition (null hors édition).
     this.portraitDraft = null;
-    // Menu ouvert au-dessus des outils (dés ou repos), un seul à la fois.
     this.openMenu = null;
-    // Panneau de jet ouvert : { action, title, boons, modifier } (null sinon).
     this.rollPanel = null;
     this.armedRoll = null;
-    // Numéro du dernier rendu lancé : un rendu dépassé par un plus récent s'abandonne.
     this.renderToken = 0;
     const layout = game.settings.get(MODULE_ID, "combatHudLayout");
     this.activeSection = layout.activeSection ?? "attacks";
@@ -214,7 +185,7 @@ export class SODLCombatHud {
     } else {
       this.mode = MODE.HUD;
       if (!this.actor) {
-        ui.notifications.info("Sélectionnez un token pour afficher le HUD de combat.");
+        ui.notifications.info(t("SODL.Hud.Notify.SelectToken"));
       }
     }
     this.saveLayout();
@@ -256,7 +227,7 @@ export class SODLCombatHud {
       current = sections[0];
     }
     this.currentSectionId = current?.id;
-    this.entries = current?.build(snapshot, this.views[current.id] ?? {}) ?? [];
+    this.entries = current?.build(snapshot, this.views[current.id] ?? {}, t) ?? [];
 
     let healthPercent = 0;
     if (snapshot.characteristics.healthMax > 0) {
@@ -280,15 +251,13 @@ export class SODLCombatHud {
       restFullHealing: snapshot.characteristics.healingRate * 2,
       portraitStyle: framePortraitStyle(portraitFrame),
       entriesHeight: this.entriesHeight,
-      healthStatus: healthState(snapshot.characteristics),
+      healthStatus: healthState(snapshot.characteristics, t),
       afflictions: this.actor.temporaryEffects.map(effectView),
-      sections: sections.map((section) => ({ id: section.id, label: section.label, icon: section.icon, active: section === current })),
+      sections: sections.map((section) => ({ id: section.id, label: t(section.label), icon: section.icon, active: section === current })),
       entries: this.entries
     };
   }
 
-  // Le HUD s'étend de l'interface de gauche jusqu'à la barre latérale ; le
-  // bouton de bascule se place juste à gauche de la barre de macros.
   applyPosition() {
     if (this.element) {
       const anchors = computeAnchors({
@@ -312,7 +281,7 @@ export class SODLCombatHud {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "sodl-hud-switch";
-    button.title = "Afficher le HUD de combat";
+    button.title = t("SODL.Hud.ShowHud");
     button.innerHTML = '<i class="fas fa-khanda"></i>';
     button.addEventListener("click", () => this.toggleMode());
     document.body.append(button);
@@ -322,7 +291,6 @@ export class SODLCombatHud {
   activateListeners(html) {
     html.find(".sodl-hud-tab").on("click", (event) => {
       const sectionId = event.currentTarget.dataset.section;
-      // Re-cliquer sur l'onglet ouvert revient à sa vue principale.
       if (sectionId === this.currentSectionId) {
         this.views[sectionId] = {};
       }
@@ -347,7 +315,6 @@ export class SODLCombatHud {
 
     html.find("[data-action-type]").on("click", (event) => {
       const { actionType, amount, faces } = event.currentTarget.dataset;
-      // Un choix dans un menu le referme.
       if (this.openMenu && event.currentTarget.closest(".sodl-hud-menu")) {
         this.openMenu = null;
         this.render();
@@ -374,7 +341,6 @@ export class SODLCombatHud {
 
     this.activateRollPanelListeners(html);
 
-    // −/+ au survol d'un sort ou d'un talent : corrige ses utilisations sans le lancer.
     html.find("[data-uses-item]").on("click", (event) => {
       event.stopPropagation();
       const { usesItem, amount } = event.currentTarget.dataset;
@@ -386,13 +352,11 @@ export class SODLCombatHud {
       executeAction(this.actor, { type: "deleteEffect", effectId: event.currentTarget.dataset.deleteEffect });
     });
 
-    // Infobulle (i) et icônes d'afflictions : postent la règle dans le chat.
     html.find("[data-rule]").on("click", (event) => {
       event.stopPropagation();
       executeAction(this.actor, { type: "postRule", ruleId: event.currentTarget.dataset.rule });
     });
 
-    // Clic droit : ouvrir la fiche de l'objet pour le détail.
     html.find(".sodl-hud-entry").on("contextmenu", (event) => {
       event.preventDefault();
       const entry = this.entries[Number(event.currentTarget.dataset.entry)];
@@ -407,12 +371,11 @@ export class SODLCombatHud {
     });
   }
 
-  // Un jet pour lequel le système demande faveurs/fléaux ouvre d'abord le
-  // panneau de jet du HUD ; les autres actions s'exécutent directement.
   runAction(action, label = "") {
     if (action.rollOptions) {
       this.openMenu = null;
-      this.rollPanel = { action, title: `${ROLL_KIND[action.type] ?? "Jet"} : ${label}`, ...DEFAULT_ROLL_OPTIONS };
+      const kind = t(ROLL_KIND[action.type] ?? "SODL.Hud.RollKind.Default");
+      this.rollPanel = { action, title: t("SODL.Hud.RollTitle", { kind, name: label }), ...DEFAULT_ROLL_OPTIONS };
       this.render();
       return undefined;
     }
@@ -431,13 +394,10 @@ export class SODLCombatHud {
     };
   }
 
-  // Lancer : on arme le jet avec les valeurs du panneau, puis le système ouvre
-  // sa fenêtre, remplie et validée automatiquement (cf. onDialogRendered).
   confirmRoll() {
     const { action, boons, modifier } = this.rollPanel;
     this.rollPanel = null;
     this.armedRoll = armRoll({ boons, modifier }, Date.now());
-    // Après le jet d'une profession, on revient à la liste des caractéristiques.
     if (action.type === "rollProfession") {
       this.views[this.currentSectionId] = {};
     }
@@ -465,8 +425,6 @@ export class SODLCombatHud {
     });
   }
 
-  // Clic : passe en recadrage. Glisser déplace l'image, la molette zoome ;
-  // le cadrage est enregistré sur l'acteur, donc vu par tous.
   activatePortraitListeners(html) {
     const portrait = html.find(".sodl-hud-portrait")[0];
     const img = portrait.querySelector("img");
@@ -519,7 +477,6 @@ export class SODLCombatHud {
     });
   }
 
-  // Hauteur de la zone d'actions, modifiée en direct pendant le glisser et sauvegardée au relâchement.
   startResize(event) {
     event.preventDefault();
     const grip = event.currentTarget;

@@ -1,6 +1,7 @@
 import { modulePath } from "../../shared/constants.js";
+import { escapeHTML, t } from "../../shared/foundry-adapter.js";
 import { SODLDataManager } from "./data-manager.js";
-import { SODL_CONFIG } from "./config.js";
+import { localizedConfig } from "./config.js";
 
 function listToHtml(list) {
   return `
@@ -26,12 +27,13 @@ export class SODLCompanionApp extends FormApplication {
     super({}, options);
     this.activeTab = "resources";
     this.searchQuery = "";
+    this.config = localizedConfig(t);
     this.searchIndex = this.buildSearchIndex();
   }
 
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      title: "L'Ombre du Seigneur Démon - Compagnon",
+      title: t("SODL.Companion.WindowTitle"),
       id: "sodl-companion-app",
       template: modulePath("src/features/companion/companion.html"),
       width: 800,
@@ -43,33 +45,35 @@ export class SODLCompanionApp extends FormApplication {
   }
 
   buildSearchIndex() {
+    const config = this.config;
+    const category = (key) => t(`SODL.Companion.Categories.${key}`);
     const index = [];
 
-    const addAll = (category, list) => {
+    const addAll = (categoryKey, list) => {
       for (const item of list) {
-        index.push({ category, name: item.name, description: item.description });
+        index.push({ category: category(categoryKey), name: item.name, description: item.description });
       }
     };
 
-    addAll("Affliction", SODL_CONFIG.afflictions.list);
-    addAll("Action", SODL_CONFIG.actions.list);
-    addAll("Mêlée", SODL_CONFIG.meleeOptions.list);
-    addAll("Tir", SODL_CONFIG.rangedOptions.list);
-    addAll("Attaque", SODL_CONFIG.otherAttacks.list);
-    addAll("Règle", SODL_CONFIG.situationalRules.list);
+    addAll("Affliction", config.afflictions.list);
+    addAll("Action", config.actions.list);
+    addAll("Melee", config.meleeOptions.list);
+    addAll("Ranged", config.rangedOptions.list);
+    addAll("Attack", config.otherAttacks.list);
+    addAll("Rule", config.situationalRules.list);
 
-    index.push({ category: "Règle", name: "Hors de Combat", description: SODL_CONFIG.outOfCombat.content });
-    index.push({ category: "Règle", name: "Folie", description: SODL_CONFIG.madness.content });
-    index.push({ category: "Règle", name: "Corruption", description: SODL_CONFIG.corruption.content });
+    index.push({ category: category("Rule"), name: t("SODL.Companion.Sections.OutOfCombat"), description: config.outOfCombat.content });
+    index.push({ category: category("Rule"), name: t("SODL.Companion.Sections.Madness"), description: config.madness.content });
+    index.push({ category: category("Rule"), name: t("SODL.Companion.Sections.Corruption"), description: config.corruption.content });
     index.push({
-      category: "Fortune",
-      name: "Points de Chance",
-      description: SODL_CONFIG.chancePointsRules.gains
+      category: category("Fortune"),
+      name: t("SODL.Companion.ChancePoints"),
+      description: config.chancePointsRules.gains
     });
-    addAll("Fortune", SODL_CONFIG.chancePointsRules.extendedUses);
-    index.push({ category: "Sort", name: "Formule", description: SODL_CONFIG.spellcasting.formula });
-    index.push({ category: "Sort", name: "Focale", description: SODL_CONFIG.spellcasting.focus });
-    index.push({ category: "Sort", name: "Incantation", description: SODL_CONFIG.spellcasting.incantation.description });
+    addAll("Fortune", config.chancePointsRules.extendedUses);
+    index.push({ category: category("Spell"), name: t("SODL.Companion.Spell.Formula"), description: config.spellcasting.formula });
+    index.push({ category: category("Spell"), name: t("SODL.Companion.Spell.Focus"), description: config.spellcasting.focus });
+    index.push({ category: category("Spell"), name: t("SODL.Companion.Spell.Incantation"), description: config.spellcasting.incantation.description });
 
     return index;
   }
@@ -104,33 +108,35 @@ export class SODLCompanionApp extends FormApplication {
     return {
       chancePoints: SODLDataManager.getChancePoints(),
       maxChancePoints: SODLDataManager.getMaxChancePoints(),
-      rules: SODL_CONFIG.chancePointsRules,
-      awardsTable: SODL_CONFIG.fortuneAwardsTable
+      rules: this.config.chancePointsRules,
+      awardsTable: this.config.fortuneAwardsTable
     };
   }
 
   async getRulesData() {
+    const config = this.config;
+    const section = (key) => t(`SODL.Companion.Sections.${key}`);
     return {
       sections: [
         {
-          title: "Afflictions",
-          content: listToHtml(SODL_CONFIG.afflictions.list)
+          title: section("Afflictions"),
+          content: listToHtml(config.afflictions.list)
         },
         {
-          title: "Règles Situationnelles",
-          content: listToHtml(SODL_CONFIG.situationalRules.list)
+          title: section("Situational"),
+          content: listToHtml(config.situationalRules.list)
         },
         {
-          title: "Hors de Combat",
-          content: `<p>${SODL_CONFIG.outOfCombat.content}</p>`
+          title: section("OutOfCombat"),
+          content: `<p>${config.outOfCombat.content}</p>`
         },
         {
-          title: "Folie",
-          content: `<p>${SODL_CONFIG.madness.content}</p>`
+          title: section("Madness"),
+          content: `<p>${config.madness.content}</p>`
         },
         {
-          title: "Corruption",
-          content: `<p>${SODL_CONFIG.corruption.content}</p>`
+          title: section("Corruption"),
+          content: `<p>${config.corruption.content}</p>`
         }
       ]
     };
@@ -138,39 +144,41 @@ export class SODLCompanionApp extends FormApplication {
 
 
   async getActionsData() {
-    const sc = SODL_CONFIG.spellcasting;
+    const config = this.config;
+    const sc = config.spellcasting;
+    const section = (key) => t(`SODL.Companion.Sections.${key}`);
     return {
       sections: [
         {
-          title: "Actions (Non-exhaustif)",
-          content: listToHtml(SODL_CONFIG.actions.list)
+          title: section("ActionsList"),
+          content: listToHtml(config.actions.list)
         },
         {
-          title: "Options en Mêlée",
-          content: listToHtml(SODL_CONFIG.meleeOptions.list)
+          title: section("Melee"),
+          content: listToHtml(config.meleeOptions.list)
         },
         {
-          title: "Options de Tir",
-          content: listToHtml(SODL_CONFIG.rangedOptions.list)
+          title: section("Ranged"),
+          content: listToHtml(config.rangedOptions.list)
         },
         {
-          title: "Autres Types d'Attaques",
-          content: listToHtml(SODL_CONFIG.otherAttacks.list)
+          title: section("OtherAttacks"),
+          content: listToHtml(config.otherAttacks.list)
         },
         {
-          title: "Lancer un Sort",
+          title: section("CastSpell"),
           content: `
             <div class="sodl-action">
-              <p><strong>Formule:</strong> ${sc.formula}</p>
-              <p><strong>Focale:</strong> ${sc.focus}</p>
-              <p><strong>Dépenser une utilisation:</strong> ${sc.useCost}</p>
+              <p><strong>${t("SODL.Companion.Spell.Formula")}:</strong> ${sc.formula}</p>
+              <p><strong>${t("SODL.Companion.Spell.Focus")}:</strong> ${sc.focus}</p>
+              <p><strong>${t("SODL.Companion.Spell.SpendCasting")}:</strong> ${sc.useCost}</p>
               <p><strong>${sc.nonConsenting}</strong></p>
             </div>
             ${spellUsesTableToHtml(sc.usesTable)}
           `
         },
         {
-          title: "Utiliser une Incantation",
+          title: section("UseIncantation"),
           content: `
             <div class="sodl-action">
               <p>${sc.incantation.description}</p>
@@ -186,29 +194,30 @@ export class SODLCompanionApp extends FormApplication {
 
 
   async getHelpData() {
+    const about = (key) => t(`SODL.Companion.About.${key}`);
     return {
       sections: [
         {
-          title: "À propos de ce Module",
+          title: t("SODL.Companion.Sections.About"),
           content: `
             <div class="sodl-help">
-              <p>Ce module compagnon pour <strong>L'Ombre du Seigneur Démon</strong> vous permet de:</p>
+              <p>${about("Intro")}</p>
               <ul>
-                <li>Gérer les points de chance du groupe</li>
-                <li>Accéder à des résumés de règles</li>
-                <li>Consulter les descriptions d'actions</li>
-                <li>Rechercher instantanément une affliction, une action ou une règle</li>
+                <li>${about("Item1")}</li>
+                <li>${about("Item2")}</li>
+                <li>${about("Item3")}</li>
+                <li>${about("Item4")}</li>
               </ul>
-              <p><strong>Note:</strong> Seul le MJ peut modifier les points de chance.</p>
+              <p>${about("Note")}</p>
             </div>
           `
         },
         {
-          title: "Contrôle d'Accès",
+          title: t("SODL.Companion.Sections.Access"),
           content: `
             <div class="sodl-help">
-              <p><strong>Joueurs:</strong> Accès en lecture seule à tous les onglets</p>
-              <p><strong>MJ:</strong> Accès complet avec possibilité de modification</p>
+              <p>${t("SODL.Companion.Access.Players")}</p>
+              <p>${t("SODL.Companion.Access.Gm")}</p>
             </div>
           `
         }
@@ -267,7 +276,7 @@ export class SODLCompanionApp extends FormApplication {
     normalView.hide();
 
     if (!results.length) {
-      resultsPanel.html(`<p class="sodl-search-empty">Aucun résultat pour "${query}".</p>`).show();
+      resultsPanel.html(`<p class="sodl-search-empty">${t("SODL.Companion.NoResults", { query: escapeHTML(query) })}</p>`).show();
       return;
     }
 
@@ -290,19 +299,19 @@ export class SODLCompanionApp extends FormApplication {
   async incrementChance(amount) {
     await SODLDataManager.modifyChancePoints(amount);
     this.render(false);
-    ui.notifications.info(`Points de chance du groupe augmentés de ${amount}`);
+    ui.notifications.info(t("SODL.Companion.Notify.Increased", { amount }));
   }
 
   async decrementChance(amount) {
     await SODLDataManager.modifyChancePoints(-amount);
     this.render(false);
-    ui.notifications.info(`Points de chance du groupe diminués de ${amount}`);
+    ui.notifications.info(t("SODL.Companion.Notify.Decreased", { amount }));
   }
 
   async resetChance() {
     await SODLDataManager.setChancePoints(0);
     this.render(false);
-    ui.notifications.info("Points de chance du groupe réinitialisés");
+    ui.notifications.info(t("SODL.Companion.Notify.Reset"));
   }
 
   async setMaxChance(value) {
@@ -312,7 +321,7 @@ export class SODLCompanionApp extends FormApplication {
 
   async _updateObject(event, formData) {
     if (!game.user.isGM) {
-      ui.notifications.error("Vous n'avez pas les permissions pour modifier");
+      ui.notifications.error(t("SODL.Companion.Notify.PermissionDenied"));
       return;
     }
   }

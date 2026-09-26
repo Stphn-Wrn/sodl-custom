@@ -1,5 +1,5 @@
 import { MODULE_ID } from "../../shared/constants.js";
-import { rerenderOpenApps } from "../../shared/foundry-adapter.js";
+import { rerenderOpenApps, t } from "../../shared/foundry-adapter.js";
 import { SODLDiceClockManager } from "./dice-clock-manager.js";
 import { SODLDiceClockApp } from "./dice-clock-app.js";
 
@@ -17,8 +17,8 @@ export const diceClockFeature = {
     window.SODLDiceClockApp = SODLDiceClockApp;
 
     game.settings.register(MODULE_ID, "diceClockEnabled", {
-      name: "Horloge à Dés : activer le module",
-      hint: "Active ou désactive le bouton et la fenêtre de l'Horloge à Dés. Nécessite de rouvrir/rafraîchir la partie pour que le bouton apparaisse ou disparaisse.",
+      name: "SODL.Settings.DiceClockEnabled.Name",
+      hint: "SODL.Settings.DiceClockEnabled.Hint",
       scope: "world",
       config: true,
       type: Boolean,
@@ -27,8 +27,8 @@ export const diceClockFeature = {
     });
 
     game.settings.register(MODULE_ID, "diceClockDiceCount", {
-      name: "Horloge à Dés : nombre de dés",
-      hint: "Nombre de dés utilisés par l'horloge.",
+      name: "SODL.Settings.DiceClockDiceCount.Name",
+      hint: "SODL.Settings.DiceClockDiceCount.Hint",
       scope: "world",
       config: true,
       type: Number,
@@ -38,8 +38,8 @@ export const diceClockFeature = {
     });
 
     game.settings.register(MODULE_ID, "diceClockFaces", {
-      name: "Horloge à Dés : faces par dé",
-      hint: "Nombre de faces de chaque dé (6 pour des d6).",
+      name: "SODL.Settings.DiceClockFaces.Name",
+      hint: "SODL.Settings.DiceClockFaces.Hint",
       scope: "world",
       config: true,
       type: Number,
@@ -49,8 +49,8 @@ export const diceClockFeature = {
     });
 
     game.settings.register(MODULE_ID, "diceClockPipMinutes", {
-      name: "Horloge à Dés : minutes par point",
-      hint: "Durée en minutes représentée par un point (pip) retiré.",
+      name: "SODL.Settings.DiceClockPipMinutes.Name",
+      hint: "SODL.Settings.DiceClockPipMinutes.Hint",
       scope: "world",
       config: true,
       type: Number,
@@ -59,8 +59,8 @@ export const diceClockFeature = {
     });
 
     game.settings.register(MODULE_ID, "diceClockStartHour", {
-      name: "Horloge à Dés : heure de départ",
-      hint: "Heure affichée au début du compte à rebours (18 pour 18h00).",
+      name: "SODL.Settings.DiceClockStartHour.Name",
+      hint: "SODL.Settings.DiceClockStartHour.Hint",
       scope: "world",
       config: true,
       type: Number,
@@ -70,8 +70,8 @@ export const diceClockFeature = {
     });
 
     game.settings.register(MODULE_ID, "diceClockSoundPath", {
-      name: "Horloge à Dés : son du carillon",
-      hint: "Chemin vers le fichier audio joué à chaque heure pleine (ex: modules/sodl-companion/sounds/carillon.mp3). Laisser vide pour désactiver le son.",
+      name: "SODL.Settings.DiceClockSoundPath.Name",
+      hint: "SODL.Settings.DiceClockSoundPath.Hint",
       scope: "world",
       config: true,
       type: String,
@@ -81,12 +81,12 @@ export const diceClockFeature = {
     });
 
     game.settings.register(MODULE_ID, "diceClockCriticalMessage", {
-      name: "Horloge à Dés : message final",
-      hint: "Message envoyé dans le chat lorsque tous les points de l'horloge sont épuisés.",
+      name: "SODL.Settings.DiceClockCriticalMessage.Name",
+      hint: "SODL.Settings.DiceClockCriticalMessage.Hint",
       scope: "world",
       config: true,
       type: String,
-      default: "Un grondement sourd s'élève des murs de la maison... Le Monticule de Chair (Walter) s'éveille et attaque !"
+      default: "SODL.DiceClock.DefaultCriticalMessage"
     });
 
     game.settings.register(MODULE_ID, "diceClockState", {
@@ -105,13 +105,13 @@ export const diceClockFeature = {
     }
     controls.sodlDiceClock = {
       name: "sodlDiceClock",
-      title: "Horloge à Dés",
+      title: t("SODL.DiceClock.Title"),
       icon: "fas fa-dice-six",
       order: 101,
       tools: {
         open: {
           name: "open",
-          title: "Ouvrir l'Horloge à Dés",
+          title: t("SODL.DiceClock.OpenTool"),
           icon: "fas fa-dice-six",
           button: true,
           onChange: (event, active) => {

@@ -1,4 +1,5 @@
 import { MODULE_ID } from "../../shared/constants.js";
+import { errorMessage, t } from "../../shared/foundry-adapter.js";
 import * as Library from "./library.js";
 import { parseYoutubeVideoId } from "./url-parser.js";
 import { SODLYoutubeSearch } from "./search-service.js";
@@ -34,7 +35,7 @@ export class SODLYoutubeManager {
       await game.settings.set(MODULE_ID, SETTING_KEY, library);
       return true;
     } catch (err) {
-      ui.notifications.warn(err.message);
+      ui.notifications.warn(errorMessage(err));
       return false;
     }
   }
@@ -54,7 +55,7 @@ export class SODLYoutubeManager {
   static async addVideo({ url, title, folderId }) {
     const videoId = parseYoutubeVideoId(url);
     if (!videoId) {
-      ui.notifications.warn("Lien YouTube invalide.");
+      ui.notifications.warn(t("SODL.Youtube.Errors.InvalidLink"));
       return false;
     }
     let finalTitle = String(title ?? "").trim();

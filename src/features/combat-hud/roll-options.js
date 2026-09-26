@@ -1,11 +1,3 @@
-/**
- * Faveurs/fléaux et modificateur choisis dans le HUD, transmis à la fenêtre
- * de jet du système `demonlord` : le HUD « arme » le jet juste avant d'appeler
- * le système, et la fenêtre qui s'ouvre récupère ces valeurs puis se valide
- * seule. Un jet armé expire vite pour ne jamais remplir une fenêtre ouverte
- * plus tard par autre chose.
- */
-
 const ARMED_TTL_MS = 2000;
 
 const LIMITS = {

@@ -1,3 +1,4 @@
+import { LocalizedError } from "../../shared/i18n.js";
 let apiPromise = null;
 
 /**
@@ -25,7 +26,7 @@ export function loadYoutubeIframeApi() {
     script.async = true;
     script.onerror = () => {
       apiPromise = null;
-      reject(new Error("Impossible de charger l'API YouTube."));
+      reject(new LocalizedError("SODL.Youtube.Errors.IframeApi"));
     };
     document.head.appendChild(script);
   });

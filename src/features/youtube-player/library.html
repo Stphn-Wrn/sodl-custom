@@ -1,16 +1,16 @@
 <div class="yt-library">
   <div class="yt-section-header">
-    <span>Bibliothèque</span>
-    <button type="button" class="yt-widget-icon yt-new-folder-toggle" title="Nouveau dossier">
+    <span>{{localize "SODL.Youtube.Library"}}</span>
+    <button type="button" class="yt-widget-icon yt-new-folder-toggle" title="{{localize 'SODL.Youtube.NewFolder'}}">
       <i class="fas fa-folder-plus"></i>
     </button>
   </div>
 
   <form class="yt-inline-form yt-new-folder">
     <i class="fas fa-folder"></i>
-    <input type="text" name="name" placeholder="Nom du dossier" autocomplete="off">
-    <button type="submit" class="yt-widget-icon" title="Créer"><i class="fas fa-check"></i></button>
-    <button type="button" class="yt-widget-icon yt-inline-cancel" title="Annuler"><i class="fas fa-xmark"></i></button>
+    <input type="text" name="name" placeholder="{{localize 'SODL.Youtube.FolderName'}}" autocomplete="off">
+    <button type="submit" class="yt-widget-icon" title="{{localize 'SODL.Youtube.Create'}}"><i class="fas fa-check"></i></button>
+    <button type="button" class="yt-widget-icon yt-inline-cancel" title="{{localize 'SODL.Common.Cancel'}}"><i class="fas fa-xmark"></i></button>
   </form>
 
   {{#each groups}}
@@ -21,24 +21,24 @@
       <span class="yt-folder-name">{{this.name}}</span>
       <span class="yt-folder-count">{{this.videos.length}}</span>
       {{#if this.id}}
-      <a class="yt-rename" title="Renommer le dossier"><i class="fas fa-pen"></i></a>
-      <a class="yt-remove" title="Supprimer le dossier (ses vidéos passent dans « Non classé »)"><i class="fas fa-trash"></i></a>
+      <a class="yt-rename" title="{{localize 'SODL.Youtube.RenameFolder'}}"><i class="fas fa-pen"></i></a>
+      <a class="yt-remove" title="{{localize 'SODL.Youtube.DeleteFolder'}}"><i class="fas fa-trash"></i></a>
       {{/if}}
     </div>
     <ul class="yt-video-list">
       {{#each this.videos}}
-      <li class="yt-video {{#if this.active}}yt-video-active{{/if}}" data-video-id="{{this.id}}" title="{{this.title}} — cliquer pour diffuser, glisser pour changer de dossier" draggable="true">
+      <li class="yt-video {{#if this.active}}yt-video-active{{/if}}" data-video-id="{{this.id}}" title="{{localize 'SODL.Youtube.VideoHint' title=this.title}}" draggable="true">
         <i class="fas fa-play-circle"></i>
         <span class="yt-video-title">{{this.title}}</span>
-        <a class="yt-rename" title="Renommer la vidéo"><i class="fas fa-pen"></i></a>
-        <a class="yt-remove" title="Supprimer la vidéo"><i class="fas fa-trash"></i></a>
+        <a class="yt-rename" title="{{localize 'SODL.Youtube.RenameVideo'}}"><i class="fas fa-pen"></i></a>
+        <a class="yt-remove" title="{{localize 'SODL.Youtube.DeleteVideo'}}"><i class="fas fa-trash"></i></a>
       </li>
       {{else}}
-      <li class="yt-empty">Dossier vide — glissez-y des vidéos</li>
+      <li class="yt-empty">{{localize "SODL.Youtube.EmptyFolder"}}</li>
       {{/each}}
     </ul>
   </div>
   {{else}}
-  <p class="yt-empty">Aucune vidéo pour le moment. Recherchez-en une ci-dessus.</p>
+  <p class="yt-empty">{{localize "SODL.Youtube.EmptyLibrary"}}</p>
   {{/each}}
 </div>

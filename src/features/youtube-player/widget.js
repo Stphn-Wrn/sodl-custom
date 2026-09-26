@@ -1,5 +1,5 @@
 import { MODULE_ID, modulePath } from "../../shared/constants.js";
-import { renderTemplate } from "../../shared/foundry-adapter.js";
+import { errorMessage, renderTemplate, t } from "../../shared/foundry-adapter.js";
 import { SODLYoutubeBroadcast } from "./broadcast-manager.js";
 import { SYNC_TOLERANCE } from "./broadcast.js";
 import { loadYoutubeIframeApi } from "./iframe-api.js";
@@ -252,7 +252,7 @@ export class SODLYoutubeWidget {
     try {
       YT = await loadYoutubeIframeApi();
     } catch (err) {
-      ui.notifications.error(err.message);
+      ui.notifications.error(errorMessage(err));
       return;
     }
 
@@ -397,7 +397,7 @@ export class SODLYoutubeWidget {
     // Hors diffusion, le widget disparaît chez les joueurs (il reste monté pour être prêt).
     this.element.toggleClass("yt-widget-hidden", !live && !game.user.isGM);
 
-    let title = "Lecteur YouTube";
+    let title = t("SODL.Youtube.Title");
     if (live) {
       title = state.video.title;
     }

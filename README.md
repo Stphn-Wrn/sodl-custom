@@ -4,6 +4,8 @@ Module Foundry VTT d'aide de jeu pour **L'Ombre du Seigneur Démon** : réserve 
 
 **Compatibilité:** Foundry VTT v11+ (testé sur v14 stable 7) | Système `demonlord` v6.1.0+
 
+**Langues :** français et anglais, selon la langue choisie dans Foundry (interface, paramètres et aide de jeu). Les textes sont dans `lang/fr.json` et `lang/en.json`.
+
 ## Ce qu'il y a dedans
 
 Le module regroupe quatre outils indépendants :

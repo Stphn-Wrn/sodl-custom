@@ -1,55 +1,55 @@
 <section class="sodl-hud sodl-hud-state-{{healthStatus.id}}" style="--hud-entries-height: {{entriesHeight}}px;">
-  <div class="sodl-hud-grip" title="Glisser pour changer la hauteur"></div>
+  <div class="sodl-hud-grip" title="{{localize 'SODL.Hud.ResizeHint'}}"></div>
 
   <aside class="sodl-hud-identity">
-    <div class="sodl-hud-portrait {{#if editingPortrait}}editing{{/if}}" {{#unless editingPortrait}}title="Cliquer pour recadrer le portrait"{{/unless}}>
+    <div class="sodl-hud-portrait {{#if editingPortrait}}editing{{/if}}" {{#unless editingPortrait}}title="{{localize 'SODL.Hud.Portrait.Edit'}}"{{/unless}}>
       <img src="{{snapshot.img}}" alt="" style="{{portraitStyle}}" draggable="false">
       {{#if editingPortrait}}
       <div class="sodl-hud-portrait-tools">
-        <button type="button" data-portrait="save" title="Enregistrer le cadrage"><i class="fas fa-check"></i></button>
-        <button type="button" data-portrait="reset" title="Afficher l'image entière"><i class="fas fa-rotate-left"></i></button>
-        <button type="button" data-portrait="cancel" title="Annuler"><i class="fas fa-xmark"></i></button>
+        <button type="button" data-portrait="save" title="{{localize 'SODL.Hud.Portrait.Save'}}"><i class="fas fa-check"></i></button>
+        <button type="button" data-portrait="reset" title="{{localize 'SODL.Hud.Portrait.Reset'}}"><i class="fas fa-rotate-left"></i></button>
+        <button type="button" data-portrait="cancel" title="{{localize 'SODL.Common.Cancel'}}"><i class="fas fa-xmark"></i></button>
       </div>
       {{/if}}
     </div>
 
     <div class="sodl-hud-vitals">
       <div class="sodl-hud-name-row">
-        <button type="button" class="sodl-hud-name sodl-hud-open-sheet" title="Ouvrir la fiche de {{snapshot.name}}">{{snapshot.name}}</button>
+        <button type="button" class="sodl-hud-name sodl-hud-open-sheet" title="{{localize 'SODL.Hud.OpenSheetOf' name=snapshot.name}}">{{snapshot.name}}</button>
         <span class="sodl-hud-state">{{healthStatus.label}}</span>
       </div>
 
-      <div class="sodl-hud-stepper sodl-hud-health" title="{{healthStatus.label}} — Santé (dégâts : {{snapshot.characteristics.damage}})">
-        <button type="button" class="sodl-hud-step" data-action-type="changeDamage" data-amount="1" title="Subir 1 dégât"><i class="fas fa-minus"></i></button>
+      <div class="sodl-hud-stepper sodl-hud-health" title="{{localize 'SODL.Hud.HealthHint' state=healthStatus.label damage=snapshot.characteristics.damage}}">
+        <button type="button" class="sodl-hud-step" data-action-type="changeDamage" data-amount="1" title="{{localize 'SODL.Hud.TakeDamage'}}"><i class="fas fa-minus"></i></button>
         <div class="sodl-hud-health-bar">
           <div class="sodl-hud-health-fill" style="width: {{healthPercent}}%"></div>
           <span>{{snapshot.characteristics.health}} / {{snapshot.characteristics.healthMax}}</span>
         </div>
-        <button type="button" class="sodl-hud-step" data-action-type="changeDamage" data-amount="-1" title="Soigner 1 dégât"><i class="fas fa-plus"></i></button>
+        <button type="button" class="sodl-hud-step" data-action-type="changeDamage" data-amount="-1" title="{{localize 'SODL.Hud.HealDamage'}}"><i class="fas fa-plus"></i></button>
       </div>
 
       <div class="sodl-hud-trackers">
-        <div class="sodl-hud-stepper" title="Folie">
-          <button type="button" class="sodl-hud-step" data-action-type="changeInsanity" data-amount="-1" title="Folie -1"><i class="fas fa-minus"></i></button>
+        <div class="sodl-hud-stepper" title="{{localize 'SODL.Hud.Insanity'}}">
+          <button type="button" class="sodl-hud-step" data-action-type="changeInsanity" data-amount="-1" title="{{localize 'SODL.Hud.InsanityMinus'}}"><i class="fas fa-minus"></i></button>
           <span class="sodl-hud-stat"><i class="fas fa-brain"></i>{{snapshot.characteristics.insanity}}/{{snapshot.characteristics.insanityMax}}</span>
-          <button type="button" class="sodl-hud-step" data-action-type="changeInsanity" data-amount="1" title="Folie +1"><i class="fas fa-plus"></i></button>
+          <button type="button" class="sodl-hud-step" data-action-type="changeInsanity" data-amount="1" title="{{localize 'SODL.Hud.InsanityPlus'}}"><i class="fas fa-plus"></i></button>
         </div>
-        <div class="sodl-hud-stepper" title="Corruption">
-          <button type="button" class="sodl-hud-step" data-action-type="changeCorruption" data-amount="-1" title="Corruption -1"><i class="fas fa-minus"></i></button>
-          <button type="button" class="sodl-hud-stat-roll" data-action-type="rollCorruption" title="Corruption {{snapshot.characteristics.corruption}} : cliquer pour le jet de Corruption (d20)">
+        <div class="sodl-hud-stepper" title="{{localize 'SODL.Hud.Corruption'}}">
+          <button type="button" class="sodl-hud-step" data-action-type="changeCorruption" data-amount="-1" title="{{localize 'SODL.Hud.CorruptionMinus'}}"><i class="fas fa-minus"></i></button>
+          <button type="button" class="sodl-hud-stat-roll" data-action-type="rollCorruption" title="{{localize 'SODL.Hud.CorruptionRoll' value=snapshot.characteristics.corruption}}">
             <i class="fas fa-skull"></i>{{snapshot.characteristics.corruption}}
           </button>
-          <button type="button" class="sodl-hud-step" data-action-type="changeCorruption" data-amount="1" title="Corruption +1"><i class="fas fa-plus"></i></button>
+          <button type="button" class="sodl-hud-step" data-action-type="changeCorruption" data-amount="1" title="{{localize 'SODL.Hud.CorruptionPlus'}}"><i class="fas fa-plus"></i></button>
         </div>
       </div>
 
       <ul class="sodl-hud-stats">
-        <li title="Défense"><i class="fas fa-shield"></i>{{snapshot.characteristics.defense}}</li>
-        <li title="Vitesse"><i class="fas fa-person-running"></i>{{snapshot.characteristics.speed}}</li>
-        <li title="Pouvoir"><i class="fas fa-bolt"></i>{{snapshot.characteristics.power}}</li>
+        <li title="{{localize 'SODL.Hud.Defense'}}"><i class="fas fa-shield"></i>{{snapshot.characteristics.defense}}</li>
+        <li title="{{localize 'SODL.Hud.Speed'}}"><i class="fas fa-person-running"></i>{{snapshot.characteristics.speed}}</li>
+        <li title="{{localize 'SODL.Hud.Power'}}"><i class="fas fa-bolt"></i>{{snapshot.characteristics.power}}</li>
         <li>
           <button type="button" class="sodl-hud-recover" data-action-type="recover"
-            title="Récupérer : soigne {{snapshot.characteristics.healingRate}} PV (taux de guérison). Une fois par repos.">
+            title="{{localize 'SODL.Hud.RecoverHint' amount=snapshot.characteristics.healingRate}}">
             <i class="fas fa-heart"></i>{{snapshot.characteristics.healingRate}}
           </button>
         </li>
@@ -58,7 +58,7 @@
       {{#if afflictions.length}}
       <ul class="sodl-hud-afflictions">
         {{#each afflictions}}
-        <li title="{{this.name}}{{#if this.description}} : {{this.description}}{{/if}}{{#if this.ruleId}} (cliquer pour l'envoyer dans le chat){{/if}}"
+        <li title="{{this.name}}{{#if this.description}} : {{this.description}}{{/if}}{{#if this.ruleId}} {{localize 'SODL.Hud.SendRuleHint'}}{{/if}}"
           {{#if this.ruleId}}data-rule="{{this.ruleId}}" class="sodl-hud-has-help"{{/if}}><img src="{{this.img}}" alt="{{this.name}}"></li>
         {{/each}}
       </ul>
@@ -75,9 +75,9 @@
       {{/each}}
 
       <div class="sodl-hud-tools">
-        <button type="button" class="sodl-hud-icon sodl-hud-open-sheet" title="Ouvrir la fiche du personnage"><i class="fas fa-id-card"></i></button>
+        <button type="button" class="sodl-hud-icon sodl-hud-open-sheet" title="{{localize 'SODL.Hud.OpenSheet'}}"><i class="fas fa-id-card"></i></button>
         <div class="sodl-hud-menu-anchor">
-          <button type="button" class="sodl-hud-icon {{#if diceMenuOpen}}active{{/if}}" data-menu-toggle="dice" title="Lancer des dés"><i class="fas fa-dice-d20"></i></button>
+          <button type="button" class="sodl-hud-icon {{#if diceMenuOpen}}active{{/if}}" data-menu-toggle="dice" title="{{localize 'SODL.Hud.Dice.Title'}}"><i class="fas fa-dice-d20"></i></button>
           {{#if diceMenuOpen}}
           <div class="sodl-hud-menu sodl-hud-dice">
             <table>
@@ -85,7 +85,7 @@
               <tr>
                 <th>d{{faces}}</th>
                 {{#each ../diceCounts as |count|}}
-                <td><button type="button" data-action-type="rollDice" data-amount="{{count}}" data-faces="{{faces}}" title="Lancer {{count}}d{{faces}}">{{count}}</button></td>
+                <td><button type="button" data-action-type="rollDice" data-amount="{{count}}" data-faces="{{faces}}" title="{{localize 'SODL.Hud.Dice.Roll' count=count faces=faces}}">{{count}}</button></td>
                 {{/each}}
               </tr>
               {{/each}}
@@ -94,19 +94,19 @@
           {{/if}}
         </div>
         <div class="sodl-hud-menu-anchor">
-          <button type="button" class="sodl-hud-icon {{#if restMenuOpen}}active{{/if}}" data-menu-toggle="rest" title="Se reposer"><i class="fas fa-bed"></i></button>
+          <button type="button" class="sodl-hud-icon {{#if restMenuOpen}}active{{/if}}" data-menu-toggle="rest" title="{{localize 'SODL.Hud.Rest.Title'}}"><i class="fas fa-bed"></i></button>
           {{#if restMenuOpen}}
           <div class="sodl-hud-menu">
-            <button type="button" data-action-type="rest" data-amount="8" title="Rend talents et incantations, soigne le taux de guérison.">
-              <i class="fas fa-bed"></i><span>Repos 8 h</span><small>+{{snapshot.characteristics.healingRate}} PV</small>
+            <button type="button" data-action-type="rest" data-amount="8" title="{{localize 'SODL.Hud.Rest.Hint8'}}">
+              <i class="fas fa-bed"></i><span>{{localize "SODL.Hud.Rest.Rest8"}}</span><small>{{localize "SODL.Hud.Rest.Heal" amount=snapshot.characteristics.healingRate}}</small>
             </button>
-            <button type="button" data-action-type="rest" data-amount="24" title="Rend talents et incantations, soigne deux fois le taux de guérison.">
-              <i class="fas fa-campground"></i><span>Repos 24 h</span><small>+{{restFullHealing}} PV</small>
+            <button type="button" data-action-type="rest" data-amount="24" title="{{localize 'SODL.Hud.Rest.Hint24'}}">
+              <i class="fas fa-campground"></i><span>{{localize "SODL.Hud.Rest.Rest24"}}</span><small>{{localize "SODL.Hud.Rest.Heal" amount=restFullHealing}}</small>
             </button>
           </div>
           {{/if}}
         </div>
-        <button type="button" class="sodl-hud-icon sodl-hud-to-foundry" title="Afficher les macros et les joueurs"><i class="fas fa-table-cells"></i></button>
+        <button type="button" class="sodl-hud-icon sodl-hud-to-foundry" title="{{localize 'SODL.Hud.ShowFoundry'}}"><i class="fas fa-table-cells"></i></button>
       </div>
     </nav>
 
@@ -114,18 +114,18 @@
     <div class="sodl-hud-roll-panel">
       <span class="sodl-hud-roll-title">{{rollPanel.title}}</span>
       <div class="sodl-hud-stepper">
-        <button type="button" class="sodl-hud-step" data-roll-option="boons" data-delta="-1" title="Un fléau de plus"><i class="fas fa-minus"></i></button>
-        <button type="button" class="sodl-hud-roll-value sodl-hud-tone-{{rollPanel.boonsTone}}" data-roll-reset="boons" title="Cliquer pour remettre à 0">{{rollPanel.boonsLabel}}</button>
-        <button type="button" class="sodl-hud-step" data-roll-option="boons" data-delta="1" title="Une faveur de plus"><i class="fas fa-plus"></i></button>
+        <button type="button" class="sodl-hud-step" data-roll-option="boons" data-delta="-1" title="{{localize 'SODL.Hud.Roll.MoreBanes'}}"><i class="fas fa-minus"></i></button>
+        <button type="button" class="sodl-hud-roll-value sodl-hud-tone-{{rollPanel.boonsTone}}" data-roll-reset="boons" title="{{localize 'SODL.Hud.Roll.ResetHint'}}">{{rollPanel.boonsLabel}}</button>
+        <button type="button" class="sodl-hud-step" data-roll-option="boons" data-delta="1" title="{{localize 'SODL.Hud.Roll.MoreBoons'}}"><i class="fas fa-plus"></i></button>
       </div>
       <div class="sodl-hud-stepper">
-        <button type="button" class="sodl-hud-step" data-roll-option="modifier" data-delta="-1" title="Modificateur -1"><i class="fas fa-minus"></i></button>
-        <button type="button" class="sodl-hud-roll-value" data-roll-reset="modifier" title="Cliquer pour remettre à 0">Mod {{rollPanel.modifier}}</button>
-        <button type="button" class="sodl-hud-step" data-roll-option="modifier" data-delta="1" title="Modificateur +1"><i class="fas fa-plus"></i></button>
+        <button type="button" class="sodl-hud-step" data-roll-option="modifier" data-delta="-1" title="{{localize 'SODL.Hud.Roll.ModifierMinus'}}"><i class="fas fa-minus"></i></button>
+        <button type="button" class="sodl-hud-roll-value" data-roll-reset="modifier" title="{{localize 'SODL.Hud.Roll.ResetHint'}}">{{localize "SODL.Hud.Roll.Modifier" value=rollPanel.modifier}}</button>
+        <button type="button" class="sodl-hud-step" data-roll-option="modifier" data-delta="1" title="{{localize 'SODL.Hud.Roll.ModifierPlus'}}"><i class="fas fa-plus"></i></button>
       </div>
       <div class="sodl-hud-roll-actions">
-        <button type="button" class="sodl-hud-roll-confirm" data-roll-confirm><i class="fas fa-dice-d20"></i> Lancer</button>
-        <button type="button" class="sodl-hud-roll-cancel" data-roll-cancel title="Annuler"><i class="fas fa-xmark"></i></button>
+        <button type="button" class="sodl-hud-roll-confirm" data-roll-confirm><i class="fas fa-dice-d20"></i> {{localize "SODL.Hud.Roll.Confirm"}}</button>
+        <button type="button" class="sodl-hud-roll-cancel" data-roll-cancel title="{{localize 'SODL.Common.Cancel'}}"><i class="fas fa-xmark"></i></button>
       </div>
     </div>
     {{/if}}
@@ -149,20 +149,20 @@
         </button>
         {{#if this.usesItemId}}
         <div class="sodl-hud-entry-uses">
-          <button type="button" data-uses-item="{{this.usesItemId}}" data-amount="-1" title="Retirer une utilisation"><i class="fas fa-minus"></i></button>
-          <button type="button" data-uses-item="{{this.usesItemId}}" data-amount="1" title="Rendre une utilisation"><i class="fas fa-plus"></i></button>
+          <button type="button" data-uses-item="{{this.usesItemId}}" data-amount="-1" title="{{localize 'SODL.Hud.Uses.Remove'}}"><i class="fas fa-minus"></i></button>
+          <button type="button" data-uses-item="{{this.usesItemId}}" data-amount="1" title="{{localize 'SODL.Hud.Uses.Restore'}}"><i class="fas fa-plus"></i></button>
         </div>
         {{/if}}
         {{#if this.effectId}}
-        <button type="button" class="sodl-hud-entry-help" data-delete-effect="{{this.effectId}}" title="Supprimer l'effet"><i class="fas fa-xmark"></i></button>
+        <button type="button" class="sodl-hud-entry-help" data-delete-effect="{{this.effectId}}" title="{{localize 'SODL.Hud.DeleteEffect'}}"><i class="fas fa-xmark"></i></button>
         {{/if}}
         {{#if this.ruleId}}
-        <button type="button" class="sodl-hud-entry-help" data-rule="{{this.ruleId}}" title="Envoyer la règle dans le chat"><i class="fas fa-circle-info"></i></button>
+        <button type="button" class="sodl-hud-entry-help" data-rule="{{this.ruleId}}" title="{{localize 'SODL.Hud.SendRule'}}"><i class="fas fa-circle-info"></i></button>
         {{/if}}
       </li>
       {{/if}}
       {{else}}
-      <li class="sodl-hud-empty">Rien dans cet onglet.</li>
+      <li class="sodl-hud-empty">{{localize "SODL.Hud.EmptyTab"}}</li>
       {{/each}}
     </ul>
   </div>

@@ -22,8 +22,8 @@ export const youtubePlayerFeature = {
     window.SODLYoutubeSearch = SODLYoutubeSearch;
 
     game.settings.register(MODULE_ID, "youtubePlayerEnabled", {
-      name: "Lecteur YouTube : activer le module",
-      hint: "Affiche un lecteur flottant permettant au MJ de diffuser des vidéos YouTube à tous les joueurs. Nécessite de rafraîchir la partie.",
+      name: "SODL.Settings.YoutubePlayerEnabled.Name",
+      hint: "SODL.Settings.YoutubePlayerEnabled.Hint",
       scope: "world",
       config: true,
       type: Boolean,
@@ -32,8 +32,8 @@ export const youtubePlayerFeature = {
     });
 
     game.settings.register(MODULE_ID, "youtubeApiKey", {
-      name: "Lecteur YouTube : clé API (recherche)",
-      hint: "Facultatif. Clé « YouTube Data API v3 » (Google Cloud Console) pour une recherche fiable. Sans clé, la recherche passe par des instances publiques Invidious, parfois indisponibles.",
+      name: "SODL.Settings.YoutubeApiKey.Name",
+      hint: "SODL.Settings.YoutubeApiKey.Hint",
       scope: "world",
       config: true,
       type: String,
@@ -41,8 +41,8 @@ export const youtubePlayerFeature = {
     });
 
     game.settings.register(MODULE_ID, "youtubeInvidiousInstances", {
-      name: "Lecteur YouTube : instances Invidious",
-      hint: "Utilisées pour la recherche quand aucune clé API n'est renseignée, dans l'ordre, séparées par des virgules.",
+      name: "SODL.Settings.YoutubeInvidiousInstances.Name",
+      hint: "SODL.Settings.YoutubeInvidiousInstances.Hint",
       scope: "world",
       config: true,
       type: String,

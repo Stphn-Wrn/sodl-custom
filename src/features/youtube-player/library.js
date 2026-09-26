@@ -1,3 +1,5 @@
+import { LocalizedError } from "../../shared/i18n.js";
+
 /**
  * Logique pure de la bibliothèque de vidéos YouTube (aucune dépendance à Foundry).
  * Chaque opération retourne une nouvelle bibliothèque sans modifier l'originale.
@@ -6,16 +8,16 @@
  * Une vidéo dont le folderId vaut null est « Non classée ».
  */
 
-export const UNSORTED_FOLDER_NAME = "Non classé";
+export const UNSORTED_FOLDER_NAME = "SODL.Youtube.Unsorted";
 
 export function createEmptyLibrary() {
   return { folders: [], videos: [] };
 }
 
-function requireText(value, label) {
+function requireText(value, errorKey) {
   const text = String(value ?? "").trim();
   if (!text) {
-    throw new Error(`${label} ne peut pas être vide.`);
+    throw new LocalizedError(errorKey);
   }
   return text;
 }
@@ -44,12 +46,12 @@ function byLabel(getLabel) {
 }
 
 export function addFolder(library, name, id) {
-  const folder = { id, name: requireText(name, "Le nom du dossier") };
+  const folder = { id, name: requireText(name, "SODL.Youtube.Errors.EmptyFolderName") };
   return { ...library, folders: [...library.folders, folder] };
 }
 
 export function renameFolder(library, folderId, name) {
-  const newName = requireText(name, "Le nom du dossier");
+  const newName = requireText(name, "SODL.Youtube.Errors.EmptyFolderName");
   return {
     ...library,
     folders: library.folders.map((folder) => {
@@ -77,15 +79,15 @@ export function removeFolder(library, folderId) {
 export function addVideo(library, { title, videoId, folderId }, id) {
   const video = {
     id,
-    title: requireText(title, "Le titre de la vidéo"),
-    videoId: requireText(videoId, "L'identifiant YouTube"),
+    title: requireText(title, "SODL.Youtube.Errors.EmptyVideoTitle"),
+    videoId: requireText(videoId, "SODL.Youtube.Errors.EmptyVideoId"),
     folderId: resolveFolderId(library, folderId)
   };
   return { ...library, videos: [...library.videos, video] };
 }
 
 export function renameVideo(library, videoId, title) {
-  return updateVideo(library, videoId, { title: requireText(title, "Le titre de la vidéo") });
+  return updateVideo(library, videoId, { title: requireText(title, "SODL.Youtube.Errors.EmptyVideoTitle") });
 }
 
 export function moveVideo(library, videoId, folderId) {

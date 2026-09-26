@@ -1,5 +1,5 @@
 import { modulePath } from "../../shared/constants.js";
-import { renderTemplate } from "../../shared/foundry-adapter.js";
+import { errorMessage, renderTemplate, t } from "../../shared/foundry-adapter.js";
 import { SODLYoutubeManager } from "./library-manager.js";
 import { SODLYoutubeBroadcast } from "./broadcast-manager.js";
 import { SODLYoutubeSearch } from "./search-service.js";
@@ -82,7 +82,7 @@ export class SODLYoutubeLibraryPanel {
       if (token !== this._searchToken) {
         return;
       }
-      this.search = { searched: true, loading: false, error: err.message, results: [] };
+      this.search = { searched: true, loading: false, error: errorMessage(err), results: [] };
     }
     this._renderResults();
   }
@@ -148,6 +148,7 @@ export class SODLYoutubeLibraryPanel {
     this._activeVideoId = this._currentVideoId();
     const groups = SODLYoutubeManager.getLibraryView().map((group) => ({
       ...group,
+      name: t(group.name),
       collapsed: this.collapsedFolders.has(group.id ?? ""),
       videos: group.videos.map((video) => ({ ...video, active: video.videoId === this._activeVideoId }))
     }));
@@ -290,7 +291,7 @@ export class SODLYoutubeLibraryPanel {
       return;
     }
     const originalTitle = button.attr("title");
-    button.addClass("yt-confirm").attr("title", "Cliquer à nouveau pour confirmer");
+    button.addClass("yt-confirm").attr("title", t("SODL.Youtube.ConfirmClick"));
     setTimeout(() => {
       button.removeClass("yt-confirm").attr("title", originalTitle);
     }, CONFIRM_DELAY_MS);

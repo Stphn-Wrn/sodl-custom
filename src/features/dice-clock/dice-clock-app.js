@@ -1,5 +1,5 @@
 import { modulePath } from "../../shared/constants.js";
-import { getDialogClass } from "../../shared/foundry-adapter.js";
+import { getDialogClass, t } from "../../shared/foundry-adapter.js";
 import { SODLDiceClockManager } from "./dice-clock-manager.js";
 
 /**
@@ -11,7 +11,7 @@ export class SODLDiceClockApp extends Application {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       id: "sodl-dice-clock-app",
-      title: "Horloge à Dés",
+      title: t("SODL.DiceClock.Title"),
       template: modulePath("src/features/dice-clock/dice-clock.html"),
       width: 260,
       height: "auto",
@@ -48,17 +48,17 @@ export class SODLDiceClockApp extends Application {
     html.find(".dice-clock-reset").on("click", () => {
       const DialogClass = getDialogClass();
       new DialogClass({
-        title: "Réinitialiser l'horloge",
-        content: "<p>Remettre l'horloge à son état de départ ?</p>",
+        title: t("SODL.DiceClock.ResetDialog.Title"),
+        content: `<p>${t("SODL.DiceClock.ResetDialog.Content")}</p>`,
         buttons: {
           yes: {
             icon: '<i class="fas fa-undo"></i>',
-            label: "Réinitialiser",
+            label: t("SODL.DiceClock.Reset"),
             callback: () => SODLDiceClockManager.resetClock()
           },
           no: {
             icon: '<i class="fas fa-times"></i>',
-            label: "Annuler"
+            label: t("SODL.Common.Cancel")
           }
         },
         default: "no"

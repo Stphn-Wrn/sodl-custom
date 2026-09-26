@@ -1,20 +1,19 @@
-/**
- * État de santé affiché par la couleur du HUD, d'après les règles :
- * blessé à partir de la moitié de la Santé en dégâts, neutralisé quand les
- * dégâts égalent la Santé.
- */
-export function healthState({ damage, healthMax }) {
+function state(id, t) {
+  return { id, label: t(`SODL.Hud.Health.${id}`) };
+}
+
+export function healthState({ damage, healthMax }, t) {
   if (healthMax <= 0) {
-    return { id: "unknown", label: "Santé non renseignée" };
+    return state("unknown", t);
   }
   if (damage >= healthMax) {
-    return { id: "incapacitated", label: "Neutralisé" };
+    return state("incapacitated", t);
   }
   if (damage * 2 >= healthMax) {
-    return { id: "injured", label: "Blessé" };
+    return state("injured", t);
   }
   if (damage > 0) {
-    return { id: "hurt", label: "Touché" };
+    return state("hurt", t);
   }
-  return { id: "full", label: "Indemne" };
+  return state("full", t);
 }
