@@ -22,6 +22,13 @@ function rollsAttack(system) {
   return Boolean(system.action?.attack);
 }
 
+function remainingRounds(effect) {
+  if (effect.duration?.type !== "turns" || typeof effect.duration.remaining !== "number") {
+    return null;
+  }
+  return effect.duration.remaining;
+}
+
 function characteristics(system) {
   const values = system.characteristics;
   const damage = toNumber(values.health?.value);
@@ -58,6 +65,7 @@ export function toSnapshot(actor) {
     portraitFrame: actor.flags?.[MODULE_ID]?.[PORTRAIT_FRAME_FLAG] ?? null,
     type: actor.type,
     characteristics: characteristics(system),
+    fastTurn: Boolean(system.fastturn),
     attributes: attributes(system),
     weapons: itemsOfType(actor, "weapon").map((item) => ({
       ...base(item),
@@ -103,7 +111,8 @@ export function toSnapshot(actor) {
       img: effect.img ?? effect.icon ?? "",
       disabled: Boolean(effect.disabled),
       statuses: Array.from(effect.statuses ?? []),
-      duration: effect.duration?.label ?? ""
+      duration: effect.duration?.label ?? "",
+      remainingRounds: remainingRounds(effect)
     }))
   };
 }

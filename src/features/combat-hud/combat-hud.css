@@ -149,6 +149,32 @@ body.sodl-hud-active #players {
   gap: 8px;
 }
 
+.sodl-hud .sodl-hud-turn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  padding: 1px 6px !important;
+  color: var(--hud-muted);
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: var(--hud-surface) !important;
+  border: 1px solid var(--hud-border) !important;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.sodl-hud .sodl-hud-turn.is-fast {
+  color: var(--hud-title);
+  border-color: var(--hud-title) !important;
+}
+
+.sodl-hud .sodl-hud-turn:hover {
+  background: var(--hud-hover) !important;
+}
+
 .sodl-hud .sodl-hud-name:hover {
   text-decoration: underline;
 }

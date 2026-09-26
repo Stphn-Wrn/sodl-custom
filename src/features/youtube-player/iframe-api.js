@@ -1,10 +1,7 @@
 import { LocalizedError } from "../../shared/i18n.js";
+
 let apiPromise = null;
 
-/**
- * Charge une seule fois l'API IFrame de YouTube et retourne l'objet global `YT`.
- * https://developers.google.com/youtube/iframe_api_reference
- */
 export function loadYoutubeIframeApi() {
   if (apiPromise) {
     return apiPromise;

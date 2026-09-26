@@ -1,0 +1,49 @@
+<div class="sodl-party">
+  <header class="sodl-party-header">
+    <i class="fas fa-star"></i>
+    <span>{{localize "SODL.Dashboard.Fortune" value=fortune max=fortuneMax}}</span>
+  </header>
+
+  <ul class="sodl-party-rows">
+    {{#each rows}}
+    <li class="sodl-party-row sodl-hud-state-{{this.stateId}}" data-actor-id="{{this.actorId}}">
+      <img class="sodl-party-portrait" src="{{this.img}}" alt="">
+
+      <div class="sodl-party-identity">
+        <button type="button" class="sodl-party-name" data-open-sheet title="{{localize 'SODL.Hud.OpenSheet'}}">{{this.name}}</button>
+        <span class="sodl-party-state">{{this.stateLabel}}</span>
+      </div>
+
+      <div class="sodl-party-health">
+        <button type="button" data-damage="1" title="{{localize 'SODL.Hud.TakeDamage'}}"><i class="fas fa-minus"></i></button>
+        <div class="sodl-party-bar">
+          <div class="sodl-party-bar-fill" style="width: {{this.healthPercent}}%"></div>
+          <span>{{this.health}} / {{this.healthMax}}</span>
+        </div>
+        <button type="button" data-damage="-1" title="{{localize 'SODL.Hud.HealDamage'}}"><i class="fas fa-plus"></i></button>
+      </div>
+
+      <ul class="sodl-party-stats">
+        <li title="{{localize 'SODL.Hud.Defense'}}"><i class="fas fa-shield"></i>{{this.defense}}</li>
+        <li title="{{localize 'SODL.Hud.Speed'}}"><i class="fas fa-person-running"></i>{{this.speed}}</li>
+        <li title="{{localize 'SODL.Hud.Insanity'}}"><i class="fas fa-brain"></i>{{this.insanity}}</li>
+        <li title="{{localize 'SODL.Hud.Corruption'}}"><i class="fas fa-skull"></i>{{this.corruption}}</li>
+      </ul>
+
+      <button type="button" class="sodl-party-turn {{#if this.fastTurn}}is-fast{{/if}}" data-toggle-turn title="{{localize 'SODL.Hud.Turn.Hint'}}">{{this.turnLabel}}</button>
+
+      <button type="button" class="sodl-party-icon" data-select-token title="{{localize 'SODL.Dashboard.SelectToken'}}"><i class="fas fa-crosshairs"></i></button>
+
+      {{#if this.afflictions.length}}
+      <ul class="sodl-party-afflictions">
+        {{#each this.afflictions}}
+        <li>{{this}}</li>
+        {{/each}}
+      </ul>
+      {{/if}}
+    </li>
+    {{else}}
+    <li class="sodl-party-empty">{{localize "SODL.Dashboard.Empty"}}</li>
+    {{/each}}
+  </ul>
+</div>

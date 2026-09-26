@@ -159,7 +159,9 @@
         "Items": "Items",
         "Attributes": "Attributes",
         "Afflictions": "Afflictions",
-        "Effects": "Effects"
+        "Effects": "Effects",
+        "Actions": "Actions",
+        "Fortune": "Fortune"
       },
       "Back": "Back",
       "RequirementBane": "Requires {attribute} {min}: 1 bane",
@@ -175,7 +177,8 @@
       "Groups": {
         "Weapons": "Weapons",
         "Protections": "Protection",
-        "Ammunition": "Ammunition"
+        "Ammunition": "Ammunition",
+        "Actions": "Actions"
       },
       "NoTradition": "No tradition",
       "SpellCount": {
@@ -222,11 +225,15 @@
         "Stowed": "Stowed: {items}",
         "SelectToken": "Select a token to show the combat HUD.",
         "Immune": "{name} is immune to this affliction.",
-        "UnknownAffliction": "Affliction unknown to the system: {id}"
+        "UnknownAffliction": "Affliction unknown to the system: {id}",
+        "TurnLocked": "The turn type is chosen before the round starts."
       },
       "Chat": {
         "DiceRoll": "{formula} roll",
-        "Recover": "<strong>{name}</strong> recovers and heals {amount} damage."
+        "Recover": "<strong>{name}</strong> recovers and heals {amount} damage.",
+        "FastTurn": "{name} takes a <strong>fast turn</strong>.",
+        "SlowTurn": "{name} takes a <strong>slow turn</strong>.",
+        "SpendFortune": "<strong>{name}</strong> spends Fortune:"
       },
       "ShowHud": "Show the combat HUD",
       "ShowFoundry": "Show the macros and players",
@@ -271,7 +278,18 @@
         "Restore": "Restore a use"
       },
       "DeleteEffect": "Delete the effect",
-      "EmptyTab": "Nothing in this tab."
+      "EmptyTab": "Nothing in this tab.",
+      "Turn": {
+        "Fast": "Fast",
+        "Slow": "Slow",
+        "Hint": "Fast or slow turn for this round: click to change"
+      },
+      "Fortune": {
+        "Pool": "Group pool",
+        "Minus": "Remove 1",
+        "Plus": "Add 1",
+        "Uses": "Uses"
+      }
     },
     "Settings": {
       "DiceClockEnabled": {
@@ -321,6 +339,10 @@
       "CombatHudToggle": {
         "Name": "Combat HUD: toggle HUD / macros",
         "Hint": "Switches between the combat HUD and the macro bar with the player list."
+      },
+      "RoundRemindersEnabled": {
+        "Name": "Round reminders: enable",
+        "Hint": "On every new round, whispers the GM a message: fate rolls to make, active afflictions and expiring effects."
       }
     },
     "Rules": {
@@ -649,6 +671,21 @@
           }
         }
       }
+    },
+    "Reminders": {
+      "FateRoll": "Fate roll (1d6)",
+      "Afflictions": "Afflictions: {list}",
+      "Expired": "Expired: {list}",
+      "Ending": "Ends this round: {list}",
+      "Title": "Round {round}: reminders"
+    },
+    "Dashboard": {
+      "Title": "Party Dashboard",
+      "OpenTool": "Open the party dashboard",
+      "Fortune": "Fortune pool: {value} / {max}",
+      "Empty": "No player characters in this world.",
+      "SelectToken": "Select and center the token",
+      "NoToken": "{name} has no token on this scene."
     }
   }
 }

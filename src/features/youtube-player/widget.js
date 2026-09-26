@@ -8,11 +8,8 @@ import { formatTime } from "./time-format.js";
 
 const WIDGET_TEMPLATE = modulePath("src/features/youtube-player/widget.html");
 const SYNC_INTERVAL_MS = 1000;
-// Rafraîchissement de la barre de progression et du temps affiché.
 const PROGRESS_INTERVAL_MS = 250;
-// Délai après lequel on propose aux joueurs de cliquer si le navigateur a bloqué la lecture auto.
 const AUTOPLAY_BLOCKED_DELAY_MS = 2500;
-// En dessous de ce déplacement (px), un appui sur la pastille est un clic et non un glisser.
 const DRAG_THRESHOLD_PX = 4;
 const MIN_WIDTH = 280;
 const MAX_WIDTH = 960;
@@ -20,20 +17,6 @@ const MAX_WIDTH = 960;
 // Valeurs de YT.PlayerState, dupliquées pour ne pas dépendre du chargement de l'API.
 const PLAYER_STATE = { UNSTARTED: -1, ENDED: 0, PLAYING: 1, PAUSED: 2, BUFFERING: 3, CUED: 5 };
 
-
-/**
- * Widget flottant de diffusion YouTube, présent en permanence quand l'outil est activé.
- *
- * L'interface YouTube est masquée : le widget fournit ses propres contrôles.
- * - Le MJ dispose de la recherche, de la bibliothèque et des contrôles de
- *   lecture : ce qu'il fait (lancer, mettre en pause, avancer...) est diffusé
- *   à tout le monde.
- * - Les joueurs voient un lecteur verrouillé qui suit la diffusion, avec un
- *   volume local. Le widget n'apparaît chez eux que pendant une diffusion.
- *
- * Réduire le widget le transforme en pastille sans couper la vidéo. Position,
- * largeur et état réduit sont mémorisés pour chaque client.
- */
 export class SODLYoutubeWidget {
   static instance = null;
 
@@ -72,7 +55,6 @@ export class SODLYoutubeWidget {
     const data = {
       isGM: game.user.isGM,
       volume: game.settings.get(MODULE_ID, "youtubeVolume"),
-      // Le partial de la bibliothèque est rendu vide puis rempli par le panneau.
       groups: []
     };
     const html = await renderTemplate(WIDGET_TEMPLATE, data);
@@ -90,8 +72,6 @@ export class SODLYoutubeWidget {
     this._mountPlayer();
   }
 
-  // -------- Disposition (position, largeur, réduit) --------
-
   _loadLayout() {
     const defaults = { left: null, top: 90, width: 380, collapsed: false, libraryOpen: true };
     return foundry.utils.mergeObject(defaults, game.settings.get(MODULE_ID, "youtubeWidgetLayout") ?? {});
@@ -107,14 +87,12 @@ export class SODLYoutubeWidget {
     el.classList.toggle("yt-widget-library-open", this.layout.libraryOpen);
     el.style.width = `${this.layout.width}px`;
 
-    // Première ouverture : à gauche de la barre latérale.
     if (this.layout.left === null) {
       this.layout.left = window.innerWidth - this.layout.width - 340;
     }
     this._moveTo(this.layout.left, this.layout.top);
   }
 
-  // Place le widget en le gardant toujours visible dans la fenêtre.
   _moveTo(left, top) {
     const el = this.element[0];
     const maxLeft = Math.max(0, window.innerWidth - el.offsetWidth);
@@ -132,10 +110,6 @@ export class SODLYoutubeWidget {
     this._saveLayout();
   }
 
-  /**
-   * Rend un élément « poignée » capable de déplacer le widget. `onClick` est
-   * appelé si l'utilisateur a simplement cliqué sans glisser.
-   */
   _makeDragHandle(handle, onClick = null) {
     handle.on("pointerdown", (event) => {
       if (event.button !== 0 || $(event.target).closest(".yt-widget-icon").length) {
@@ -190,7 +164,6 @@ export class SODLYoutubeWidget {
       this._saveLayout();
     });
 
-    // Largeur redimensionnable via la poignée CSS (resize: horizontal).
     html.on("pointerup", () => {
       const width = Math.round(html[0].offsetWidth);
       if (this.layout.collapsed || width === this.layout.width) {
@@ -243,8 +216,6 @@ export class SODLYoutubeWidget {
     });
   }
 
-  // -------- Lecteur --------
-
   async _mountPlayer() {
     const target = this.element.find(".yt-player-target")[0];
 
@@ -289,11 +260,6 @@ export class SODLYoutubeWidget {
     this.syncBroadcast();
   }
 
-  /**
-   * Aligne l'affichage et le lecteur local sur l'état diffusé.
-   * Le MJ ne charge que la vidéo (il est la source de la lecture) ;
-   * les joueurs suivent aussi la lecture/pause et la position.
-   */
   syncBroadcast() {
     const state = SODLYoutubeBroadcast.getState();
     this._updateChrome(state);
@@ -359,7 +325,6 @@ export class SODLYoutubeWidget {
       this.player.seekTo(position, true);
     }
 
-    // Si le navigateur bloque la lecture automatique, on propose un bouton à cliquer.
     let blocked = false;
     if (state.playing && !isPlaying && this._playRequestedAt) {
       blocked = Date.now() - this._playRequestedAt > AUTOPLAY_BLOCKED_DELAY_MS;
@@ -394,7 +359,6 @@ export class SODLYoutubeWidget {
     }
     const live = Boolean(state.video);
     this.element.toggleClass("yt-widget-live", live);
-    // Hors diffusion, le widget disparaît chez les joueurs (il reste monté pour être prêt).
     this.element.toggleClass("yt-widget-hidden", !live && !game.user.isGM);
 
     let title = t("SODL.Youtube.Title");
@@ -408,8 +372,6 @@ export class SODLYoutubeWidget {
       this.libraryPanel.onBroadcastChanged();
     }
   }
-
-  // -------- Contrôles du module --------
 
   _togglePlayback() {
     if (!this._playerReady || !SODLYoutubeBroadcast.getState().video) {
@@ -431,7 +393,6 @@ export class SODLYoutubeWidget {
     this.element.find(".yt-widget-screen")[0].requestFullscreen?.();
   }
 
-  // Met à jour la barre de progression, le temps et l'icône lecture/pause.
   _updateProgress() {
     if (!this._playerReady || !this.element) {
       return;

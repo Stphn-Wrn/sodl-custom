@@ -159,7 +159,9 @@
         "Items": "Objets",
         "Attributes": "Caractéristiques",
         "Afflictions": "Afflictions",
-        "Effects": "Effets"
+        "Effects": "Effets",
+        "Actions": "Actions",
+        "Fortune": "Fortune"
       },
       "Back": "Retour",
       "RequirementBane": "Requiert {attribute} {min} : 1 fléau",
@@ -175,7 +177,8 @@
       "Groups": {
         "Weapons": "Armes",
         "Protections": "Protections",
-        "Ammunition": "Munitions"
+        "Ammunition": "Munitions",
+        "Actions": "Actions"
       },
       "NoTradition": "Sans tradition",
       "SpellCount": {
@@ -222,11 +225,15 @@
         "Stowed": "Rangé : {items}",
         "SelectToken": "Sélectionnez un token pour afficher le HUD de combat.",
         "Immune": "{name} est immunisé contre cette affliction.",
-        "UnknownAffliction": "Affliction inconnue du système : {id}"
+        "UnknownAffliction": "Affliction inconnue du système : {id}",
+        "TurnLocked": "Le type de tour se choisit avant le début du round."
       },
       "Chat": {
         "DiceRoll": "Jet de {formula}",
-        "Recover": "<strong>{name}</strong> récupère et soigne {amount} dégât(s)."
+        "Recover": "<strong>{name}</strong> récupère et soigne {amount} dégât(s).",
+        "FastTurn": "{name} choisit un <strong>tour rapide</strong>.",
+        "SlowTurn": "{name} choisit un <strong>tour lent</strong>.",
+        "SpendFortune": "<strong>{name}</strong> dépense de la Fortune :"
       },
       "ShowHud": "Afficher le HUD de combat",
       "ShowFoundry": "Afficher les macros et les joueurs",
@@ -271,7 +278,18 @@
         "Restore": "Rendre une utilisation"
       },
       "DeleteEffect": "Supprimer l'effet",
-      "EmptyTab": "Rien dans cet onglet."
+      "EmptyTab": "Rien dans cet onglet.",
+      "Turn": {
+        "Fast": "Rapide",
+        "Slow": "Lent",
+        "Hint": "Tour rapide ou lent pour ce round : cliquer pour changer"
+      },
+      "Fortune": {
+        "Pool": "Réserve du groupe",
+        "Minus": "Retirer 1",
+        "Plus": "Ajouter 1",
+        "Uses": "Utilisations"
+      }
     },
     "Settings": {
       "DiceClockEnabled": {
@@ -321,6 +339,10 @@
       "CombatHudToggle": {
         "Name": "HUD de combat : basculer HUD / macros",
         "Hint": "Alterne entre le HUD de combat et la barre de macros avec la liste des joueurs."
+      },
+      "RoundRemindersEnabled": {
+        "Name": "Rappels de round : activer",
+        "Hint": "À chaque nouveau round, envoie au MJ un message privé : jets de destinée à faire, afflictions actives et effets qui expirent."
       }
     },
     "Rules": {
@@ -649,6 +671,21 @@
           }
         }
       }
+    },
+    "Reminders": {
+      "FateRoll": "Jet de destinée (1d6)",
+      "Afflictions": "Afflictions : {list}",
+      "Expired": "Expiré : {list}",
+      "Ending": "Expire ce round : {list}",
+      "Title": "Round {round} : rappels"
+    },
+    "Dashboard": {
+      "Title": "Tableau de bord du groupe",
+      "OpenTool": "Ouvrir le tableau de bord du groupe",
+      "Fortune": "Réserve de Fortune : {value} / {max}",
+      "Empty": "Aucun personnage joueur dans ce monde.",
+      "SelectToken": "Sélectionner et centrer le token",
+      "NoToken": "{name} n'a pas de token sur cette scène."
     }
   }
 }

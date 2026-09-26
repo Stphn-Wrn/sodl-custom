@@ -2,10 +2,6 @@ import { MODULE_ID } from "../../shared/constants.js";
 import { t } from "../../shared/foundry-adapter.js";
 import { classifyQuery, createSearchProvider, thumbnailUrl } from "./search.js";
 
-/**
- * Recherche YouTube côté Foundry : lit la configuration dans les paramètres
- * du module et délègue au fournisseur choisi par `createSearchProvider`.
- */
 export class SODLYoutubeSearch {
   static _provider() {
     const instances = String(game.settings.get(MODULE_ID, "youtubeInvidiousInstances") ?? "")
@@ -18,7 +14,6 @@ export class SODLYoutubeSearch {
     });
   }
 
-  // Un ou plusieurs liens donnent directement les vidéos ; un texte lance une recherche.
   static async query(input) {
     const query = classifyQuery(input);
     if (query.kind === "empty") {

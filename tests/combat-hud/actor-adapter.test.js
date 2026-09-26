@@ -76,6 +76,11 @@ test("les effets de l'acteur sont lus avec leur état et leur durée restante", 
   const effect = { id: "e1", name: "Bénédiction", img: "b.webp", disabled: false, statuses: new Set(), duration: { label: "3 rounds" } };
   const actor = { ...actorWith([]), effects: [effect] };
   assert.deepEqual(toSnapshot(actor).effects, [
-    { id: "e1", name: "Bénédiction", img: "b.webp", disabled: false, statuses: [], duration: "3 rounds" }
+    { id: "e1", name: "Bénédiction", img: "b.webp", disabled: false, statuses: [], duration: "3 rounds", remainingRounds: null }
   ]);
+});
+
+test("le type de tour choisi (rapide ou lent) est lu depuis l'acteur", () => {
+  assert.equal(toSnapshot(actorWith([], { fastturn: true })).fastTurn, true);
+  assert.equal(toSnapshot(actorWith([])).fastTurn, false);
 });

@@ -1,14 +1,6 @@
 import { LocalizedError } from "../../shared/i18n.js";
 import { parseYoutubeVideoId } from "./url-parser.js";
 
-/**
- * Logique pure de la recherche YouTube (aucune dépendance à Foundry).
- *
- * Chaque fournisseur expose `search(text)` et retourne des résultats normalisés :
- *   { videoId, title, channel, duration (secondes ou null), thumbnail }
- * `fetch` est injecté pour pouvoir tester sans réseau.
- */
-
 export const SEARCH_RESULTS_LIMIT = 12;
 const DATA_API_URL = "https://www.googleapis.com/youtube/v3/search";
 const INSTANCE_TIMEOUT_MS = 6000;
@@ -48,11 +40,6 @@ function parseLink(text) {
   return parseYoutubeVideoId(text);
 }
 
-/**
- * Un lien YouTube désigne directement une vidéo ; plusieurs liens (un par
- * ligne, ou séparés par des espaces ou des virgules) forment une liste,
- * sans doublon ; tout le reste est une recherche.
- */
 export function classifyQuery(input) {
   const text = String(input ?? "").trim();
   if (!text) {
@@ -102,7 +89,6 @@ async function fetchJson(fetch, url, options = {}) {
   return response.json();
 }
 
-// API officielle : fiable, mais demande une clé (quota gratuit quotidien).
 function createDataApiProvider({ apiKey, fetch }) {
   return {
     async search(text) {
@@ -124,8 +110,6 @@ function createDataApiProvider({ apiKey, fetch }) {
   };
 }
 
-// Instances publiques Invidious : sans clé, mais leur disponibilité varie.
-// On les essaie dans l'ordre jusqu'à ce que l'une réponde.
 function createInvidiousProvider({ instances, fetch }) {
   return {
     async search(text) {
@@ -149,10 +133,6 @@ function createInvidiousProvider({ instances, fetch }) {
   };
 }
 
-/**
- * Choisit le fournisseur de recherche : l'API officielle si une clé est
- * configurée, sinon les instances Invidious.
- */
 export function createSearchProvider({ apiKey, instances, fetch }) {
   const key = String(apiKey ?? "").trim();
   if (key) {

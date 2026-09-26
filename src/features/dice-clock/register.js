@@ -7,10 +7,6 @@ function isEnabled() {
   return game.settings.get(MODULE_ID, "diceClockEnabled");
 }
 
-/**
- * Horloge à Dés : compte à rebours à base de dés, piloté par le MJ.
- * Les paramètres la rendent réutilisable pour d'autres scènes chronométrées.
- */
 export const diceClockFeature = {
   init() {
     window.SODLDiceClockManager = SODLDiceClockManager;
@@ -98,7 +94,6 @@ export const diceClockFeature = {
     });
   },
 
-  // Bouton séparé (visible par tous), seulement si l'horloge est activée.
   getSceneControlButtons(controls) {
     if (!isEnabled()) {
       return;

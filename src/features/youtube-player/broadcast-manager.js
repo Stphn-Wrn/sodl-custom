@@ -3,10 +3,6 @@ import * as Broadcast from "./broadcast.js";
 
 const BROADCAST_SETTING_KEY = "youtubeBroadcast";
 
-/**
- * Diffusion synchronisée : le MJ choisit la vidéo et pilote la lecture,
- * l'état est stocké dans un paramètre "world" que tous les clients suivent.
- */
 export class SODLYoutubeBroadcast {
   static now() {
     return game.time.serverTime;

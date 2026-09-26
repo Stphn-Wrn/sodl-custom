@@ -1,13 +1,5 @@
 import { LocalizedError } from "../../shared/i18n.js";
 
-/**
- * Logique pure de la bibliothèque de vidéos YouTube (aucune dépendance à Foundry).
- * Chaque opération retourne une nouvelle bibliothèque sans modifier l'originale.
- *
- * Forme : { folders: [{ id, name }], videos: [{ id, title, videoId, folderId }] }
- * Une vidéo dont le folderId vaut null est « Non classée ».
- */
-
 export const UNSORTED_FOLDER_NAME = "SODL.Youtube.Unsorted";
 
 export function createEmptyLibrary() {
@@ -63,7 +55,6 @@ export function renameFolder(library, folderId, name) {
   };
 }
 
-// Les vidéos du dossier supprimé ne sont pas perdues : elles passent dans « Non classé ».
 export function removeFolder(library, folderId) {
   return {
     folders: library.folders.filter((folder) => folder.id !== folderId),
@@ -98,10 +89,6 @@ export function removeVideo(library, videoId) {
   return { ...library, videos: library.videos.filter((video) => video.id !== videoId) };
 }
 
-/**
- * Regroupe les vidéos par dossier pour l'affichage : dossiers triés par nom,
- * vidéos triées par titre, et groupe « Non classé » en dernier s'il n'est pas vide.
- */
 export function buildLibraryView(library) {
   const sortedVideos = [...library.videos].sort(byLabel((video) => video.title));
   const videosIn = (folderId) => sortedVideos.filter((video) => video.folderId === folderId);

@@ -1,16 +1,9 @@
 import { MODULE_ID } from "../../shared/constants.js";
 import { playSound, t } from "../../shared/foundry-adapter.js";
 
-// Icônes Font Awesome pour les faces 1 à 6 (utilisées seulement quand le nombre
-// de faces par dé est 6, pour un rendu générique au-delà on affiche un chiffre).
+// Seulement pour des d6 : au-delà, on affiche un chiffre.
 const DICE_ICONS = [null, "fa-dice-one", "fa-dice-two", "fa-dice-three", "fa-dice-four", "fa-dice-five", "fa-dice-six"];
 
-/**
- * Gère l'état et la logique de la "Dice Clock" (horloge à dés).
- * Conçu pour être réutilisable : le nombre de dés, le nombre de faces par dé,
- * la durée d'un point (pip) et l'heure de départ sont tous configurables via
- * les paramètres du module
- */
 export class SODLDiceClockManager {
   static get diceCount() {
     return game.settings.get(MODULE_ID, "diceClockDiceCount");
@@ -28,7 +21,6 @@ export class SODLDiceClockManager {
     return game.settings.get(MODULE_ID, "diceClockStartHour");
   }
 
-  // Nombre de points (pips) retirés qui correspondent à une heure pleine.
   static get pipsPerHour() {
     return Math.max(1, Math.round(60 / this.pipMinutes));
   }
@@ -45,13 +37,8 @@ export class SODLDiceClockManager {
     await game.settings.set(MODULE_ID, "diceClockState", state);
   }
 
-  /**
-   * Calcule la valeur affichée de chaque dé à partir du nombre de points restants.
-   * Les dés se vident toujours l'un après l'autre (le premier dé descend de "faces"
-   * à 0, puis le suivant, etc.), ce qui reproduit exactement la règle "on retire
-   * toujours le point du dé qui a la plus petite valeur non nulle" sans avoir à
-   * suivre l'état de chaque dé séparément.
-   */
+  // Vider les dés l'un après l'autre revient à toujours retirer le point du dé
+  // le plus bas, sans avoir à stocker l'état de chaque dé.
   static getDiceValues(remaining) {
     const diceCount = this.diceCount;
     const faces = this.faces;
@@ -98,9 +85,6 @@ export class SODLDiceClockManager {
     }
   }
 
-  // Retire un unique point (pip) au "dé" le plus bas et gère les déclencheurs
-  // (passage à l'heure pleine, alerte finale). Utilisé en boucle pour retirer
-  // plusieurs points d'un coup (ex: repos court).
   static async _removeOnePoint(state) {
     if (state.remaining <= 0) return state;
 

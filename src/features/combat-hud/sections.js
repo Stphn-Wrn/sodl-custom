@@ -6,7 +6,7 @@ const HEALTH_STATUSES = ["injured", "incapacitated", "disabled", "dying", "dead"
 const HANDS_KEYS = { one: "SODL.Hud.Hands.One", two: "SODL.Hud.Hands.Two", off: "SODL.Hud.Hands.Off" };
 
 function entry(fields) {
-  return { img: "", icon: "", badge: "", description: "", ruleId: "", variant: "", newRow: false, isHeading: false, itemId: "", usesItemId: "", effectId: "", disabled: false, active: false, warning: "", ...fields };
+  return { img: "", icon: "", badge: "", description: "", ruleRef: "", variant: "", newRow: false, isHeading: false, itemId: "", usesItemId: "", effectId: "", disabled: false, active: false, warning: "", ...fields };
 }
 
 function backEntry(label, t) {
@@ -319,6 +319,50 @@ export function afflictionCatalogue(t) {
   return localizeTree(SODL_CONFIG.afflictions.list, t);
 }
 
+const ACTION_GROUPS = [
+  ["actions", "SODL.Hud.Groups.Actions"],
+  ["meleeOptions", "SODL.Companion.Sections.Melee"],
+  ["rangedOptions", "SODL.Companion.Sections.Ranged"],
+  ["otherAttacks", "SODL.Companion.Sections.OtherAttacks"]
+];
+
+export function ruleByRef(ref, t) {
+  const [group, key] = ref.split(":");
+  const list = SODL_CONFIG[group]?.list;
+  if (!list) {
+    return null;
+  }
+  let rule = list[Number(key)];
+  if (group === "afflictions") {
+    rule = list.find((candidate) => candidate.id === key);
+  }
+  if (!rule) {
+    return null;
+  }
+  const localized = localizeTree(rule, t);
+  return { name: afflictionName(localized), description: localized.description };
+}
+
+const actionsSection = {
+  id: "actions",
+  label: "SODL.Hud.Tabs.Actions",
+  icon: "fas fa-person-running",
+  build(snapshot, view, t) {
+    return ACTION_GROUPS.flatMap(([group, labelKey]) => {
+      const rules = localizeTree(SODL_CONFIG[group].list, t).map((rule, index) => {
+        const ruleRef = `${group}:${index}`;
+        return entry({
+          id: ruleRef,
+          name: rule.name,
+          description: rule.description,
+          action: { type: "postRule", ruleRef }
+        });
+      });
+      return [headingEntry(t(labelKey)), ...rules];
+    });
+  }
+};
+
 const afflictionsSection = {
   id: "afflictions",
   label: "SODL.Hud.Tabs.Afflictions",
@@ -329,7 +373,7 @@ const afflictionsSection = {
       id: affliction.id,
       name: afflictionName(affliction),
       description: affliction.description,
-      ruleId: affliction.id,
+      ruleRef: `afflictions:${affliction.id}`,
       active,
       action: { type: "toggleStatus", statusId: affliction.id }
     });
@@ -353,6 +397,40 @@ const afflictionsSection = {
     return [...entries, add];
   }
 };
+
+function fortunePoolEntries(fortune, t) {
+  if (!fortune?.visible) {
+    return [];
+  }
+  return [
+    entry({ id: "fortune-pool", name: t("SODL.Hud.Fortune.Pool"), icon: "fas fa-star", badge: `${fortune.value} / ${fortune.max}`, action: null }),
+    entry({ id: "fortune-minus", name: t("SODL.Hud.Fortune.Minus"), icon: "fas fa-minus", action: { type: "changeFortune", amount: -1 } }),
+    entry({ id: "fortune-plus", name: t("SODL.Hud.Fortune.Plus"), icon: "fas fa-plus", action: { type: "changeFortune", amount: 1 } })
+  ];
+}
+
+const fortuneSection = {
+  id: "fortune",
+  label: "SODL.Hud.Tabs.Fortune",
+  icon: "fas fa-clover",
+  build(snapshot, view, t) {
+    const uses = localizeTree(SODL_CONFIG.chancePointsRules.extendedUses, t).map((use, index) => entry({
+      id: `fortune-use-${index}`,
+      name: use.name,
+      description: use.description,
+      action: { type: "spendFortune", useIndex: index }
+    }));
+    return [...fortunePoolEntries(snapshot.fortune, t), headingEntry(t("SODL.Hud.Fortune.Uses")), ...uses];
+  }
+};
+
+export function fortuneUse(index, t) {
+  const use = SODL_CONFIG.chancePointsRules.extendedUses[index];
+  if (!use) {
+    return null;
+  }
+  return localizeTree(use, t);
+}
 
 function isTemporaryEffect(effect) {
   const afflictionIds = SODL_CONFIG.afflictions.list.map((affliction) => affliction.id);
@@ -386,8 +464,8 @@ const effectsSection = {
 };
 
 const SECTIONS_BY_ACTOR_TYPE = {
-  character: [attacksSection, equipmentSection, spellsSection, talentsSection, itemsSection, attributesSection, afflictionsSection, effectsSection],
-  creature: [attacksSection, spellsSection, talentsSection, attributesSection, afflictionsSection, effectsSection]
+  character: [attacksSection, equipmentSection, spellsSection, talentsSection, itemsSection, attributesSection, actionsSection, fortuneSection, afflictionsSection, effectsSection],
+  creature: [attacksSection, spellsSection, talentsSection, attributesSection, actionsSection, afflictionsSection, effectsSection]
 };
 
 export function createSections(actorType) {

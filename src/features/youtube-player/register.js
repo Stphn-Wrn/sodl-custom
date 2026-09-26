@@ -10,10 +10,6 @@ function isEnabled() {
   return game.settings.get(MODULE_ID, "youtubePlayerEnabled");
 }
 
-/**
- * Lecteur YouTube : widget flottant permanent (visible des joueurs uniquement
- * pendant une diffusion) permettant au MJ de diffuser des vidéos à tout le monde.
- */
 export const youtubePlayerFeature = {
   init() {
     window.SODLYoutubeManager = SODLYoutubeManager;
@@ -49,7 +45,6 @@ export const youtubePlayerFeature = {
       default: "https://inv.nadeko.net, https://yewtu.be, https://invidious.nerdvpn.de"
     });
 
-    // Bibliothèque partagée (dossiers + vidéos), modifiable uniquement par le MJ.
     game.settings.register(MODULE_ID, "youtubeLibrary", {
       scope: "world",
       config: false,
@@ -58,7 +53,6 @@ export const youtubePlayerFeature = {
       onChange: () => SODLYoutubeWidget.onLibraryChanged()
     });
 
-    // Diffusion en cours : vidéo, lecture/pause et position, pilotées par le MJ.
     game.settings.register(MODULE_ID, "youtubeBroadcast", {
       scope: "world",
       config: false,
@@ -67,7 +61,6 @@ export const youtubePlayerFeature = {
       onChange: () => SODLYoutubeWidget.onBroadcastChanged()
     });
 
-    // Volume local à chaque utilisateur (non diffusé).
     game.settings.register(MODULE_ID, "youtubeVolume", {
       scope: "client",
       config: false,
@@ -75,7 +68,6 @@ export const youtubePlayerFeature = {
       default: 80
     });
 
-    // Position, largeur et état réduit du widget, propres à chaque client.
     game.settings.register(MODULE_ID, "youtubeWidgetLayout", {
       scope: "client",
       config: false,
@@ -83,7 +75,6 @@ export const youtubePlayerFeature = {
       default: {}
     });
 
-    // La bibliothèque est un partial du widget pour pouvoir être re-rendue seule.
     loadTemplates([LIBRARY_TEMPLATE]);
   },
 

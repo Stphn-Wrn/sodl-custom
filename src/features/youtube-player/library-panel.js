@@ -7,20 +7,12 @@ import { formatTime } from "./time-format.js";
 
 export const LIBRARY_TEMPLATE = modulePath("src/features/youtube-player/library.html");
 const RESULTS_TEMPLATE = modulePath("src/features/youtube-player/search-results.html");
-// Délai pendant lequel un bouton de suppression attend le second clic de confirmation.
 const CONFIRM_DELAY_MS = 3000;
 const DRAG_TYPE = "application/x-sodl-youtube-video";
 
-/**
- * Panneau du MJ sous le lecteur : recherche YouTube et bibliothèque.
- * Tout se fait sur place, sans boîte de dialogue : création et renommage
- * dans des champs en ligne, déplacement par glisser-déposer, suppression
- * confirmée par un second clic.
- */
 export class SODLYoutubeLibraryPanel {
   constructor(element) {
     this.element = element;
-    // Dossiers repliés : état local à chaque client, non partagé.
     this.collapsedFolders = new Set();
     this.search = { searched: false, loading: false, error: null, results: [] };
     this.targetFolderId = null;
@@ -51,7 +43,6 @@ export class SODLYoutubeLibraryPanel {
     return SODLYoutubeBroadcast.getState().video?.videoId ?? null;
   }
 
-  // Ne re-rend que si la vidéo diffusée a changé (mise en évidence dans la liste).
   onBroadcastChanged() {
     const videoId = this._currentVideoId();
     if (videoId !== this._activeVideoId) {
@@ -62,8 +53,6 @@ export class SODLYoutubeLibraryPanel {
   async refresh() {
     await Promise.all([this._renderLibrary(), this._renderResults()]);
   }
-
-  // -------- Recherche --------
 
   async _runSearch(query) {
     if (!String(query ?? "").trim()) {
@@ -141,8 +130,6 @@ export class SODLYoutubeLibraryPanel {
       SODLYoutubeManager.addVideo({ url: result.videoId, title: result.title, folderId: this.targetFolderId });
     });
   }
-
-  // -------- Bibliothèque --------
 
   _getLibraryData() {
     this._activeVideoId = this._currentVideoId();
@@ -242,10 +229,6 @@ export class SODLYoutubeLibraryPanel {
     });
   }
 
-  /**
-   * Remplace un libellé par un champ de saisie. Entrée ou perte du focus
-   * enregistrent, Échap annule. La bibliothèque est re-rendue après sauvegarde.
-   */
   _editInline(label, onSave) {
     const original = label.text();
     const input = $('<input type="text" class="yt-inline-input">').val(original);
@@ -284,7 +267,6 @@ export class SODLYoutubeLibraryPanel {
     input.on("blur", () => finish(true));
   }
 
-  // Premier clic : le bouton passe en attente de confirmation ; second clic : action.
   _confirmClick(button, onConfirm) {
     if (button.hasClass("yt-confirm")) {
       onConfirm();
@@ -297,7 +279,6 @@ export class SODLYoutubeLibraryPanel {
     }, CONFIRM_DELAY_MS);
   }
 
-  // Glisser une vidéo sur un dossier (ou « Non classé ») l'y déplace.
   _activateDragAndDrop(html) {
     html.find(".yt-video").on("dragstart", (event) => {
       const transfer = event.originalEvent.dataTransfer;

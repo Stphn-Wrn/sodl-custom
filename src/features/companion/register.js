@@ -4,9 +4,6 @@ import { SODL_CONFIG } from "./config.js";
 import { SODLDataManager } from "./data-manager.js";
 import { SODLCompanionApp } from "./companion-app.js";
 
-/**
- * Compagnon SODL : fenêtre de règles, recherche et réserve de Fortune.
- */
 export const companionFeature = {
   init() {
     window.SODLDataManager = SODLDataManager;

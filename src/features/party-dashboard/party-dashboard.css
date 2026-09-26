@@ -1,0 +1,200 @@
+.sodl-party-dashboard .window-content {
+  padding: 0;
+  background: #17171a;
+}
+
+.sodl-party {
+  --party-surface: rgba(255, 255, 255, 0.05);
+  --party-hover: rgba(255, 255, 255, 0.1);
+  --party-border: rgba(255, 255, 255, 0.1);
+  --party-text: #dcdcdc;
+  --party-muted: #8b8b90;
+  --party-title: #e0c9a6;
+
+  color: var(--party-text);
+  font-size: 12px;
+}
+
+.sodl-party button {
+  width: auto;
+  margin: 0;
+  line-height: normal;
+  color: inherit;
+  background: none;
+  border: none;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.sodl-party-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  color: var(--party-title);
+  font-weight: bold;
+  border-bottom: 1px solid var(--party-border);
+}
+
+.sodl-party-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 8px;
+  list-style: none;
+}
+
+.sodl-party-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  padding: 6px 8px;
+  background: var(--party-surface);
+  border-left: 3px solid var(--hud-state, #8b8b90);
+  border-radius: 8px;
+}
+
+.sodl-party-portrait {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--hud-state, #8b8b90);
+  border-radius: 8px;
+  object-fit: contain;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.sodl-party-identity {
+  display: flex;
+  flex-direction: column;
+  min-width: 110px;
+}
+
+.sodl-party .sodl-party-name {
+  padding: 0;
+  color: var(--party-title);
+  font-size: 13px;
+  font-weight: bold;
+  text-align: left;
+}
+
+.sodl-party .sodl-party-name:hover {
+  text-decoration: underline;
+}
+
+.sodl-party-state {
+  color: var(--hud-state, #8b8b90);
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.sodl-party-health {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.sodl-party-health button {
+  padding: 0 4px;
+  color: var(--party-muted);
+  font-size: 9px;
+}
+
+.sodl-party-health button:hover {
+  color: var(--party-text);
+}
+
+.sodl-party-bar {
+  position: relative;
+  width: 100px;
+  height: 16px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--party-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.sodl-party-bar-fill {
+  height: 100%;
+  background: var(--hud-state, #8b8b90);
+}
+
+.sodl-party-bar span {
+  position: absolute;
+  inset: 0;
+  font-size: 11px;
+  line-height: 14px;
+  text-align: center;
+  text-shadow: 0 0 3px #000;
+}
+
+.sodl-party-stats {
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sodl-party-stats li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.sodl-party-stats i {
+  color: var(--party-muted);
+}
+
+.sodl-party .sodl-party-turn {
+  margin-left: auto;
+  padding: 1px 8px;
+  color: var(--party-muted);
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  border: 1px solid var(--party-border);
+  border-radius: 8px;
+}
+
+.sodl-party .sodl-party-turn.is-fast {
+  color: var(--party-title);
+  border-color: var(--party-title);
+}
+
+.sodl-party .sodl-party-icon {
+  padding: 2px 6px;
+  color: var(--party-muted);
+  border-radius: 6px;
+}
+
+.sodl-party .sodl-party-icon:hover,
+.sodl-party .sodl-party-turn:hover {
+  background: var(--party-hover);
+}
+
+.sodl-party-afflictions {
+  display: flex;
+  flex-basis: 100%;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0 0 0 52px;
+  list-style: none;
+}
+
+.sodl-party-afflictions li {
+  padding: 0 6px;
+  color: #d9822b;
+  font-size: 11px;
+  background: rgba(217, 130, 43, 0.12);
+  border-radius: 6px;
+}
+
+.sodl-party-empty {
+  color: var(--party-muted);
+  font-style: italic;
+}

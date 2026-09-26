@@ -36,7 +36,8 @@
     "src/features/companion/companion.css",
     "src/features/dice-clock/dice-clock.css",
     "src/features/youtube-player/youtube-player.css",
-    "src/features/combat-hud/combat-hud.css"
+    "src/features/combat-hud/combat-hud.css",
+    "src/features/party-dashboard/party-dashboard.css"
   ],
   "languages": [
     {

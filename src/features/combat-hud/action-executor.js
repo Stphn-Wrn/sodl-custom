@@ -2,7 +2,8 @@ import { escapeHTML, t } from "../../shared/foundry-adapter.js";
 import { limitedUsesOf, toEquipmentItems, toSnapshot, toUsesUpdate, toWearUpdates } from "./actor-adapter.js";
 import { adjustUsed } from "./uses.js";
 import { planEquip, planUnequip } from "./equipment-rules.js";
-import { afflictionCatalogue, afflictionName } from "./sections.js";
+import { fortuneUse, ruleByRef } from "./sections.js";
+import { SODLDataManager } from "../companion/data-manager.js";
 
 async function toggleWear(actor, { itemId }) {
   const equipmentItems = toEquipmentItems(toSnapshot(actor));
@@ -93,15 +94,54 @@ function adjustUses(actor, { itemId, amount }) {
   return item.update(toUsesUpdate(item.type, used));
 }
 
-function postRule(actor, { ruleId }) {
-  const affliction = afflictionCatalogue(t).find((candidate) => candidate.id === ruleId);
-  if (!affliction) {
+function postRule(actor, { ruleRef }) {
+  const rule = ruleByRef(ruleRef, t);
+  if (!rule) {
     return undefined;
   }
   return ChatMessage.create({
     speaker: ChatMessage.getSpeaker({ actor }),
-    content: `<h3>${escapeHTML(afflictionName(affliction))}</h3><p>${escapeHTML(affliction.description)}</p>`
+    content: `<h3>${escapeHTML(rule.name)}</h3><p>${escapeHTML(rule.description)}</p>`
   });
+}
+
+function canChooseTurn(actor) {
+  return game.user.isGM || !game.combat || game.combat.turn === null || !actor.inCombat;
+}
+
+async function toggleTurn(actor) {
+  if (!canChooseTurn(actor)) {
+    ui.notifications.warn(t("SODL.Hud.Notify.TurnLocked"));
+    return undefined;
+  }
+  const fast = !actor.system.fastturn;
+  await actor.update({ "system.fastturn": fast });
+  let key = "SODL.Hud.Chat.SlowTurn";
+  if (fast) {
+    key = "SODL.Hud.Chat.FastTurn";
+  }
+  return ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<p>${t(key, { name: escapeHTML(actor.name) })}</p>`
+  });
+}
+
+function spendFortune(actor, { useIndex }) {
+  const use = fortuneUse(useIndex, t);
+  if (!use) {
+    return undefined;
+  }
+  return ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<p>${t("SODL.Hud.Chat.SpendFortune", { name: escapeHTML(actor.name) })}</p><h3>${escapeHTML(use.name)}</h3><p>${escapeHTML(use.description)}</p>`
+  });
+}
+
+function changeFortune(actor, { amount }) {
+  if (!game.user.isGM) {
+    return undefined;
+  }
+  return SODLDataManager.modifyChancePoints(amount);
 }
 
 function rest(actor, action) {
@@ -128,6 +168,9 @@ const ACTION_STRATEGIES = {
   postRule,
   adjustUses,
   recover,
+  toggleTurn,
+  spendFortune,
+  changeFortune,
   rest
 };
 

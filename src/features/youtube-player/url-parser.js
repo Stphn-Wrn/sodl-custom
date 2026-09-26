@@ -18,13 +18,7 @@ function validId(candidate) {
   return null;
 }
 
-/**
- * Stratégies d'extraction de l'ID d'une vidéo. Chacune reconnaît un format
- * d'entrée et retourne l'ID trouvé, ou null pour laisser la main à la suivante.
- * Pour supporter un nouveau format, il suffit d'ajouter une stratégie ici.
- */
 const PARSING_STRATEGIES = [
-  // ID brut : "dQw4w9WgXcQ"
   (input) => validId(input),
 
   // Lien court : https://youtu.be/<id>
@@ -45,7 +39,6 @@ const PARSING_STRATEGIES = [
     return validId(url.searchParams.get("v"));
   },
 
-  // Chemins dédiés : /embed/<id>, /shorts/<id>, /live/<id>
   (input) => {
     const url = toUrl(input);
     if (!url || !YOUTUBE_HOSTS.includes(url.hostname)) {
@@ -59,10 +52,6 @@ const PARSING_STRATEGIES = [
   }
 ];
 
-/**
- * Retourne l'ID de la vidéo YouTube désignée par une URL ou un ID brut,
- * ou null si l'entrée n'est pas reconnue.
- */
 export function parseYoutubeVideoId(input) {
   if (typeof input !== "string") {
     return null;

@@ -8,7 +8,7 @@ Module Foundry VTT d'aide de jeu pour **L'Ombre du Seigneur Démon** : réserve 
 
 ## Ce qu'il y a dedans
 
-Le module regroupe quatre outils indépendants :
+Le module regroupe plusieurs outils indépendants :
 
 ### Compagnon SODL
 - **Réserve de Fortune partagée** — Une seule réserve pour tout le groupe (pas par personnage). Seul le MJ voit le total et peut le modifier ; les joueurs voient un message masqué.
@@ -34,6 +34,9 @@ Le module regroupe quatre outils indépendants :
 - **À la place des macros et des joueurs** — Le HUD occupe le bas de l'écran, de la liste des joueurs jusqu'à la barre latérale, pour le token contrôlé (ou le personnage du joueur). Un bouton (ou un raccourci à définir dans les contrôles) bascule entre le HUD et l'interface d'origine.
 - **À gauche** — Portrait (cliquer pour le recadrer : glisser pour déplacer, molette pour zoomer ; cadrage enregistré sur le personnage), Santé (boutons -1/+1 dégât), Folie et Corruption (boutons -1/+1, cliquer sur la Corruption pour son jet), Défense, Vitesse, Pouvoir, taux de guérison (cliquer pour Récupérer) et afflictions actives.
 - **À droite** — Onglets Attaques (armes portées, munitions), Équipement (armes, protections et munitions, une ligne chacune), Sorts (par tradition, puis incantations restantes, −/+ au survol pour en rendre ou en retirer), Talents (idem pour leurs utilisations), Objets (consommables), Caractéristiques et Professions, Afflictions, plus l'accès à la fiche du personnage (bouton ou clic sur le nom), un lanceur de dés (d2 à d100, de 1 à 8 dés) et le repos (8 h, 24 h).
+- **Tour rapide / lent** — Bouton à côté du nom pour choisir le type de tour ; l'initiative du système se met à jour. Un joueur ne peut changer qu'entre deux rounds, le MJ à tout moment.
+- **Onglet Fortune** — Les utilisations de la Fortune (imposer des fléaux, retenir la main de la Mort...) : un clic annonce la dépense et sa règle dans le chat. Le MJ y voit aussi la réserve du groupe, qu'il ajuste avec -1/+1 ; les joueurs ne voient pas le total.
+- **Onglet Actions** — Actions de base, options de mêlée et de tir, autres attaques : un clic envoie la règle dans le chat.
 - **Couleur de l'état de santé** — Barre de Santé, cadre du portrait et mention sous le nom : Indemne (vert), Touché (jaune), Blessé à partir de la moitié de la Santé (orange), Neutralisé (rouge, portrait grisé).
 - **Onglet Afflictions** — Les afflictions actives (celles du système `demonlord`) ; un clic en retire une, « Ajouter une affliction » ouvre la liste des autres.
 - **Onglet Effets** — Les effets temporaires hors afflictions (bénédictions, sorts actifs...) : clic pour activer/désactiver, ✕ pour supprimer, clic droit pour la fiche de l'effet, « Nouvel effet » pour en créer un. L'info-bulle (i) d'une affliction, comme son icône dans la colonne de gauche, envoie sa règle dans le chat.
@@ -41,6 +44,13 @@ Le module regroupe quatre outils indépendants :
 - **Tout dans le HUD** — Une attaque, un défi ou un sort d'attaque ouvre un petit panneau de jet au-dessus du HUD : faveurs/fléaux et modificateur (0 par défaut), puis Lancer ou Annuler. Le jet passe par le système `demonlord` (afflictions, munitions, utilisations), dont la fenêtre est remplie et validée automatiquement. Une profession propose de choisir la caractéristique concernée. Clic droit : ouvre la fiche de l'objet.
 - **Hauteur réglable** — Poignée sur le bord supérieur, mémorisée par joueur, comme le mode affiché et l'onglet ouvert.
 - **Réglage personnel** — Activé par défaut ; chaque joueur et le MJ peuvent le désactiver pour eux-mêmes dans les paramètres du module, sans recharger (lié au compte en v12+, au navigateur en v11).
+
+### Rappels de round (MJ)
+- À chaque nouveau round, le MJ reçoit un message privé : jets de destinée à faire, afflictions actives et effets qui expirent. Désactivable dans les paramètres du module.
+
+### Tableau de bord du groupe (MJ)
+- Bouton **groupe** dans la barre d'outils de gauche (MJ uniquement) : tous les personnages joueurs d'un coup d'œil, avec Santé colorée (boutons -1/+1), Défense, Vitesse, Folie, Corruption, tour rapide/lent, afflictions et réserve de Fortune.
+- Clic sur le nom : fiche du personnage ; viseur : sélectionne et centre son token.
 
 ## Installation
 

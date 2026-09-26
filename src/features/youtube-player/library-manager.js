@@ -6,10 +6,6 @@ import { SODLYoutubeSearch } from "./search-service.js";
 
 const SETTING_KEY = "youtubeLibrary";
 
-/**
- * Persiste la bibliothèque de vidéos YouTube dans un paramètre "world" :
- * tout le monde la consulte, seul le MJ peut la modifier.
- */
 export class SODLYoutubeManager {
   static getLibrary() {
     const stored = game.settings.get(MODULE_ID, SETTING_KEY);
@@ -24,8 +20,6 @@ export class SODLYoutubeManager {
     return this.getLibrary().videos.find((video) => video.id === id) ?? null;
   }
 
-  // Applique une opération pure de library.js puis sauvegarde.
-  // Les erreurs de validation sont affichées au MJ plutôt que levées.
   static async _update(operation) {
     if (!game.user.isGM) {
       return false;
@@ -65,7 +59,6 @@ export class SODLYoutubeManager {
     return this._update((library) => Library.addVideo(library, { title: finalTitle, videoId, folderId }, foundry.utils.randomID()));
   }
 
-  // Ajoute plusieurs vidéos déjà identifiées ({ title, videoId }) en une seule sauvegarde.
   static addVideos(videos, folderId) {
     return this._update((library) => videos.reduce(
       (current, video) => Library.addVideo(current, { ...video, folderId }, foundry.utils.randomID()),

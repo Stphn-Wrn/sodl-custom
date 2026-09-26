@@ -1,8 +1,4 @@
-/**
- * Adapter vers les API de Foundry qui ont changé d'emplacement selon les
- * versions (globales en v11, espaces de noms `foundry.*` à partir de v12/v13).
- * Le reste du code passe par ici et n'a pas à connaître ces différences.
- */
+// Globales en v11, espaces de noms `foundry.*` à partir de v12/v13.
 
 export function getDialogClass() {
   return foundry?.appv1?.api?.Dialog ?? globalThis.Dialog;
@@ -27,7 +23,6 @@ export function escapeHTML(value) {
   return Handlebars.escapeExpression(value ?? "");
 }
 
-// Rafraîchit toutes les fenêtres ouvertes d'une classe d'application donnée.
 export function rerenderOpenApps(AppClass) {
   for (const app of Object.values(ui.windows)) {
     if (app instanceof AppClass) {

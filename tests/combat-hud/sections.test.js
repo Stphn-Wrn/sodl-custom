@@ -20,6 +20,7 @@ function emptySnapshot(overrides) {
     professions: [],
     statuses: [],
     effects: [],
+    fortune: { visible: false, value: 0, max: 0 },
     ...overrides
   };
 }
@@ -27,8 +28,8 @@ function emptySnapshot(overrides) {
 test("un personnage a tous les onglets, une créature n'a pas l'équipement ni les objets", () => {
   const characterIds = createSections("character").map((candidate) => candidate.id);
   const creatureIds = createSections("creature").map((candidate) => candidate.id);
-  assert.deepEqual(characterIds, ["attacks", "equipment", "spells", "talents", "items", "attributes", "afflictions", "effects"]);
-  assert.deepEqual(creatureIds, ["attacks", "spells", "talents", "attributes", "afflictions", "effects"]);
+  assert.deepEqual(characterIds, ["attacks", "equipment", "spells", "talents", "items", "attributes", "actions", "fortune", "afflictions", "effects"]);
+  assert.deepEqual(creatureIds, ["attacks", "spells", "talents", "attributes", "actions", "afflictions", "effects"]);
 });
 
 test("les attaques ne listent que les armes portées", () => {
@@ -175,7 +176,7 @@ test("l'onglet afflictions liste les afflictions actives avec leur effet, puis u
     ]
   );
   assert.match(entries[0].description, /Se relever coûte le déplacement/);
-  assert.equal(entries[0].ruleId, "prone");
+  assert.equal(entries[0].ruleRef, "afflictions:prone");
 });
 
 test("sans affliction active, l'onglet l'indique et propose d'en ajouter", () => {
@@ -304,4 +305,34 @@ test("l'onglet effets liste les effets temporaires hors afflictions, puis un acc
     ]
   );
   assert.equal(entries[0].effectId, "e1");
+});
+
+test("l'onglet actions regroupe les actions de l'aide de jeu, chacune envoyant sa règle dans le chat", () => {
+  const entries = section("character", "actions").build(emptySnapshot(), {});
+  const headings = entries.filter((entry) => entry.isHeading).map((entry) => entry.name);
+  assert.deepEqual(headings, ["Actions", "Options en Mêlée", "Options de Tir", "Autres Types d'Attaques"]);
+  const defend = entries.find((entry) => entry.name === "Se défendre");
+  assert.deepEqual(defend.action, { type: "postRule", ruleRef: "actions:8" });
+  assert.match(defend.description, /1 Desav/);
+});
+
+test("l'onglet fortune liste les utilisations, sans montrer la réserve aux joueurs", () => {
+  const entries = section("character", "fortune").build(emptySnapshot(), {});
+  assert.equal(entries.some((entry) => entry.id === "fortune-pool"), false);
+  const bane = entries.find((entry) => entry.name === "Imposer des fléaux");
+  assert.deepEqual(bane.action, { type: "spendFortune", useIndex: 0 });
+  assert.match(bane.description, /2 fléaux/);
+});
+
+test("le MJ voit la réserve de Fortune et peut l'ajuster depuis l'onglet", () => {
+  const snapshot = emptySnapshot({ fortune: { visible: true, value: 3, max: 6 } });
+  const entries = section("character", "fortune").build(snapshot, {});
+  assert.deepEqual(
+    entries.slice(0, 3).map((entry) => [entry.id, entry.badge, entry.action]),
+    [
+      ["fortune-pool", "3 / 6", null],
+      ["fortune-minus", "", { type: "changeFortune", amount: -1 }],
+      ["fortune-plus", "", { type: "changeFortune", amount: 1 }]
+    ]
+  );
 });

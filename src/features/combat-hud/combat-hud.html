@@ -17,6 +17,9 @@
       <div class="sodl-hud-name-row">
         <button type="button" class="sodl-hud-name sodl-hud-open-sheet" title="{{localize 'SODL.Hud.OpenSheetOf' name=snapshot.name}}">{{snapshot.name}}</button>
         <span class="sodl-hud-state">{{healthStatus.label}}</span>
+        <button type="button" class="sodl-hud-turn {{#if snapshot.fastTurn}}is-fast{{/if}}" data-action-type="toggleTurn" title="{{localize 'SODL.Hud.Turn.Hint'}}">
+          {{#if snapshot.fastTurn}}<i class="fas fa-bolt"></i> {{localize "SODL.Hud.Turn.Fast"}}{{else}}<i class="fas fa-hourglass-half"></i> {{localize "SODL.Hud.Turn.Slow"}}{{/if}}
+        </button>
       </div>
 
       <div class="sodl-hud-stepper sodl-hud-health" title="{{localize 'SODL.Hud.HealthHint' state=healthStatus.label damage=snapshot.characteristics.damage}}">
@@ -58,8 +61,8 @@
       {{#if afflictions.length}}
       <ul class="sodl-hud-afflictions">
         {{#each afflictions}}
-        <li title="{{this.name}}{{#if this.description}} : {{this.description}}{{/if}}{{#if this.ruleId}} {{localize 'SODL.Hud.SendRuleHint'}}{{/if}}"
-          {{#if this.ruleId}}data-rule="{{this.ruleId}}" class="sodl-hud-has-help"{{/if}}><img src="{{this.img}}" alt="{{this.name}}"></li>
+        <li title="{{this.name}}{{#if this.description}} : {{this.description}}{{/if}}{{#if this.ruleRef}} {{localize 'SODL.Hud.SendRuleHint'}}{{/if}}"
+          {{#if this.ruleRef}}data-rule="{{this.ruleRef}}" class="sodl-hud-has-help"{{/if}}><img src="{{this.img}}" alt="{{this.name}}"></li>
         {{/each}}
       </ul>
       {{/if}}
@@ -137,7 +140,7 @@
       {{else}}
       <li {{#if this.newRow}}class="sodl-hud-new-row"{{/if}}>
         <button type="button"
-          class="sodl-hud-entry {{#if this.active}}active{{/if}} {{#if this.warning}}has-warning{{/if}} {{#if this.ruleId}}has-corner{{/if}}{{#if this.effectId}}has-corner{{/if}} {{#if this.variant}}sodl-hud-entry-{{this.variant}}{{/if}} {{#if this.disabled}}is-disabled{{/if}}"
+          class="sodl-hud-entry {{#if this.active}}active{{/if}} {{#if this.warning}}has-warning{{/if}} {{#if this.ruleRef}}has-corner{{/if}}{{#if this.effectId}}has-corner{{/if}} {{#if this.variant}}sodl-hud-entry-{{this.variant}}{{/if}} {{#if this.disabled}}is-disabled{{/if}}"
           data-entry="{{@index}}"
           title="{{this.name}}{{#if this.warning}} — {{this.warning}}{{/if}}{{#if this.description}} : {{this.description}}{{/if}}"
           {{#if this.disabled}}aria-disabled="true"{{/if}}>
@@ -156,8 +159,8 @@
         {{#if this.effectId}}
         <button type="button" class="sodl-hud-entry-help" data-delete-effect="{{this.effectId}}" title="{{localize 'SODL.Hud.DeleteEffect'}}"><i class="fas fa-xmark"></i></button>
         {{/if}}
-        {{#if this.ruleId}}
-        <button type="button" class="sodl-hud-entry-help" data-rule="{{this.ruleId}}" title="{{localize 'SODL.Hud.SendRule'}}"><i class="fas fa-circle-info"></i></button>
+        {{#if this.ruleRef}}
+        <button type="button" class="sodl-hud-entry-help" data-rule="{{this.ruleRef}}" title="{{localize 'SODL.Hud.SendRule'}}"><i class="fas fa-circle-info"></i></button>
         {{/if}}
       </li>
       {{/if}}

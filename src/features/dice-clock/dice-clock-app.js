@@ -2,11 +2,6 @@ import { modulePath } from "../../shared/constants.js";
 import { getDialogClass, t } from "../../shared/foundry-adapter.js";
 import { SODLDiceClockManager } from "./dice-clock-manager.js";
 
-/**
- * Fenêtre flottante affichant la "Dice Clock". Déplaçable par tout le monde
- * (comportement standard des fenêtres Foundry), mais seul le MJ voit les
- * boutons de contrôle : les joueurs n'ont qu'une vue en lecture seule.
- */
 export class SODLDiceClockApp extends Application {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
