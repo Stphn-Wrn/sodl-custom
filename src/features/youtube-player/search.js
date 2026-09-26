@@ -7,7 +7,6 @@ const INSTANCE_TIMEOUT_MS = 6000;
 
 const HTML_ENTITIES = { amp: "&", lt: "<", gt: ">", quot: "\"", apos: "'" };
 
-// L'API YouTube Data renvoie des titres encodés en HTML (&#39;, &amp;...).
 function decodeHtml(text) {
   return String(text ?? "").replace(/&(#x?[0-9a-f]+|[a-z]+);/gi, (match, code) => {
     if (code[0] !== "#") {
@@ -32,7 +31,6 @@ function toResult({ videoId, title, channel, duration = null }) {
   return { videoId, title, channel, duration, thumbnail: thumbnailUrl(videoId) };
 }
 
-// Un ID brut n'est pas pris pour un lien : un mot de 11 lettres est ambigu.
 function parseLink(text) {
   if (!text.includes("/")) {
     return null;

@@ -1,5 +1,5 @@
 import { MODULE_ID } from "../../shared/constants.js";
-import { rerenderOpenApps, t } from "../../shared/foundry-adapter.js";
+import { backToTokenControls, rerenderOpenApps, t } from "../../shared/foundry-adapter.js";
 import { SODLDiceClockManager } from "./dice-clock-manager.js";
 import { SODLDiceClockApp } from "./dice-clock-app.js";
 
@@ -112,6 +112,7 @@ export const diceClockFeature = {
           onChange: (event, active) => {
             if (active) {
               new SODLDiceClockApp().render(true);
+              backToTokenControls();
             }
           }
         }

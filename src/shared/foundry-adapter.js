@@ -1,5 +1,3 @@
-// Globales en v11, espaces de noms `foundry.*` à partir de v12/v13.
-
 export function getDialogClass() {
   return foundry?.appv1?.api?.Dialog ?? globalThis.Dialog;
 }
@@ -40,4 +38,14 @@ export function t(key, data) {
 
 export function errorMessage(err) {
   return t(err.message, err.data);
+}
+
+export function backToTokenControls() {
+  setTimeout(() => {
+    if (game.release.generation >= 13) {
+      ui.controls.activate({ control: "tokens" });
+      return;
+    }
+    ui.controls.initialize({ control: "token" });
+  }, 0);
 }

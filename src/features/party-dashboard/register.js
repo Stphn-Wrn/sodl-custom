@@ -1,5 +1,5 @@
 import { MODULE_ID } from "../../shared/constants.js";
-import { rerenderOpenApps, t } from "../../shared/foundry-adapter.js";
+import { backToTokenControls, rerenderOpenApps, t } from "../../shared/foundry-adapter.js";
 import { SODLPartyDashboard } from "./party-dashboard-app.js";
 
 const FORTUNE_SETTINGS = [`${MODULE_ID}.chancePoints`, `${MODULE_ID}.maxChancePoints`];
@@ -87,6 +87,7 @@ export const partyDashboardFeature = {
           onChange: (event, active) => {
             if (active) {
               new SODLPartyDashboard().render(true);
+              backToTokenControls();
             }
           }
         }

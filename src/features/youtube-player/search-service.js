@@ -28,7 +28,6 @@ export class SODLYoutubeSearch {
     return this._provider().search(query.text);
   }
 
-  // Infos publiques d'une vidéo via oEmbed (sans clé) ; à défaut, l'ID sert de titre.
   static async lookupVideo(videoId) {
     const result = { videoId, title: t("SODL.Youtube.VideoFallback", { id: videoId }), channel: "", duration: null, thumbnail: thumbnailUrl(videoId) };
     const watchUrl = `https://www.youtube.com/watch?v=${videoId}`;

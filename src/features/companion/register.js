@@ -1,5 +1,5 @@
 import { MODULE_ID } from "../../shared/constants.js";
-import { rerenderOpenApps, t } from "../../shared/foundry-adapter.js";
+import { backToTokenControls, rerenderOpenApps, t } from "../../shared/foundry-adapter.js";
 import { SODL_CONFIG } from "./config.js";
 import { SODLDataManager } from "./data-manager.js";
 import { SODLCompanionApp } from "./companion-app.js";
@@ -41,6 +41,7 @@ export const companionFeature = {
           onChange: (event, active) => {
             if (active) {
               new SODLCompanionApp().render(true);
+              backToTokenControls();
             }
           }
         }

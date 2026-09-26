@@ -1,7 +1,6 @@
 import { MODULE_ID } from "../../shared/constants.js";
 import { playSound, t } from "../../shared/foundry-adapter.js";
 
-// Seulement pour des d6 : au-delà, on affiche un chiffre.
 const DICE_ICONS = [null, "fa-dice-one", "fa-dice-two", "fa-dice-three", "fa-dice-four", "fa-dice-five", "fa-dice-six"];
 
 export class SODLDiceClockManager {
@@ -37,8 +36,7 @@ export class SODLDiceClockManager {
     await game.settings.set(MODULE_ID, "diceClockState", state);
   }
 
-  // Vider les dés l'un après l'autre revient à toujours retirer le point du dé
-  // le plus bas, sans avoir à stocker l'état de chaque dé.
+
   static getDiceValues(remaining) {
     const diceCount = this.diceCount;
     const faces = this.faces;

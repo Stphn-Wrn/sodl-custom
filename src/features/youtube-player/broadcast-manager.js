@@ -32,8 +32,6 @@ export class SODLYoutubeBroadcast {
     return this._setState(Broadcast.createIdleBroadcast());
   }
 
-  // Appelé depuis le lecteur du MJ : ne diffuse que si l'état a réellement changé,
-  // pour éviter d'écrire le paramètre en boucle.
   static report(playback) {
     const state = this.getState();
     if (!Broadcast.hasDiverged(state, playback, this.now())) {

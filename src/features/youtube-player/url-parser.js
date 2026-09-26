@@ -1,4 +1,3 @@
-// Un ID de vidéo YouTube fait toujours 11 caractères parmi [A-Za-z0-9_-].
 const VIDEO_ID_PATTERN = /^[A-Za-z0-9_-]{11}$/;
 
 const YOUTUBE_HOSTS = ["youtube.com", "www.youtube.com", "m.youtube.com", "music.youtube.com", "youtube-nocookie.com", "www.youtube-nocookie.com"];
@@ -21,7 +20,6 @@ function validId(candidate) {
 const PARSING_STRATEGIES = [
   (input) => validId(input),
 
-  // Lien court : https://youtu.be/<id>
   (input) => {
     const url = toUrl(input);
     if (!url || url.hostname !== "youtu.be") {
@@ -30,7 +28,6 @@ const PARSING_STRATEGIES = [
     return validId(url.pathname.split("/")[1]);
   },
 
-  // Lien classique : https://www.youtube.com/watch?v=<id>
   (input) => {
     const url = toUrl(input);
     if (!url || !YOUTUBE_HOSTS.includes(url.hostname) || url.pathname !== "/watch") {

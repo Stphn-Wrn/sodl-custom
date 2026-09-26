@@ -1,7 +1,3 @@
-// `position` (s) est la position à l'instant `updatedAt` (ms, heure serveur) :
-// chaque client en déduit la position courante sans la recevoir en continu.
-
-// Écart (en secondes) en dessous duquel on considère deux lecteurs synchronisés.
 export const SYNC_TOLERANCE = 2;
 
 export function createIdleBroadcast() {

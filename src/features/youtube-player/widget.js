@@ -14,7 +14,6 @@ const DRAG_THRESHOLD_PX = 4;
 const MIN_WIDTH = 280;
 const MAX_WIDTH = 960;
 
-// Valeurs de YT.PlayerState, dupliquées pour ne pas dépendre du chargement de l'API.
 const PLAYER_STATE = { UNSTARTED: -1, ENDED: 0, PLAYING: 1, PAUSED: 2, BUFFERING: 3, CUED: 5 };
 
 export class SODLYoutubeWidget {
@@ -127,7 +126,7 @@ export class SODLYoutubeWidget {
           return;
         }
         dragging = true;
-        // L'iframe capterait le pointeur pendant le glisser : on la neutralise.
+
         this.element.addClass("yt-widget-dragging");
         this._moveTo(origin.left + dx, origin.top + dy);
       };
@@ -193,7 +192,6 @@ export class SODLYoutubeWidget {
     if (game.user.isGM) {
       html.find(".yt-play-toggle, .yt-player-shield").on("click", () => this._togglePlayback());
 
-      // Pendant le glisser, seul l'affichage suit ; la vidéo saute au relâchement.
       html.find(".yt-seek").on("input", (event) => {
         this._seeking = true;
         html.find(".yt-time-current").text(formatTime(event.currentTarget.value));
@@ -252,8 +250,6 @@ export class SODLYoutubeWidget {
 
   _tick() {
     if (game.user.isGM) {
-      // L'API YouTube n'émet pas d'événement lors d'un saut dans la vidéo :
-      // on compare régulièrement la position du MJ à celle diffusée.
       this._reportGmPlayback();
       return;
     }
@@ -297,7 +293,6 @@ export class SODLYoutubeWidget {
     const playerState = this.player.getPlayerState();
     const isPlaying = playerState === PLAYER_STATE.PLAYING || playerState === PLAYER_STATE.BUFFERING;
 
-    // La vidéo s'est terminée un peu avant celle du MJ : on attend sans la relancer.
     const endedWithBroadcast = playerState === PLAYER_STATE.ENDED
       && Math.abs(this.player.getCurrentTime() - position) <= SYNC_TOLERANCE;
     if (endedWithBroadcast) {
@@ -318,8 +313,7 @@ export class SODLYoutubeWidget {
       this.player.pauseVideo();
     }
 
-    // Un lecteur simplement "préparé" (cued) est déjà à la bonne position :
-    // y appeler seekTo lancerait la lecture.
+
     const canSeek = playerState !== PLAYER_STATE.CUED && playerState !== PLAYER_STATE.UNSTARTED;
     if (canSeek && Math.abs(this.player.getCurrentTime() - position) > SYNC_TOLERANCE) {
       this.player.seekTo(position, true);
@@ -332,8 +326,6 @@ export class SODLYoutubeWidget {
     this._setJoinButtonVisible(blocked);
   }
 
-  // Transmet l'état du lecteur du MJ. Les états transitoires (chargement, mise en
-  // mémoire tampon) sont ignorés pour ne pas diffuser de fausses pauses.
   _reportGmPlayback() {
     if (!this._playerReady) {
       return;

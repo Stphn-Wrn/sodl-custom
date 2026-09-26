@@ -24,8 +24,7 @@ export class SODLYoutubeLibraryPanel {
       event.preventDefault();
       this._runSearch(event.currentTarget.elements.query.value);
     });
-    // Un champ d'une ligne supprime les retours à la ligne, ce qui collerait les
-    // liens les uns aux autres : un collage multiligne est donc traité ici.
+   
     searchForm.find("input").on("paste", (event) => {
       const text = event.originalEvent.clipboardData?.getData("text") ?? "";
       if (!/[\r\n]/.test(text.trim())) {
@@ -233,7 +232,7 @@ export class SODLYoutubeLibraryPanel {
     const original = label.text();
     const input = $('<input type="text" class="yt-inline-input">').val(original);
     label.replaceWith(input);
-    // Une ligne glissable empêche de sélectionner le texte du champ.
+
     const row = input.closest("[draggable]");
     row.attr("draggable", "false");
     input.trigger("focus").trigger("select");
