@@ -75,6 +75,8 @@
               {{#if this.ruleRef}}data-rule="{{this.ruleRef}}" class="sodl-hud-has-help"{{/if}}><img src="{{this.img}}" alt="{{this.name}}"></li>
             {{/each}}
           </ul>
+          {{else}}
+          <span class="sodl-hud-block-placeholder">{{localize "SODL.Hud.Tabs.Afflictions"}}</span>
           {{/if}}
         {{/if}}
       </div>
@@ -86,10 +88,12 @@
     <nav class="sodl-hud-tabs">
       <div class="sodl-hud-tab-list">
       {{#each sections}}
-      <button type="button" class="sodl-hud-tab {{#if this.active}}active{{/if}} {{#if this.hidden}}is-hidden{{/if}}" data-section="{{this.id}}" data-drag-kind="tab" data-drag-id="{{this.id}}" title="{{this.label}}">
-        <i class="{{this.icon}}"></i><span class="sodl-hud-tab-label">{{this.label}}</span>
-        {{#if @root.editing}}<span class="sodl-hud-edit-eye" data-hide-tab="{{this.id}}" title="{{localize 'SODL.Hud.Edit.ToggleVisibility'}}"><i class="fas {{#if this.hidden}}fa-eye-slash{{else}}fa-eye{{/if}}"></i></span>{{/if}}
-      </button>
+      <div class="sodl-hud-tab-slot {{#if this.hidden}}is-hidden{{/if}}" data-drag-kind="tab" data-drag-id="{{this.id}}">
+        <button type="button" class="sodl-hud-tab {{#if this.active}}active{{/if}}" data-section="{{this.id}}" title="{{this.label}}">
+          <i class="{{this.icon}}"></i><span class="sodl-hud-tab-label">{{this.label}}</span>
+        </button>
+        {{#if @root.editing}}<button type="button" class="sodl-hud-edit-eye" data-hide-tab="{{this.id}}" title="{{localize 'SODL.Hud.Edit.ToggleVisibility'}}"><i class="fas {{#if this.hidden}}fa-eye-slash{{else}}fa-eye{{/if}}"></i></button>{{/if}}
+      </div>
       {{/each}}
       </div>
 

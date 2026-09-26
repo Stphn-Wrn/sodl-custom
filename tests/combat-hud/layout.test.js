@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { computeAnchors, resizeHeight } from "../../src/features/combat-hud/layout.js";
+import { clampEntriesHeight, computeAnchors, resizeHeight } from "../../src/features/combat-hud/layout.js";
 
 test("tirer la poignée vers le haut agrandit la zone des actions", () => {
   assert.equal(resizeHeight(84, -40), 124);
@@ -8,7 +8,7 @@ test("tirer la poignée vers le haut agrandit la zone des actions", () => {
 
 test("la hauteur de la zone des actions reste entre le minimum et le maximum", () => {
   assert.equal(resizeHeight(84, 500), 36);
-  assert.equal(resizeHeight(84, -2000), 480);
+  assert.equal(resizeHeight(84, -2000), 300);
 });
 
 test("le HUD s'étend du bord de l'interface de gauche jusqu'à la barre latérale", () => {
@@ -19,4 +19,10 @@ test("le HUD s'étend du bord de l'interface de gauche jusqu'à la barre latéra
 test("sans interface détectée, le HUD garde une marge de chaque côté", () => {
   const result = computeAnchors({ uiLeftX: null, sidebarX: null, viewportWidth: 1920 });
   assert.deepEqual(result, { left: 16, right: 16 });
+});
+
+test("une hauteur enregistrée hors des bornes est ramenée dans les bornes au chargement", () => {
+  assert.equal(clampEntriesHeight(900), 300);
+  assert.equal(clampEntriesHeight(undefined), 110);
+  assert.equal(clampEntriesHeight(150), 150);
 });

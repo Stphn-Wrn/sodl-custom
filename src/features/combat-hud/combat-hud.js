@@ -3,7 +3,7 @@ import { renderTemplate, t } from "../../shared/foundry-adapter.js";
 import { executeAction } from "./action-executor.js";
 import { armRoll, DEFAULT_ROLL_OPTIONS, stepRollOption, takeArmedRoll } from "./roll-options.js";
 import { PORTRAIT_FRAME_FLAG, toSnapshot } from "./actor-adapter.js";
-import { computeAnchors, DEFAULT_ENTRIES_HEIGHT, resizeHeight } from "./layout.js";
+import { clampEntriesHeight, computeAnchors, resizeHeight } from "./layout.js";
 import { DEFAULT_FRAME, framePortraitStyle, panFrame, zoomFrame } from "./portrait-frame.js";
 import { afflictionCatalogue, createSections } from "./sections.js";
 import { healthState } from "./health-state.js";
@@ -156,7 +156,7 @@ export class SODLCombatHud {
     const layout = game.settings.get(MODULE_ID, "combatHudLayout");
     this.activeSection = layout.activeSection ?? "attacks";
     this.mode = layout.mode ?? MODE.HUD;
-    this.entriesHeight = layout.entriesHeight ?? DEFAULT_ENTRIES_HEIGHT;
+    this.entriesHeight = clampEntriesHeight(layout.entriesHeight);
     this.editing = false;
     this.dragging = null;
     this.favoriteEntries = [];
@@ -284,8 +284,12 @@ export class SODLCombatHud {
     });
 
     const blocks = arrange(LEFT_BLOCKS, { order: this.custom.blockOrder, hidden: this.custom.hiddenBlocks });
-    let leftBlocks = blocks.visible.map((id) => ({ id, hidden: false }));
+    const hasAfflictions = this.actor.temporaryEffects.length > 0;
+    let leftBlocks = blocks.visible
+      .filter((id) => id !== "afflictions" || hasAfflictions)
+      .map((id) => ({ id, hidden: false }));
     if (this.editing) {
+      leftBlocks = blocks.visible.map((id) => ({ id, hidden: false }));
       leftBlocks = [...leftBlocks, ...blocks.hidden.map((id) => ({ id, hidden: true }))];
     }
 
