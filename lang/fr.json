@@ -343,6 +343,10 @@
       "RoundRemindersEnabled": {
         "Name": "Rappels de round : activer",
         "Hint": "À chaque nouveau round, envoie au MJ un message privé : jets de destinée à faire, afflictions actives et effets qui expirent."
+      },
+      "HideSystemGmTools": {
+        "Name": "Masquer les outils MJ du système",
+        "Hint": "Retire le bouton « SotDL GM Tools » (Player Tracker) du système demonlord, remplacé par le tableau de bord du groupe. Nécessite de rafraîchir la partie."
       }
     },
     "Rules": {

@@ -27,6 +27,7 @@ Module Foundry VTT d'aide de jeu pour **L'Ombre du Seigneur Démon** : HUD de co
 ### Tableau de bord du groupe (MJ)
 - Tous les personnages joueurs d'un coup d'œil : Santé colorée (-1/+1), Défense, Vitesse, Folie, Corruption, tour rapide/lent, afflictions et réserve de Fortune.
 - Clic sur le nom : fiche du personnage ; viseur : sélectionne et centre son token.
+- Remplace le *Player Tracker* du système : son bouton « SotDL GM Tools » est masqué par défaut (paramètre du module).
 
 ### Rappels de round (MJ)
 - À chaque nouveau round, le MJ reçoit un message privé : jets de destinée à faire, afflictions actives et effets qui expirent. Désactivable dans les paramètres.

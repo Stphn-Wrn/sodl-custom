@@ -27,6 +27,7 @@ Foundry VTT companion module for **Shadow of the Demon Lord**: combat HUD, share
 ### Party dashboard (GM)
 - Every player character at a glance: colored Health (-1/+1), Defense, Speed, Insanity, Corruption, fast/slow turn, afflictions and the Fortune pool.
 - Click the name for the character sheet; the crosshair selects and centers the token.
+- Replaces the system's *Player Tracker*: its "SotDL GM Tools" button is hidden by default (module setting).
 
 ### Round reminders (GM)
 - On every new round, the GM gets a whisper: fate rolls to make, active afflictions and expiring effects. Can be turned off in the settings.

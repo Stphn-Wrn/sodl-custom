@@ -14,6 +14,22 @@ function refreshFor(actor) {
   }
 }
 
+const SYSTEM_GM_TOOLS = "sotdl";
+
+function hideSystemGmTools(controls) {
+  if (!game.settings.get(MODULE_ID, "hideSystemGmTools")) {
+    return;
+  }
+  if (Array.isArray(controls)) {
+    const index = controls.findIndex((control) => control.name === SYSTEM_GM_TOOLS);
+    if (index >= 0) {
+      controls.splice(index, 1);
+    }
+    return;
+  }
+  delete controls[SYSTEM_GM_TOOLS];
+}
+
 function ownerActor(document) {
   let owner = document.parent;
   if (owner?.documentName === "Item") {
@@ -25,6 +41,16 @@ function ownerActor(document) {
 export const partyDashboardFeature = {
   init() {
     window.SODLPartyDashboard = SODLPartyDashboard;
+
+    game.settings.register(MODULE_ID, "hideSystemGmTools", {
+      name: "SODL.Settings.HideSystemGmTools.Name",
+      hint: "SODL.Settings.HideSystemGmTools.Hint",
+      scope: "world",
+      config: true,
+      type: Boolean,
+      default: true,
+      requiresReload: true
+    });
   },
 
   ready() {
@@ -46,6 +72,7 @@ export const partyDashboardFeature = {
     if (!game.user.isGM) {
       return;
     }
+    hideSystemGmTools(controls);
     controls.sodlParty = {
       name: "sodlParty",
       title: t("SODL.Dashboard.Title"),

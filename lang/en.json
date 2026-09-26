@@ -343,6 +343,10 @@
       "RoundRemindersEnabled": {
         "Name": "Round reminders: enable",
         "Hint": "On every new round, whispers the GM a message: fate rolls to make, active afflictions and expiring effects."
+      },
+      "HideSystemGmTools": {
+        "Name": "Hide the system's GM tools",
+        "Hint": "Removes the demonlord system's \"SotDL GM Tools\" button (Player Tracker), replaced by the party dashboard. Requires a refresh."
       }
     },
     "Rules": {
