@@ -8,16 +8,20 @@ function snapshot(overrides) {
     name: "Bartoras",
     img: "b.webp",
     fastTurn: false,
-    characteristics: { health: 7, healthMax: 12, damage: 5, defense: 14, speed: 10, insanity: 2, insanityMax: 9, corruption: 1 },
+    characteristics: { health: 7, healthMax: 12, damage: 5, defense: 14, speed: 10, power: 1, insanity: 2, insanityMax: 9, corruption: 1 },
     statuses: [],
+    ancestries: ["Faune"],
+    paths: { novice: ["Magicien"], expert: [], master: [], legendary: [] },
+    professions: [{ id: "p1", name: "Pionnier" }],
     ...overrides
   };
 }
 
 test("une ligne du tableau reprend l'état de santé et les valeurs utiles au MJ", () => {
-  const row = partyRow("a1", snapshot({}), t);
+  const row = partyRow("a1", snapshot({}), t, "Pascal");
   assert.deepEqual(row, {
     actorId: "a1",
+    player: "Pascal",
     name: "Bartoras",
     img: "b.webp",
     stateId: "hurt",
@@ -27,21 +31,34 @@ test("une ligne du tableau reprend l'état de santé et les valeurs utiles au MJ
     healthPercent: 58,
     defense: 14,
     speed: 10,
+    power: 1,
     insanity: "2/9",
     corruption: 1,
     turnLabel: "Lent",
     fastTurn: false,
-    afflictions: []
+    afflictions: [],
+    ancestry: "Faune",
+    paths: [{ tier: "Apprenti", names: "Magicien" }],
+    professions: ["Pionnier"]
   });
 });
 
 test("les afflictions actives sont listées par leur nom", () => {
-  const row = partyRow("a1", snapshot({ statuses: ["prone", "injured", "frightened"] }), t);
+  const row = partyRow("a1", snapshot({ statuses: ["prone", "injured", "frightened"] }), t, "Pascal");
   assert.deepEqual(row.afflictions, ["À terre", "Effrayé"]);
 });
 
 test("sans Santé renseignée, la barre est vide", () => {
-  const row = partyRow("a1", snapshot({ characteristics: { health: 0, healthMax: 0, damage: 0, defense: 10, speed: 10, insanity: 0, insanityMax: 10, corruption: 0 } }), t);
+  const row = partyRow("a1", snapshot({ characteristics: { health: 0, healthMax: 0, damage: 0, defense: 10, speed: 10, power: 0, insanity: 0, insanityMax: 10, corruption: 0 } }), t, "");
   assert.equal(row.healthPercent, 0);
   assert.equal(row.stateId, "unknown");
+});
+
+test("les voies sont listées par palier, les paliers vides sont omis", () => {
+  const paths = { novice: ["Guerrier"], expert: ["Berserker", "Chevalier"], master: [], legendary: [] };
+  const row = partyRow("a1", snapshot({ paths }), t, "Claire");
+  assert.deepEqual(row.paths, [
+    { tier: "Apprenti", names: "Guerrier" },
+    { tier: "Expert", names: "Berserker, Chevalier" }
+  ]);
 });

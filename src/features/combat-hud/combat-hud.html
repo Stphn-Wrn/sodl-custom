@@ -71,11 +71,13 @@
 
   <div class="sodl-hud-main">
     <nav class="sodl-hud-tabs">
+      <div class="sodl-hud-tab-list">
       {{#each sections}}
       <button type="button" class="sodl-hud-tab {{#if this.active}}active{{/if}}" data-section="{{this.id}}" title="{{this.label}}">
         <i class="{{this.icon}}"></i><span class="sodl-hud-tab-label">{{this.label}}</span>
       </button>
       {{/each}}
+      </div>
 
       <div class="sodl-hud-tools">
         <button type="button" class="sodl-hud-icon sodl-hud-open-sheet" title="{{localize 'SODL.Hud.OpenSheet'}}"><i class="fas fa-id-card"></i></button>

@@ -29,6 +29,16 @@ function remainingRounds(effect) {
   return effect.duration.remaining;
 }
 
+const PATH_TIERS = ["novice", "expert", "master", "legendary"];
+
+function pathsByTier(actor) {
+  const paths = itemsOfType(actor, "path");
+  return Object.fromEntries(PATH_TIERS.map((tier) => [
+    tier,
+    paths.filter((path) => path.system.type === tier).map((path) => path.name)
+  ]));
+}
+
 function characteristics(system) {
   const values = system.characteristics;
   const damage = toNumber(values.health?.value);
@@ -103,6 +113,8 @@ export function toSnapshot(actor) {
       .filter((item) => item.system.consumabletype)
       .map((item) => ({ ...base(item), quantity: toNumber(item.system.quantity), rollsAttack: rollsAttack(item.system) })),
     professions: itemsOfType(actor, "profession").map(base),
+    ancestries: itemsOfType(actor, "ancestry").map((item) => item.name),
+    paths: pathsByTier(actor),
 
     statuses: Array.from(actor.statuses ?? []),
     effects: Array.from(actor.effects ?? []).map((effect) => ({

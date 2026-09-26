@@ -283,12 +283,6 @@
         "Fast": "Rapide",
         "Slow": "Lent",
         "Hint": "Tour rapide ou lent pour ce round : cliquer pour changer"
-      },
-      "Fortune": {
-        "Pool": "Réserve du groupe",
-        "Minus": "Retirer 1",
-        "Plus": "Ajouter 1",
-        "Uses": "Utilisations"
       }
     },
     "Settings": {
@@ -689,7 +683,16 @@
       "Fortune": "Réserve de Fortune : {value} / {max}",
       "Empty": "Aucun personnage joueur dans ce monde.",
       "SelectToken": "Sélectionner et centrer le token",
-      "NoToken": "{name} n'a pas de token sur cette scène."
+      "NoToken": "{name} n'a pas de token sur cette scène.",
+      "Paths": {
+        "novice": "Apprenti",
+        "expert": "Expert",
+        "master": "Maître",
+        "legendary": "Légendaire"
+      },
+      "Player": "Joueur",
+      "Ancestry": "Ascendance",
+      "Professions": "Professions"
     }
   }
 }

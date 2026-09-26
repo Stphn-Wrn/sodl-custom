@@ -79,11 +79,6 @@ export const combatHudFeature = {
     Hooks.on("createActiveEffect", onEffectChanged);
     Hooks.on("updateActiveEffect", onEffectChanged);
     Hooks.on("deleteActiveEffect", onEffectChanged);
-    Hooks.on("updateSetting", (setting) => {
-      if ([`${MODULE_ID}.chancePoints`, `${MODULE_ID}.maxChancePoints`].includes(setting.key)) {
-        SODLCombatHud.onFortuneChanged();
-      }
-    });
     Hooks.on("collapseSidebar", () => SODLCombatHud.onViewportChanged());
     Hooks.on("renderDialogV2", (app, element) => SODLCombatHud.onDialogRendered(element));
     window.addEventListener("resize", () => SODLCombatHud.onViewportChanged());

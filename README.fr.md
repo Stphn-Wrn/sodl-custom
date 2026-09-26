@@ -18,14 +18,14 @@ Module Foundry VTT d'aide de jeu pour **L'Ombre du Seigneur Démon** : HUD de co
 - **Panneau de jet** — Une attaque, un défi ou un sort d'attaque ouvre un petit panneau au-dessus du HUD : faveurs/fléaux et modificateur, puis Lancer ou Annuler. Le jet passe par le système `demonlord` (afflictions, munitions, utilisations).
 - **Équipement strict** — Deux mains et une armure : équiper une arme à deux mains, un bouclier ou une autre armure range ce qui entre en conflit. Les prérequis non remplis sont signalés.
 - **Sorts et talents** — Incantations et utilisations restantes affichées ; -/+ au survol pour en rendre ou en retirer.
-- **Fortune** — Les utilisations de la Fortune : un clic annonce la dépense et sa règle dans le chat. Le MJ y voit la réserve du groupe et l'ajuste ; les joueurs ne voient pas le total.
+- **Fortune** — Les utilisations de la Fortune : un clic annonce la dépense et sa règle dans le chat. Le MJ gère la réserve depuis le compagnon.
 - **Actions et afflictions** — Un clic sur une action, ou l'info-bulle (i) d'une affliction, envoie sa règle dans le chat.
 - **Effets** — Effets temporaires (bénédictions, sorts actifs...) : activer/désactiver, supprimer, créer.
 - **Outils** — Fiche du personnage, lanceur de dés (d2 à d100, 1 à 8 dés), repos 8 h / 24 h.
 - **Réglage personnel** — Chaque joueur et le MJ l'activent ou non pour eux-mêmes, sans recharger. La hauteur, le mode et l'onglet ouvert sont mémorisés.
 
 ### Tableau de bord du groupe (MJ)
-- Tous les personnages joueurs d'un coup d'œil : Santé colorée (-1/+1), Défense, Vitesse, Folie, Corruption, tour rapide/lent, afflictions et réserve de Fortune.
+- Tous les personnages joueurs d'un coup d'œil : joueur, Santé colorée (-1/+1), Défense, Vitesse, Pouvoir, Folie, Corruption, tour rapide/lent, afflictions, ascendance, voies par palier, professions et réserve de Fortune.
 - Clic sur le nom : fiche du personnage ; viseur : sélectionne et centre son token.
 - Remplace le *Player Tracker* du système : son bouton « SotDL GM Tools » est masqué par défaut (paramètre du module).
 

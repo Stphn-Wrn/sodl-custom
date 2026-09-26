@@ -283,12 +283,6 @@
         "Fast": "Fast",
         "Slow": "Slow",
         "Hint": "Fast or slow turn for this round: click to change"
-      },
-      "Fortune": {
-        "Pool": "Group pool",
-        "Minus": "Remove 1",
-        "Plus": "Add 1",
-        "Uses": "Uses"
       }
     },
     "Settings": {
@@ -689,7 +683,16 @@
       "Fortune": "Fortune pool: {value} / {max}",
       "Empty": "No player characters in this world.",
       "SelectToken": "Select and center the token",
-      "NoToken": "{name} has no token on this scene."
+      "NoToken": "{name} has no token on this scene.",
+      "Paths": {
+        "novice": "Novice",
+        "expert": "Expert",
+        "master": "Master",
+        "legendary": "Legendary"
+      },
+      "Player": "Player",
+      "Ancestry": "Ancestry",
+      "Professions": "Professions"
     }
   }
 }

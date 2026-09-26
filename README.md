@@ -18,14 +18,14 @@ Foundry VTT companion module for **Shadow of the Demon Lord**: combat HUD, share
 - **Roll panel** — An attack, a challenge or an attack spell opens a small panel above the HUD: boons/banes and modifier, then Roll or Cancel. The roll goes through the `demonlord` system (afflictions, ammunition, uses).
 - **Strict equipment** — Two hands and one armor: equipping a two-handed weapon, a shield or another armor stows whatever conflicts. Unmet requirements are flagged.
 - **Spells and talents** — Remaining castings and uses are shown; hover -/+ to restore or remove one.
-- **Fortune** — The uses of Fortune: a click announces the spending and its rule in chat. The GM also sees the group pool and adjusts it; players do not see the total.
+- **Fortune** — The uses of Fortune: a click announces the spending and its rule in chat. The GM manages the pool from the companion.
 - **Actions and afflictions** — Clicking an action, or an affliction's (i), sends its rule to chat.
 - **Effects** — Temporary effects (blessings, active spells...): toggle, delete, create.
 - **Tools** — Character sheet, dice roller (d2 to d100, 1 to 8 dice), 8 h / 24 h rest.
 - **Personal setting** — Each player and the GM enable it for themselves, without reloading. Height, mode and open tab are remembered.
 
 ### Party dashboard (GM)
-- Every player character at a glance: colored Health (-1/+1), Defense, Speed, Insanity, Corruption, fast/slow turn, afflictions and the Fortune pool.
+- Every player character at a glance: player, colored Health (-1/+1), Defense, Speed, Power, Insanity, Corruption, fast/slow turn, afflictions, ancestry, paths by tier, professions and the Fortune pool.
 - Click the name for the character sheet; the crosshair selects and centers the token.
 - Replaces the system's *Player Tracker*: its "SotDL GM Tools" button is hidden by default (module setting).
 

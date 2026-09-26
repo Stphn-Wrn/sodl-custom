@@ -3,7 +3,6 @@ import { limitedUsesOf, toEquipmentItems, toSnapshot, toUsesUpdate, toWearUpdate
 import { adjustUsed } from "./uses.js";
 import { planEquip, planUnequip } from "./equipment-rules.js";
 import { fortuneUse, ruleByRef } from "./sections.js";
-import { SODLDataManager } from "../companion/data-manager.js";
 
 async function toggleWear(actor, { itemId }) {
   const equipmentItems = toEquipmentItems(toSnapshot(actor));
@@ -137,13 +136,6 @@ function spendFortune(actor, { useIndex }) {
   });
 }
 
-function changeFortune(actor, { amount }) {
-  if (!game.user.isGM) {
-    return undefined;
-  }
-  return SODLDataManager.modifyChancePoints(amount);
-}
-
 function rest(actor, action) {
   return actor.restActor(action.amount, true, true, true);
 }
@@ -170,7 +162,6 @@ const ACTION_STRATEGIES = {
   recover,
   toggleTurn,
   spendFortune,
-  changeFortune,
   rest
 };
 

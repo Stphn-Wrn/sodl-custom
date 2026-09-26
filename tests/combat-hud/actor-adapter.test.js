@@ -84,3 +84,14 @@ test("le type de tour choisi (rapide ou lent) est lu depuis l'acteur", () => {
   assert.equal(toSnapshot(actorWith([], { fastturn: true })).fastTurn, true);
   assert.equal(toSnapshot(actorWith([])).fastTurn, false);
 });
+
+test("l'ascendance et les voies par palier sont lues depuis les objets", () => {
+  const actor = actorWith([
+    { id: "an", type: "ancestry", name: "Orc", img: "", system: {} },
+    { id: "p1", type: "path", name: "Guerrier", img: "", system: { type: "novice" } },
+    { id: "p2", type: "path", name: "Berserker", img: "", system: { type: "expert" } }
+  ]);
+  const snapshot = toSnapshot(actor);
+  assert.deepEqual(snapshot.ancestries, ["Orc"]);
+  assert.deepEqual(snapshot.paths, { novice: ["Guerrier"], expert: ["Berserker"], master: [], legendary: [] });
+});

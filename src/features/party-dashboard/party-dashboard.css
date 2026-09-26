@@ -83,6 +83,46 @@
   text-decoration: underline;
 }
 
+.sodl-party-player {
+  color: var(--party-muted);
+  font-size: 11px;
+}
+
+.sodl-party-details {
+  display: flex;
+  flex-basis: 100%;
+  flex-wrap: wrap;
+  gap: 2px 16px;
+  margin: 0;
+  padding: 0 0 0 52px;
+}
+
+.sodl-party-details div {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.sodl-party-details dt {
+  color: var(--party-muted);
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.sodl-party-details dd {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+}
+
+.sodl-party-chip {
+  padding: 0 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+}
+
 .sodl-party-state {
   color: var(--hud-state, #8b8b90);
   font-size: 10px;

@@ -5,6 +5,17 @@ import { executeAction } from "../combat-hud/action-executor.js";
 import { toSnapshot } from "../combat-hud/actor-adapter.js";
 import { partyRow } from "./party-row.js";
 
+function playerName(actor) {
+  const assigned = game.users.players.find((user) => user.character?.id === actor.id);
+  if (assigned) {
+    return assigned.name;
+  }
+  return game.users.players
+    .filter((user) => actor.testUserPermission(user, "OWNER"))
+    .map((user) => user.name)
+    .join(", ");
+}
+
 function partyActors() {
   return game.actors.filter((actor) => actor.type === "character" && actor.hasPlayerOwner);
 }
@@ -29,7 +40,7 @@ export class SODLPartyDashboard extends Application {
 
   getData() {
     return {
-      rows: partyActors().map((actor) => partyRow(actor.id, toSnapshot(actor), t)),
+      rows: partyActors().map((actor) => partyRow(actor.id, toSnapshot(actor), t, playerName(actor))),
       fortune: SODLDataManager.getChancePoints(),
       fortuneMax: SODLDataManager.getMaxChancePoints()
     };

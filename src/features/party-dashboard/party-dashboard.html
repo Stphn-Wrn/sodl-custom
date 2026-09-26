@@ -11,6 +11,7 @@
 
       <div class="sodl-party-identity">
         <button type="button" class="sodl-party-name" data-open-sheet title="{{localize 'SODL.Hud.OpenSheet'}}">{{this.name}}</button>
+        {{#if this.player}}<span class="sodl-party-player" title="{{localize 'SODL.Dashboard.Player'}}"><i class="fas fa-user"></i> {{this.player}}</span>{{/if}}
         <span class="sodl-party-state">{{this.stateLabel}}</span>
       </div>
 
@@ -26,6 +27,7 @@
       <ul class="sodl-party-stats">
         <li title="{{localize 'SODL.Hud.Defense'}}"><i class="fas fa-shield"></i>{{this.defense}}</li>
         <li title="{{localize 'SODL.Hud.Speed'}}"><i class="fas fa-person-running"></i>{{this.speed}}</li>
+        <li title="{{localize 'SODL.Hud.Power'}}"><i class="fas fa-bolt"></i>{{this.power}}</li>
         <li title="{{localize 'SODL.Hud.Insanity'}}"><i class="fas fa-brain"></i>{{this.insanity}}</li>
         <li title="{{localize 'SODL.Hud.Corruption'}}"><i class="fas fa-skull"></i>{{this.corruption}}</li>
       </ul>
@@ -33,6 +35,18 @@
       <button type="button" class="sodl-party-turn {{#if this.fastTurn}}is-fast{{/if}}" data-toggle-turn title="{{localize 'SODL.Hud.Turn.Hint'}}">{{this.turnLabel}}</button>
 
       <button type="button" class="sodl-party-icon" data-select-token title="{{localize 'SODL.Dashboard.SelectToken'}}"><i class="fas fa-crosshairs"></i></button>
+
+      <dl class="sodl-party-details">
+        {{#if this.ancestry}}
+        <div><dt>{{localize "SODL.Dashboard.Ancestry"}}</dt><dd>{{this.ancestry}}</dd></div>
+        {{/if}}
+        {{#each this.paths}}
+        <div><dt>{{this.tier}}</dt><dd>{{this.names}}</dd></div>
+        {{/each}}
+        {{#if this.professions.length}}
+        <div><dt>{{localize "SODL.Dashboard.Professions"}}</dt><dd>{{#each this.professions}}<span class="sodl-party-chip">{{this}}</span>{{/each}}</dd></div>
+        {{/if}}
+      </dl>
 
       {{#if this.afflictions.length}}
       <ul class="sodl-party-afflictions">

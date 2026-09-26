@@ -398,17 +398,6 @@ const afflictionsSection = {
   }
 };
 
-function fortunePoolEntries(fortune, t) {
-  if (!fortune?.visible) {
-    return [];
-  }
-  return [
-    entry({ id: "fortune-pool", name: t("SODL.Hud.Fortune.Pool"), icon: "fas fa-star", badge: `${fortune.value} / ${fortune.max}`, action: null }),
-    entry({ id: "fortune-minus", name: t("SODL.Hud.Fortune.Minus"), icon: "fas fa-minus", action: { type: "changeFortune", amount: -1 } }),
-    entry({ id: "fortune-plus", name: t("SODL.Hud.Fortune.Plus"), icon: "fas fa-plus", action: { type: "changeFortune", amount: 1 } })
-  ];
-}
-
 const fortuneSection = {
   id: "fortune",
   label: "SODL.Hud.Tabs.Fortune",
@@ -420,7 +409,7 @@ const fortuneSection = {
       description: use.description,
       action: { type: "spendFortune", useIndex: index }
     }));
-    return [...fortunePoolEntries(snapshot.fortune, t), headingEntry(t("SODL.Hud.Fortune.Uses")), ...uses];
+    return uses;
   }
 };
 

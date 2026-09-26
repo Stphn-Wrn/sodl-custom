@@ -321,13 +321,27 @@ body.sodl-hud-active #players {
 .sodl-hud-tabs {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 6px;
   padding: 0 8px;
   border-bottom: 1px solid var(--hud-border);
 }
 
+.sodl-hud-tab-list {
+  display: flex;
+  flex: 1;
+  gap: 2px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.sodl-hud-tab-list::-webkit-scrollbar {
+  display: none;
+}
+
 .sodl-hud-tab {
   display: flex;
+  flex: none;
   align-items: center;
   gap: 5px;
   padding: 6px 8px !important;
@@ -430,9 +444,9 @@ body.sodl-hud-active #players {
 
 .sodl-hud-tools {
   display: flex;
+  flex: none;
   align-items: center;
   gap: 2px;
-  margin-left: auto;
 }
 
 .sodl-hud-menu-anchor {
@@ -718,7 +732,13 @@ body.sodl-hud-active #players {
   font-style: italic;
 }
 
-@container (max-width: 620px) {
+@container (max-width: 1100px) {
+  .sodl-hud-tab:not(.active) .sodl-hud-tab-label {
+    display: none;
+  }
+}
+
+@container (max-width: 560px) {
   .sodl-hud-tab-label {
     display: none;
   }

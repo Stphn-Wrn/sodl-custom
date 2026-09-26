@@ -7,7 +7,6 @@ import { computeAnchors, DEFAULT_ENTRIES_HEIGHT, resizeHeight } from "./layout.j
 import { DEFAULT_FRAME, framePortraitStyle, panFrame, zoomFrame } from "./portrait-frame.js";
 import { afflictionCatalogue, createSections } from "./sections.js";
 import { healthState } from "./health-state.js";
-import { SODLDataManager } from "../companion/data-manager.js";
 
 const HUD_TEMPLATE = modulePath("src/features/combat-hud/combat-hud.html");
 const RENDER_DEBOUNCE_MS = 50;
@@ -102,10 +101,6 @@ export class SODLCombatHud {
 
   static onViewportChanged() {
     this.instance?.applyPosition();
-  }
-
-  static onFortuneChanged() {
-    this.instance?.requestRender();
   }
 
   static toggleMode() {
@@ -225,14 +220,7 @@ export class SODLCombatHud {
   }
 
   getData() {
-    const snapshot = {
-      ...toSnapshot(this.actor),
-      fortune: {
-        visible: game.user.isGM,
-        value: SODLDataManager.getChancePoints(),
-        max: SODLDataManager.getMaxChancePoints()
-      }
-    };
+    const snapshot = toSnapshot(this.actor);
     const sections = createSections(snapshot.type);
     let current = sections.find((section) => section.id === this.activeSection);
     if (!current) {
