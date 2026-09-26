@@ -1,8 +1,9 @@
-<section class="sodl-hud sodl-hud-state-{{healthStatus.id}}" style="--hud-entries-height: {{entriesHeight}}px;">
+<section class="sodl-hud sodl-hud-state-{{healthStatus.id}} sodl-hud-portrait-{{portraitSize}} {{#if editing}}is-editing{{/if}}" style="--hud-entries-height: {{entriesHeight}}px;">
   <div class="sodl-hud-grip" title="{{localize 'SODL.Hud.ResizeHint'}}"></div>
 
   <aside class="sodl-hud-identity">
     <div class="sodl-hud-portrait {{#if editingPortrait}}editing{{/if}}" {{#unless editingPortrait}}title="{{localize 'SODL.Hud.Portrait.Edit'}}"{{/unless}}>
+      {{#if editing}}<button type="button" class="sodl-hud-portrait-size" data-portrait-size title="{{localize 'SODL.Hud.Edit.PortraitSize'}}"><i class="fas fa-up-right-and-down-left-from-center"></i></button>{{/if}}
       <img src="{{snapshot.img}}" alt="" style="{{portraitStyle}}" draggable="false">
       {{#if editingPortrait}}
       <div class="sodl-hud-portrait-tools">
@@ -22,50 +23,62 @@
         </button>
       </div>
 
-      <div class="sodl-hud-stepper sodl-hud-health" title="{{localize 'SODL.Hud.HealthHint' state=healthStatus.label damage=snapshot.characteristics.damage}}">
-        <button type="button" class="sodl-hud-step" data-action-type="changeDamage" data-amount="1" title="{{localize 'SODL.Hud.TakeDamage'}}"><i class="fas fa-minus"></i></button>
-        <div class="sodl-hud-health-bar">
-          <div class="sodl-hud-health-fill" style="width: {{healthPercent}}%"></div>
-          <span>{{snapshot.characteristics.health}} / {{snapshot.characteristics.healthMax}}</span>
-        </div>
-        <button type="button" class="sodl-hud-step" data-action-type="changeDamage" data-amount="-1" title="{{localize 'SODL.Hud.HealDamage'}}"><i class="fas fa-plus"></i></button>
+      {{#each leftBlocks}}
+      <div class="sodl-hud-block {{#if this.hidden}}is-hidden{{/if}}" data-drag-kind="block" data-drag-id="{{this.id}}">
+        {{#if @root.editing}}
+        <button type="button" class="sodl-hud-edit-eye" data-hide-block="{{this.id}}" title="{{localize 'SODL.Hud.Edit.ToggleVisibility'}}"><i class="fas {{#if this.hidden}}fa-eye-slash{{else}}fa-eye{{/if}}"></i></button>
+        {{/if}}
+        {{#if (eq this.id "health")}}
+          <div class="sodl-hud-stepper sodl-hud-health" title="{{localize 'SODL.Hud.HealthHint' state=@root.healthStatus.label damage=@root.snapshot.characteristics.damage}}">
+            <button type="button" class="sodl-hud-step" data-action-type="changeDamage" data-amount="1" title="{{localize 'SODL.Hud.TakeDamage'}}"><i class="fas fa-minus"></i></button>
+            <div class="sodl-hud-health-bar">
+              <div class="sodl-hud-health-fill" style="width: {{@root.healthPercent}}%"></div>
+              <span>{{@root.snapshot.characteristics.health}} / {{@root.snapshot.characteristics.healthMax}}</span>
+            </div>
+            <button type="button" class="sodl-hud-step" data-action-type="changeDamage" data-amount="-1" title="{{localize 'SODL.Hud.HealDamage'}}"><i class="fas fa-plus"></i></button>
+          </div>
+        {{/if}}
+        {{#if (eq this.id "trackers")}}
+          <div class="sodl-hud-trackers">
+            <div class="sodl-hud-stepper" title="{{localize 'SODL.Hud.Insanity'}}">
+              <button type="button" class="sodl-hud-step" data-action-type="changeInsanity" data-amount="-1" title="{{localize 'SODL.Hud.InsanityMinus'}}"><i class="fas fa-minus"></i></button>
+              <span class="sodl-hud-stat"><i class="fas fa-brain"></i>{{@root.snapshot.characteristics.insanity}}/{{@root.snapshot.characteristics.insanityMax}}</span>
+              <button type="button" class="sodl-hud-step" data-action-type="changeInsanity" data-amount="1" title="{{localize 'SODL.Hud.InsanityPlus'}}"><i class="fas fa-plus"></i></button>
+            </div>
+            <div class="sodl-hud-stepper" title="{{localize 'SODL.Hud.Corruption'}}">
+              <button type="button" class="sodl-hud-step" data-action-type="changeCorruption" data-amount="-1" title="{{localize 'SODL.Hud.CorruptionMinus'}}"><i class="fas fa-minus"></i></button>
+              <button type="button" class="sodl-hud-stat-roll" data-action-type="rollCorruption" title="{{localize 'SODL.Hud.CorruptionRoll' value=@root.snapshot.characteristics.corruption}}">
+                <i class="fas fa-skull"></i>{{@root.snapshot.characteristics.corruption}}
+              </button>
+              <button type="button" class="sodl-hud-step" data-action-type="changeCorruption" data-amount="1" title="{{localize 'SODL.Hud.CorruptionPlus'}}"><i class="fas fa-plus"></i></button>
+            </div>
+          </div>
+        {{/if}}
+        {{#if (eq this.id "stats")}}
+          <ul class="sodl-hud-stats">
+            <li title="{{localize 'SODL.Hud.Defense'}}"><i class="fas fa-shield"></i>{{@root.snapshot.characteristics.defense}}</li>
+            <li title="{{localize 'SODL.Hud.Speed'}}"><i class="fas fa-person-running"></i>{{@root.snapshot.characteristics.speed}}</li>
+            <li title="{{localize 'SODL.Hud.Power'}}"><i class="fas fa-bolt"></i>{{@root.snapshot.characteristics.power}}</li>
+            <li>
+              <button type="button" class="sodl-hud-recover" data-action-type="recover"
+                title="{{localize 'SODL.Hud.RecoverHint' amount=@root.snapshot.characteristics.healingRate}}">
+                <i class="fas fa-heart"></i>{{@root.snapshot.characteristics.healingRate}}
+              </button>
+            </li>
+          </ul>
+        {{/if}}
+        {{#if (eq this.id "afflictions")}}
+          {{#if @root.afflictions.length}}
+          <ul class="sodl-hud-afflictions">
+            {{#each @root.afflictions}}
+            <li title="{{this.name}}{{#if this.description}} : {{this.description}}{{/if}}{{#if this.ruleRef}} {{localize 'SODL.Hud.SendRuleHint'}}{{/if}}"
+              {{#if this.ruleRef}}data-rule="{{this.ruleRef}}" class="sodl-hud-has-help"{{/if}}><img src="{{this.img}}" alt="{{this.name}}"></li>
+            {{/each}}
+          </ul>
+          {{/if}}
+        {{/if}}
       </div>
-
-      <div class="sodl-hud-trackers">
-        <div class="sodl-hud-stepper" title="{{localize 'SODL.Hud.Insanity'}}">
-          <button type="button" class="sodl-hud-step" data-action-type="changeInsanity" data-amount="-1" title="{{localize 'SODL.Hud.InsanityMinus'}}"><i class="fas fa-minus"></i></button>
-          <span class="sodl-hud-stat"><i class="fas fa-brain"></i>{{snapshot.characteristics.insanity}}/{{snapshot.characteristics.insanityMax}}</span>
-          <button type="button" class="sodl-hud-step" data-action-type="changeInsanity" data-amount="1" title="{{localize 'SODL.Hud.InsanityPlus'}}"><i class="fas fa-plus"></i></button>
-        </div>
-        <div class="sodl-hud-stepper" title="{{localize 'SODL.Hud.Corruption'}}">
-          <button type="button" class="sodl-hud-step" data-action-type="changeCorruption" data-amount="-1" title="{{localize 'SODL.Hud.CorruptionMinus'}}"><i class="fas fa-minus"></i></button>
-          <button type="button" class="sodl-hud-stat-roll" data-action-type="rollCorruption" title="{{localize 'SODL.Hud.CorruptionRoll' value=snapshot.characteristics.corruption}}">
-            <i class="fas fa-skull"></i>{{snapshot.characteristics.corruption}}
-          </button>
-          <button type="button" class="sodl-hud-step" data-action-type="changeCorruption" data-amount="1" title="{{localize 'SODL.Hud.CorruptionPlus'}}"><i class="fas fa-plus"></i></button>
-        </div>
-      </div>
-
-      <ul class="sodl-hud-stats">
-        <li title="{{localize 'SODL.Hud.Defense'}}"><i class="fas fa-shield"></i>{{snapshot.characteristics.defense}}</li>
-        <li title="{{localize 'SODL.Hud.Speed'}}"><i class="fas fa-person-running"></i>{{snapshot.characteristics.speed}}</li>
-        <li title="{{localize 'SODL.Hud.Power'}}"><i class="fas fa-bolt"></i>{{snapshot.characteristics.power}}</li>
-        <li>
-          <button type="button" class="sodl-hud-recover" data-action-type="recover"
-            title="{{localize 'SODL.Hud.RecoverHint' amount=snapshot.characteristics.healingRate}}">
-            <i class="fas fa-heart"></i>{{snapshot.characteristics.healingRate}}
-          </button>
-        </li>
-      </ul>
-
-      {{#if afflictions.length}}
-      <ul class="sodl-hud-afflictions">
-        {{#each afflictions}}
-        <li title="{{this.name}}{{#if this.description}} : {{this.description}}{{/if}}{{#if this.ruleRef}} {{localize 'SODL.Hud.SendRuleHint'}}{{/if}}"
-          {{#if this.ruleRef}}data-rule="{{this.ruleRef}}" class="sodl-hud-has-help"{{/if}}><img src="{{this.img}}" alt="{{this.name}}"></li>
-        {{/each}}
-      </ul>
-      {{/if}}
+      {{/each}}
     </div>
   </aside>
 
@@ -73,13 +86,15 @@
     <nav class="sodl-hud-tabs">
       <div class="sodl-hud-tab-list">
       {{#each sections}}
-      <button type="button" class="sodl-hud-tab {{#if this.active}}active{{/if}}" data-section="{{this.id}}" title="{{this.label}}">
+      <button type="button" class="sodl-hud-tab {{#if this.active}}active{{/if}} {{#if this.hidden}}is-hidden{{/if}}" data-section="{{this.id}}" data-drag-kind="tab" data-drag-id="{{this.id}}" title="{{this.label}}">
         <i class="{{this.icon}}"></i><span class="sodl-hud-tab-label">{{this.label}}</span>
+        {{#if @root.editing}}<span class="sodl-hud-edit-eye" data-hide-tab="{{this.id}}" title="{{localize 'SODL.Hud.Edit.ToggleVisibility'}}"><i class="fas {{#if this.hidden}}fa-eye-slash{{else}}fa-eye{{/if}}"></i></span>{{/if}}
       </button>
       {{/each}}
       </div>
 
       <div class="sodl-hud-tools">
+        <button type="button" class="sodl-hud-icon {{#if editing}}active{{/if}}" data-edit-toggle title="{{localize 'SODL.Hud.Edit.Toggle'}}"><i class="fas fa-pen"></i></button>
         <button type="button" class="sodl-hud-icon sodl-hud-open-sheet" title="{{localize 'SODL.Hud.OpenSheet'}}"><i class="fas fa-id-card"></i></button>
         <div class="sodl-hud-menu-anchor">
           <button type="button" class="sodl-hud-icon {{#if diceMenuOpen}}active{{/if}}" data-menu-toggle="dice" title="{{localize 'SODL.Hud.Dice.Title'}}"><i class="fas fa-dice-d20"></i></button>
@@ -135,40 +150,69 @@
     </div>
     {{/if}}
 
-    <ul class="sodl-hud-entries">
-      {{#each entries}}
-      {{#if this.isHeading}}
-      <li class="sodl-hud-new-row sodl-hud-heading">{{this.name}}</li>
-      {{else}}
-      <li {{#if this.newRow}}class="sodl-hud-new-row"{{/if}}>
-        <button type="button"
-          class="sodl-hud-entry {{#if this.active}}active{{/if}} {{#if this.warning}}has-warning{{/if}} {{#if this.ruleRef}}has-corner{{/if}}{{#if this.effectId}}has-corner{{/if}} {{#if this.variant}}sodl-hud-entry-{{this.variant}}{{/if}} {{#if this.disabled}}is-disabled{{/if}}"
-          data-entry="{{@index}}"
-          title="{{this.name}}{{#if this.warning}} — {{this.warning}}{{/if}}{{#if this.description}} : {{this.description}}{{/if}}"
-          {{#if this.disabled}}aria-disabled="true"{{/if}}>
-          {{#if this.img}}<img src="{{this.img}}" alt="">{{/if}}
-          {{#if this.icon}}<i class="{{this.icon}} sodl-hud-entry-icon"></i>{{/if}}
-          <span class="sodl-hud-entry-name">{{this.name}}</span>
-          {{#if this.badge}}<span class="sodl-hud-badge">{{this.badge}}</span>{{/if}}
-          {{#if this.warning}}<i class="fas fa-triangle-exclamation sodl-hud-warning"></i>{{/if}}
-        </button>
-        {{#if this.usesItemId}}
-        <div class="sodl-hud-entry-uses">
-          <button type="button" data-uses-item="{{this.usesItemId}}" data-amount="-1" title="{{localize 'SODL.Hud.Uses.Remove'}}"><i class="fas fa-minus"></i></button>
-          <button type="button" data-uses-item="{{this.usesItemId}}" data-amount="1" title="{{localize 'SODL.Hud.Uses.Restore'}}"><i class="fas fa-plus"></i></button>
-        </div>
-        {{/if}}
-        {{#if this.effectId}}
-        <button type="button" class="sodl-hud-entry-help" data-delete-effect="{{this.effectId}}" title="{{localize 'SODL.Hud.DeleteEffect'}}"><i class="fas fa-xmark"></i></button>
-        {{/if}}
-        {{#if this.ruleRef}}
-        <button type="button" class="sodl-hud-entry-help" data-rule="{{this.ruleRef}}" title="{{localize 'SODL.Hud.SendRule'}}"><i class="fas fa-circle-info"></i></button>
-        {{/if}}
-      </li>
-      {{/if}}
-      {{else}}
-      <li class="sodl-hud-empty">{{localize "SODL.Hud.EmptyTab"}}</li>
+    {{#if editing}}
+    <div class="sodl-hud-edit-banner">
+      <i class="fas fa-pen"></i>
+      <span>{{localize "SODL.Hud.Edit.Hint"}}</span>
+      <button type="button" data-edit-reset><i class="fas fa-rotate-left"></i> {{localize "SODL.Hud.Edit.Reset"}}</button>
+      <button type="button" class="sodl-hud-edit-done" data-edit-toggle><i class="fas fa-check"></i> {{localize "SODL.Hud.Edit.Done"}}</button>
+    </div>
+    {{/if}}
+
+    {{#if favorites.length}}
+    <div class="sodl-hud-favorites">
+      <i class="fas fa-star sodl-hud-favorites-icon" title="{{localize 'SODL.Hud.Edit.Favorites'}}"></i>
+      {{#each favorites}}
+      <button type="button" class="sodl-hud-favorite {{#if this.disabled}}is-disabled{{/if}}" data-favorite="{{@index}}" title="{{this.name}}">
+        {{#if this.img}}<img src="{{this.img}}" alt="">{{/if}}
+        {{#if this.icon}}<i class="{{this.icon}}"></i>{{/if}}
+        <span>{{this.name}}</span>
+        {{#if this.badge}}<span class="sodl-hud-badge">{{this.badge}}</span>{{/if}}
+      </button>
       {{/each}}
-    </ul>
+    </div>
+    {{/if}}
+
+    <div class="sodl-hud-entries">
+      {{#each groups}}
+      <section class="sodl-hud-group {{#if this.label}}has-label{{/if}}">
+        {{#if this.label}}<h4 class="sodl-hud-group-label">{{this.label}}</h4>{{/if}}
+        <ul class="sodl-hud-group-items">
+          {{#each this.items}}
+          <li {{#if this.newRow}}class="sodl-hud-new-row"{{/if}}>
+            <button type="button"
+              class="sodl-hud-entry {{#if this.active}}active{{/if}} {{#if this.warning}}has-warning{{/if}} {{#if this.ruleRef}}has-corner{{/if}}{{#if this.effectId}}has-corner{{/if}} {{#if this.variant}}sodl-hud-entry-{{this.variant}}{{/if}} {{#if this.disabled}}is-disabled{{/if}}"
+              data-entry="{{this.index}}"
+              title="{{this.name}}{{#if this.warning}} — {{this.warning}}{{/if}}{{#if this.description}} : {{this.description}}{{/if}}"
+              {{#if this.disabled}}aria-disabled="true"{{/if}}>
+              {{#if this.img}}<img src="{{this.img}}" alt="">{{/if}}
+              {{#if this.icon}}<i class="{{this.icon}} sodl-hud-entry-icon"></i>{{/if}}
+              <span class="sodl-hud-entry-name">{{this.name}}</span>
+              {{#if this.badge}}<span class="sodl-hud-badge">{{this.badge}}</span>{{/if}}
+              {{#if this.warning}}<i class="fas fa-triangle-exclamation sodl-hud-warning"></i>{{/if}}
+            </button>
+            {{#if @root.editing}}{{#if this.favoriteKey}}
+        <button type="button" class="sodl-hud-favorite-toggle {{#if this.isFavorite}}is-favorite{{/if}}" data-favorite-toggle="{{this.favoriteKey}}" title="{{localize 'SODL.Hud.Edit.Pin'}}"><i class="fas fa-star"></i></button>
+        {{/if}}{{/if}}
+        {{#if this.usesItemId}}
+            <div class="sodl-hud-entry-uses">
+              <button type="button" data-uses-item="{{this.usesItemId}}" data-amount="-1" title="{{localize 'SODL.Hud.Uses.Remove'}}"><i class="fas fa-minus"></i></button>
+              <button type="button" data-uses-item="{{this.usesItemId}}" data-amount="1" title="{{localize 'SODL.Hud.Uses.Restore'}}"><i class="fas fa-plus"></i></button>
+            </div>
+            {{/if}}
+            {{#if this.effectId}}
+            <button type="button" class="sodl-hud-entry-help" data-delete-effect="{{this.effectId}}" title="{{localize 'SODL.Hud.DeleteEffect'}}"><i class="fas fa-xmark"></i></button>
+            {{/if}}
+            {{#if this.ruleRef}}
+            <button type="button" class="sodl-hud-entry-help" data-rule="{{this.ruleRef}}" title="{{localize 'SODL.Hud.SendRule'}}"><i class="fas fa-circle-info"></i></button>
+            {{/if}}
+          </li>
+          {{/each}}
+        </ul>
+      </section>
+      {{else}}
+      <p class="sodl-hud-empty">{{localize "SODL.Hud.EmptyTab"}}</p>
+      {{/each}}
+    </div>
   </div>
 </section>

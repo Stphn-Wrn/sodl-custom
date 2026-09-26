@@ -283,6 +283,16 @@
         "Fast": "Fast",
         "Slow": "Slow",
         "Hint": "Fast or slow turn for this round: click to change"
+      },
+      "Edit": {
+        "Toggle": "Customize the HUD",
+        "Hint": "Drag tabs and blocks to reorder them, the eye hides them, the star pins an action to your favorites.",
+        "Reset": "Reset",
+        "Done": "Done",
+        "Favorites": "Favorites",
+        "Pin": "Pin to favorites",
+        "ToggleVisibility": "Show / hide",
+        "PortraitSize": "Portrait size (large, small, hidden)"
       }
     },
     "Settings": {

@@ -10,7 +10,10 @@
       <img class="sodl-party-portrait" src="{{this.img}}" alt="">
 
       <div class="sodl-party-identity">
-        <button type="button" class="sodl-party-name" data-open-sheet title="{{localize 'SODL.Hud.OpenSheet'}}">{{this.name}}</button>
+        <div class="sodl-party-name-row">
+          <button type="button" class="sodl-party-name" data-open-sheet title="{{localize 'SODL.Hud.OpenSheet'}}">{{this.name}}</button>
+          <button type="button" class="sodl-party-icon" data-select-token title="{{localize 'SODL.Dashboard.SelectToken'}}"><i class="fas fa-crosshairs"></i></button>
+        </div>
         {{#if this.player}}<span class="sodl-party-player" title="{{localize 'SODL.Dashboard.Player'}}"><i class="fas fa-user"></i> {{this.player}}</span>{{/if}}
         <span class="sodl-party-state">{{this.stateLabel}}</span>
       </div>
@@ -34,19 +37,17 @@
 
       <button type="button" class="sodl-party-turn {{#if this.fastTurn}}is-fast{{/if}}" data-toggle-turn title="{{localize 'SODL.Hud.Turn.Hint'}}">{{this.turnLabel}}</button>
 
-      <button type="button" class="sodl-party-icon" data-select-token title="{{localize 'SODL.Dashboard.SelectToken'}}"><i class="fas fa-crosshairs"></i></button>
-
-      <dl class="sodl-party-details">
+      <div class="sodl-party-details">
         {{#if this.ancestry}}
-        <div><dt>{{localize "SODL.Dashboard.Ancestry"}}</dt><dd>{{this.ancestry}}</dd></div>
+        <div class="sodl-party-detail"><span class="sodl-party-label">{{localize "SODL.Dashboard.Ancestry"}}</span><span class="sodl-party-value">{{this.ancestry}}</span></div>
         {{/if}}
         {{#each this.paths}}
-        <div><dt>{{this.tier}}</dt><dd>{{this.names}}</dd></div>
+        <div class="sodl-party-detail"><span class="sodl-party-label">{{this.tier}}</span><span class="sodl-party-value">{{this.names}}</span></div>
         {{/each}}
         {{#if this.professions.length}}
-        <div><dt>{{localize "SODL.Dashboard.Professions"}}</dt><dd>{{#each this.professions}}<span class="sodl-party-chip">{{this}}</span>{{/each}}</dd></div>
+        <div class="sodl-party-detail"><span class="sodl-party-label">{{localize "SODL.Dashboard.Professions"}}</span><span class="sodl-party-value">{{#each this.professions}}<span class="sodl-party-chip">{{this}}</span>{{/each}}</span></div>
         {{/if}}
-      </dl>
+      </div>
 
       {{#if this.afflictions.length}}
       <ul class="sodl-party-afflictions">

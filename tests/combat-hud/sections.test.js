@@ -321,3 +321,14 @@ test("l'onglet fortune liste les utilisations de la Fortune", () => {
   assert.deepEqual(bane.action, { type: "spendFortune", useIndex: 0 });
   assert.match(bane.description, /2 fléaux/);
 });
+
+test("la vue « tout » de l'onglet sorts liste tous les sorts, toutes traditions confondues", () => {
+  const snapshot = emptySnapshot({
+    spells: [
+      { id: "s1", name: "Flamme", tradition: "Feu", rank: 0, used: 0, max: 1 },
+      { id: "s2", name: "Mort lente", tradition: "Nécromancie", rank: 1, used: 0, max: 1 }
+    ]
+  });
+  const names = section("character", "spells").build(snapshot, { all: true }).map((entry) => entry.name);
+  assert.deepEqual(names, ["Flamme", "Mort lente"]);
+});

@@ -88,38 +88,48 @@
   font-size: 11px;
 }
 
+.sodl-party-name-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .sodl-party-details {
   display: flex;
   flex-basis: 100%;
   flex-wrap: wrap;
-  gap: 2px 16px;
-  margin: 0;
-  padding: 0 0 0 52px;
+  gap: 4px 18px;
+  padding: 4px 0 0 52px;
+  border-top: 1px solid var(--party-border);
 }
 
-.sodl-party-details div {
+.sodl-party-detail {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 6px;
 }
 
-.sodl-party-details dt {
+.sodl-party-label {
   color: var(--party-muted);
   font-size: 10px;
   font-weight: bold;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
-.sodl-party-details dd {
+.sodl-party-value {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
-  margin: 0;
+  color: var(--party-text);
+  font-size: 12px;
 }
 
 .sodl-party-chip {
   padding: 0 6px;
-  background: rgba(255, 255, 255, 0.06);
+  color: var(--party-text);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--party-border);
   border-radius: 6px;
 }
 

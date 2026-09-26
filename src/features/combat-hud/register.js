@@ -60,7 +60,7 @@ export const combatHudFeature = {
     });
 
     game.settings.register(MODULE_ID, "combatHudLayout", {
-      scope: "client",
+      scope: personalScope(),
       config: false,
       type: Object,
       default: {}

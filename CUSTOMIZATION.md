@@ -1,195 +1,151 @@
-# Personnalisation
+# Customization
 
-## Modifier le contenu des onglets
+🇫🇷 [Version française](CUSTOMIZATION.fr.md)
 
-Toutes les données de règles vivent dans `src/features/companion/config.js` : `afflictions`, `actions`, `meleeOptions`, `rangedOptions`, `otherAttacks`, `situationalRules`, `outOfCombat`, `madness`, `corruption`, `spellcasting`, `chancePointsRules`, `fortuneAwardsTable`.
+## Texts and rules
 
-Exemple, ajouter une affliction :
+Every text of the module lives in `lang/en.json` and `lang/fr.json`, under the `SODL` key:
+
+| Section | Content |
+|---|---|
+| `SODL.Rules` | Rules reference: afflictions, actions, melee/ranged options, other attacks, situational rules, out of combat, madness, corruption, incantations, Fortune |
+| `SODL.Companion` | Companion interface |
+| `SODL.Hud` | Combat HUD |
+| `SODL.Dashboard`, `SODL.Reminders` | Party dashboard and round reminders |
+| `SODL.DiceClock`, `SODL.Youtube` | Dice clock and YouTube player |
+| `SODL.Settings` | Setting names and hints |
+
+To fix a rule, edit its text **in both files**: the companion, the HUD and the chat messages all pick it up. Both files must always have exactly the same keys.
+
+`src/features/companion/config.js` only holds the structure of the rules reference (lists, tables, maximum Fortune), with translation keys instead of texts. `localizedConfig(t)` returns the translated version.
+
+### Adding an affliction
+
+Afflictions must exist in the `demonlord` system: their `id` is the system status id (`prone`, `blinded`, `impaired`...).
+
+1. In `config.js`, add `{ id: "myid", name: "SODL.Rules.Afflictions.List.Myid.Name", description: "SODL.Rules.Afflictions.List.Myid.Description" }` to `afflictions.list`.
+2. Add both texts to `lang/en.json` and `lang/fr.json`.
+
+It then shows up in the companion, the search, the HUD Afflictions tab, the round reminders and the party dashboard.
+
+### Adding a search category
+
+In `buildSearchIndex()` (`src/features/companion/companion-app.js`):
 ```javascript
-afflictions: {
-  list: [
-    // ...
-    { id: "mycustom", name: "Mon Affliction", description: "Description ici." }
-  ]
-}
+addAll("MyCategory", config.myNewList.list);
 ```
+with a `SODL.Companion.Categories.MyCategory` key in the language files. Each entry has a `name` and a `description`.
 
-`src/features/companion/companion-app.js` transforme ces données en HTML pour les onglets Règles/Actions (`getRulesData()`, `getActionsData()`) et alimente aussi l'index de recherche (`buildSearchIndex()`) — toute entrée `{ name, description }` ajoutée dans une des listes ci-dessus devient automatiquement cherchable si elle est incluse dans un `addAll(...)` de `buildSearchIndex()`.
+## Fortune pool
 
-**Onglet Aide** — Contenu en dur dans `getHelpData()` (`src/features/companion/companion-app.js`), pas dans `config.js`.
+It is a **shared world setting**, not a per-character value:
+- `sodl-companion.chancePoints`: current pool;
+- `sodl-companion.maxChancePoints`: maximum, editable by the GM in the companion.
 
-## Ajouter une catégorie à la recherche
+`resources.chancePoints.maximum` in `config.js` is only the starting value of the maximum. The pool is visible and editable by the GM only (companion and party dashboard); players announce their spending from the HUD Fortune tab.
 
-Dans `buildSearchIndex()` (`src/features/companion/companion-app.js`) :
-```javascript
-addAll("MaCatégorie", SODL_CONFIG.maNouvelleListe.list);
-```
-Chaque entrée doit avoir `name` et `description`.
+## Combat HUD
 
-## Changer les couleurs (Compagnon)
+The code lives in `src/features/combat-hud/`:
 
-`src/features/companion/companion.css` — variables de couleur principales utilisées un peu partout :
+| File | Role |
+|---|---|
+| `actor-adapter.js` | Only file aware of the `demonlord` actor structure; builds a normalized view (`toSnapshot`) |
+| `sections.js` | The tabs: each has an `id`, a `label` (translation key), an `icon` and a `build(snapshot, view, t)` method returning its tiles |
+| `action-executor.js` | One function per action type (`ACTION_STRATEGIES`), delegating to the system rolls |
+| `equipment-rules.js` | Strict equipment rules (hands, armor, shield) |
+| `customization.js` | Edit mode: order, hiding, favorites |
+| `combat-hud.js`, `combat-hud.html`, `combat-hud.css` | Rendering and interactions |
 
-```css
-/* Accent (bordures actives, hover, icônes) */
-#A13030
+### Adding a tab
 
-/* Fonds */
-#1b1b1b   /* fond principal */
-#171717   /* en-têtes, barre de recherche, scrollbar track */
-#202020   /* cartes (resource-card) */
+1. In `sections.js`, create an object `{ id, label: "SODL.Hud.Tabs.MyTab", icon, build(snapshot, view, t) }` returning tiles (`entry({ id, name, badge, action })`).
+2. Add it to `SECTIONS_BY_ACTOR_TYPE` (characters and/or creatures).
+3. If its tiles trigger a new action, add it to `ACTION_STRATEGIES` in `action-executor.js`.
+4. Add the label key to the language files, and a test in `tests/combat-hud/sections.test.js`.
 
-/* Texte */
-#d8d8d8   /* texte principal */
-#a5a5a5 / #999 / #777   /* texte secondaire, dégradé de gris */
-```
+A new tab automatically appears at the end of the list for players who already customized their HUD.
 
-Le fond parchemin par défaut de Foundry est explicitement écrasé sur `#sodl-companion-app .window-content` — ne pas le retirer sous peine de voir réapparaître la texture parchemin derrière l'interface.
+### Stored data
 
-## Réserve de Fortune (points de chance)
+- `combatHudEnabled` and `combatHudLayout`: stored per user (v12+); `combatHudLayout` holds the open tab, the mode, the height, the layout (`custom`) and the favorites per character (`favorites`).
+- `flags.sodl-companion.portraitFrame` on the actor: portrait crop, shared by everyone.
 
-C'est un **setting monde partagé**, pas un flag par acteur. Deux settings sont enregistrés dans `src/features/companion/register.js` :
-- `sodl-companion.chancePoints` — réserve courante
-- `sodl-companion.maxChancePoints` — maximum (défaut: `SODL_CONFIG.resources.chancePoints.maximum`, éditable par le MJ dans l'onglet Ressources)
+### Colors
 
-### Changer le maximum par défaut
-`src/features/companion/config.js`:
-```javascript
-resources: {
-  chancePoints: {
-    maximum: 6
-  }
-}
-```
-Cette valeur ne sert que de valeur initiale du setting `maxChancePoints` — une fois modifiée depuis l'interface, c'est le setting qui fait foi.
+CSS variables at the top of `combat-hud.css`, on `.sodl-hud` (`--hud-bg`, `--hud-title`, `--hud-accent`...). Health state colors are on `.sodl-hud-state-full`, `-hurt`, `-injured` and `-incapacitated`, and are reused by the party dashboard.
 
-### Masquer/afficher la réserve aux joueurs
-Contrôlé dans `src/features/companion/companion.html` par `{{#if canEdit}}` (= `game.user.isGM`). Pour la rendre visible aux joueurs, remplacer la condition `canEdit` par une condition toujours vraie autour du bloc `.chance-display`.
+## Party dashboard and round reminders
 
-## Ajouter une nouvelle ressource partagée
+- `src/features/party-dashboard/`: `party-row.js` prepares one row per player character (tested), `party-dashboard-app.js` handles the window. Hiding the system GM tools is done in its `register.js`.
+- `src/features/round-reminders/`: `reminders.js` builds the reminders (tested), `register.js` whispers them to the GM on every new round.
 
-Exemple : ajouter des points de mana partagés, sur le même modèle que la Fortune.
+## Dice Clock
 
-1. Enregistrer un setting dans `init()` de `src/features/companion/register.js` :
-```javascript
-game.settings.register(MODULE_ID, "manaPoints", {
-  scope: "world",
-  config: false,
-  type: Number,
-  default: 0,
-  onChange: () => rerenderOpenApps(SODLCompanionApp)
-});
-```
+Everyday settings are in the module settings. The rest lives in `src/features/dice-clock/`:
+- **GM buttons**: `dice-clock.html` for display, `activateListeners()` in `dice-clock-app.js` for the action;
+- **chat messages**: `_removeOnePoint()` and `resetClock()` in `dice-clock-manager.js`, texts in `SODL.DiceClock.Chat`;
+- **default sound**: `sounds/vecna-clock.mp3`;
+- **look**: `dice-clock.css`.
 
-2. Ajouter les méthodes dans `SODLDataManager` (`src/features/companion/data-manager.js`), sur le modèle de `getChancePoints`/`setChancePoints`/`modifyChancePoints`.
+## YouTube Player
 
-3. Exposer les données dans `getResourcesData()` (`src/features/companion/companion-app.js`) et les afficher dans `src/features/companion/companion.html`.
+The code lives in `src/features/youtube-player/`.
 
-## Horloge à Dés
+- **Colors**: CSS variables at the top of `youtube-player.css`, on `.yt-widget`.
+- **Default position and size**: `_loadLayout()` in `widget.js`.
+- **Sync**: `SYNC_TOLERANCE` (`broadcast.js`, 2 s) is the drift beyond which a player is resynced; `SYNC_INTERVAL_MS` (`widget.js`, 1 s) the check frequency.
+- **Search**: `search.js` defines one provider per service (YouTube Data API when a key is set, Invidious otherwise). To add a service, write a provider exposing `search(text)` and plug it into `createSearchProvider`. `SEARCH_RESULTS_LIMIT` sets the number of results.
+- **Link formats**: add a function to `PARSING_STRATEGIES` in `url-parser.js`.
+- **Data**: `youtubeLibrary` and `youtubeBroadcast` (world), `youtubeVolume` and `youtubeWidgetLayout` (each user).
 
-Tous les réglages courants se font sans toucher au code, dans *Paramètres → Configurer les paramètres* : nombre de dés, faces par dé, minutes par point, heure de départ, son du carillon (laisser vide pour le couper) et message final.
+## Adding a tool
 
-Le reste se trouve dans `src/features/dice-clock/` :
-- **Boutons du MJ** (libellés, nombre de points retirés) — `dice-clock.html` pour l'affichage, `activateListeners()` de `dice-clock-app.js` pour l'action. Par exemple `removePoints(SODLDiceClockManager.pipsPerHour)` retire une heure.
-- **Messages du chat** (heure pleine, remise à zéro) — `_removeOnePoint()` et `resetClock()` dans `dice-clock-manager.js`.
-- **Son par défaut** — `sounds/vecna-clock.mp3`, référencé dans `register.js` (setting `diceClockSoundPath`).
-- **Apparence** — `dice-clock.css`.
-
-## Lecteur YouTube
-
-Le code vit dans `src/features/youtube-player/`.
-
-### Couleurs du widget
-Définies en variables CSS en tête de `youtube-player.css`, sur `.yt-widget` :
-
-```css
---ytw-bg: rgba(20, 20, 23, 0.9);  /* fond translucide */
---ytw-accent: #c9544f;            /* point « en direct », vidéo active */
---ytw-title: #e0c9a6;             /* titres, noms de dossiers */
---ytw-text: #dcdcdc;
---ytw-muted: #8b8b90;
-```
-
-### Position et taille par défaut
-Dans `_loadLayout()` (`widget.js`) : `top`, `width` et `libraryOpen`. Au premier affichage, le widget se place à gauche de la barre latérale (`left` calculé dans `_applyLayout()`). Chaque utilisateur retrouve ensuite la position qu'il a choisie : elle est stockée dans le setting client `youtubeWidgetLayout`.
-
-### Précision de la synchronisation
-- `SYNC_TOLERANCE` (`broadcast.js`, 2 s par défaut) : écart au-delà duquel le lecteur d'un joueur est recalé sur celui du MJ. Plus bas, les recalages sont plus fréquents (et plus visibles).
-- `SYNC_INTERVAL_MS` (`widget.js`, 1 s) : fréquence de vérification.
-
-### Recherche
-`search.js` définit un fournisseur par service, choisi par `createSearchProvider` : l'API YouTube Data si la clé `youtubeApiKey` est renseignée, sinon les instances Invidious de `youtubeInvidiousInstances` (essayées dans l'ordre). Chaque fournisseur renvoie `{ videoId, title, channel, duration, thumbnail }`. Pour ajouter un service, écrivez un fournisseur exposant `search(text)`, branchez-le dans `createSearchProvider` et ajoutez un cas dans `tests/youtube-player/search.test.js`. Le nombre de résultats est réglé par `SEARCH_RESULTS_LIMIT`.
-
-### Formats de liens acceptés
-`url-parser.js` essaie une liste de stratégies (ID seul, `youtu.be`, `watch?v=`, `/embed`, `/shorts`, `/live`). Pour accepter un nouveau format, ajoutez une fonction à `PARSING_STRATEGIES` qui renvoie l'ID trouvé ou `null`, et un cas dans `tests/youtube-player/url-parser.test.js`.
-
-### Données
-- `youtubeLibrary` (monde) : `{ folders: [{ id, name }], videos: [{ id, title, videoId, folderId }] }` — `folderId: null` signifie « Non classé ».
-- `youtubeBroadcast` (monde) : `{ video, playing, position, updatedAt }` — chaque client calcule la position attendue à partir de `position` et de `updatedAt` (heure du serveur).
-- `youtubeVolume` et `youtubeWidgetLayout` (client) : préférences de chaque utilisateur.
-- `youtubeApiKey` et `youtubeInvidiousInstances` (monde) : configuration de la recherche.
-
-## Ajouter un nouvel outil
-
-Chaque outil est un dossier de `src/features/` qui exporte, depuis son `register.js`, un objet avec les étapes dont il a besoin :
+Each tool is a folder in `src/features/` whose `register.js` exports the steps it needs:
 
 ```javascript
-// src/features/mon-outil/register.js
 import { MODULE_ID } from "../../shared/constants.js";
+import { t } from "../../shared/foundry-adapter.js";
 
-export const monOutilFeature = {
+export const myToolFeature = {
   init() {
-    // settings, globales window.*, loadTemplates(...)
-    game.settings.register(MODULE_ID, "monOutilEnabled", { /* ... */ });
+    game.settings.register(MODULE_ID, "myToolEnabled", {
+      name: "SODL.Settings.MyToolEnabled.Name",
+      hint: "SODL.Settings.MyToolEnabled.Hint",
+      scope: "world",
+      config: true,
+      type: Boolean,
+      default: true
+    });
   },
-  ready() {
-    // actions une fois la partie chargée (optionnel)
-  },
-  getSceneControlButtons(controls) {
-    // bouton dans la barre de gauche (optionnel)
-  }
+  ready() {},
+  getSceneControlButtons(controls) {}
 };
 ```
 
-Puis l'ajouter à la liste `FEATURES` de `src/main.js`, et déclarer sa feuille de style dans `module.json` (`styles`).
+Then add it to `FEATURES` in `src/main.js`, and its stylesheet to `styles` in `module.json`.
 
-Conventions :
-- Templates référencés avec `modulePath("src/features/mon-outil/mon-outil.html")` (`src/shared/constants.js`).
-- API de Foundry qui changent selon la version (`Dialog`, `renderTemplate`, `loadTemplates`, `AudioHelper`) : passer par `src/shared/foundry-adapter.js` plutôt que par les globales.
-- Logique métier pure (sans `game` ni `ui`) dans des fichiers à part, pour pouvoir la tester avec `npm test`.
+Conventions:
+- templates referenced with `modulePath(...)` (`src/shared/constants.js`);
+- Foundry APIs that change between versions: go through `src/shared/foundry-adapter.js`;
+- pure logic (no `game` or `ui`) in separate files, tested with `npm test`;
+- no hard-coded text: everything goes through the language files.
 
-## Traductions
+## Translation
 
-Fichiers: `lang/fr.json` et `lang/en.json`
+- In a template: `{{localize "SODL.My.Key"}}`, or with variables `{{localize "SODL.My.Key" name=value}}`.
+- In Foundry code: `t("SODL.My.Key", { name: value })` from `src/shared/foundry-adapter.js`.
+- In pure code: take `t` as a parameter, and throw a `LocalizedError(key, data)` (`src/shared/i18n.js`) instead of a text.
+- Setting names and hints: put the key directly, Foundry translates it when displaying.
 
-Ajouter une clé:
-```json
-{
-  "SODL": {
-    "MyKey": "Ma traduction"
-  }
-}
-```
+Tests use `lang/fr.json` (`tests/helpers/i18n.js`): their expectations are in French.
 
-Utiliser dans le template: `{{localize 'SODL.MyKey'}}`
-
-Notez que la majorité du contenu (règles, afflictions, effets de Fortune...) est actuellement en dur en français dans `config.js`, pas dans les fichiers de langue.
-
-## Relancer après les modifs
-
-Fermez et rouvrez le monde (ou relancez Foundry) après avoir modifié les fichiers JavaScript — les modules ES sont mis en cache par le navigateur, un simple F5 peut ne pas suffire (Ctrl+Shift+R au besoin).
-
-## Tester
-
-**Tests automatiques** — La logique pure (liens YouTube, bibliothèque, synchronisation) est testée avec le lanceur intégré de Node (v22+), sans dépendance à installer :
+## Testing
 
 ```bash
 npm test
 ```
 
-Les tests sont dans `tests/`, rangés par outil comme `src/features/`.
+Pure logic tests live in `tests/`, organized by tool like `src/features/`. They also run on GitHub on every push, and before each release.
 
-**Dans Foundry** — Ouvrez la console (F12) pour voir les erreurs. Testez avec un compte MJ et un compte joueur (par exemple dans deux navigateurs différents) pour vérifier :
-- que la réserve de Fortune reste bien masquée côté joueur ;
-- que l'horloge est en lecture seule côté joueur ;
-- que la diffusion YouTube (lancement, pause, saut, arrêt) est bien répercutée chez le joueur.
+In Foundry, test with a GM account and a player account (for example in two browsers): Fortune pool hidden for players, read-only clock, YouTube broadcast mirrored, HUD and favorites specific to each player. After changing JavaScript, reload with Ctrl+Shift+R: modules are cached by the browser.

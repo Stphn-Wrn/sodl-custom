@@ -222,7 +222,7 @@ const spellsSection = {
       byTradition.get(tradition).push(spell);
     }
 
-    if (byTradition.size <= 1) {
+    if (byTradition.size <= 1 || view.all) {
       return spellEntries(snapshot.spells);
     }
 

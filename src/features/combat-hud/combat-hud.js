@@ -7,6 +7,8 @@ import { computeAnchors, DEFAULT_ENTRIES_HEIGHT, resizeHeight } from "./layout.j
 import { DEFAULT_FRAME, framePortraitStyle, panFrame, zoomFrame } from "./portrait-frame.js";
 import { afflictionCatalogue, createSections } from "./sections.js";
 import { healthState } from "./health-state.js";
+import { groupByHeading } from "./grouping.js";
+import { arrange, entryKey, moveBefore, pickFavorites, toggle } from "./customization.js";
 
 const HUD_TEMPLATE = modulePath("src/features/combat-hud/combat-hud.html");
 const RENDER_DEBOUNCE_MS = 50;
@@ -26,6 +28,19 @@ const ROLL_KIND = {
 const SWITCH_GAP = 8;
 
 export const MODE = { HUD: "hud", FOUNDRY: "foundry" };
+
+const LEFT_BLOCKS = ["health", "trackers", "stats", "afflictions"];
+const PORTRAIT_SIZES = ["large", "small", "hidden"];
+const FAVORITE_VIEWS = [{}, { all: true }, { adding: true }];
+
+function defaultCustomization() {
+  return { tabOrder: [], hiddenTabs: [], blockOrder: [], hiddenBlocks: [], portraitSize: "large" };
+}
+
+function nextPortraitSize(size) {
+  const index = PORTRAIT_SIZES.indexOf(size);
+  return PORTRAIT_SIZES[(index + 1) % PORTRAIT_SIZES.length];
+}
 
 function catalogueAffliction(effect) {
   const statuses = Array.from(effect.statuses ?? []);
@@ -142,11 +157,28 @@ export class SODLCombatHud {
     this.activeSection = layout.activeSection ?? "attacks";
     this.mode = layout.mode ?? MODE.HUD;
     this.entriesHeight = layout.entriesHeight ?? DEFAULT_ENTRIES_HEIGHT;
+    this.editing = false;
+    this.dragging = null;
+    this.favoriteEntries = [];
+    this.custom = { ...defaultCustomization(), ...layout.custom };
+    this.favorites = layout.favorites ?? {};
     this.requestRender = foundry.utils.debounce(() => this.render(), RENDER_DEBOUNCE_MS);
     this.switchButton = this.createSwitchButton();
+    this.sidebarObserver = this.observeSidebar();
+  }
+
+  observeSidebar() {
+    const sidebar = document.getElementById("ui-right") ?? document.getElementById("sidebar");
+    if (!sidebar || typeof ResizeObserver === "undefined") {
+      return null;
+    }
+    const observer = new ResizeObserver(() => this.applyPosition());
+    observer.observe(sidebar);
+    return observer;
   }
 
   destroy() {
+    this.sidebarObserver?.disconnect();
     this.element?.remove();
     this.element = null;
     this.switchButton.remove();
@@ -219,15 +251,43 @@ export class SODLCombatHud {
     this.applyPosition();
   }
 
+  actorFavorites() {
+    return this.favorites[this.actor.id] ?? [];
+  }
+
+  tabLayout(sections) {
+    return arrange(sections.map((section) => section.id), { order: this.custom.tabOrder, hidden: this.custom.hiddenTabs });
+  }
+
   getData() {
     const snapshot = toSnapshot(this.actor);
     const sections = createSections(snapshot.type);
-    let current = sections.find((section) => section.id === this.activeSection);
-    if (!current) {
-      current = sections[0];
+    const tabs = this.tabLayout(sections);
+    const shownTabIds = [...tabs.visible];
+    if (this.editing) {
+      shownTabIds.push(...tabs.hidden);
+    }
+    const sectionById = (id) => sections.find((section) => section.id === id);
+    let current = sectionById(this.activeSection);
+    if (!current || (!this.editing && !tabs.visible.includes(current.id))) {
+      current = sectionById(tabs.visible[0] ?? shownTabIds[0]);
     }
     this.currentSectionId = current?.id;
     this.entries = current?.build(snapshot, this.views[current.id] ?? {}, t) ?? [];
+
+    const favoriteKeys = this.actorFavorites();
+    const candidates = sections.flatMap((section) => FAVORITE_VIEWS.flatMap((view) => section.build(snapshot, view, t)));
+    this.favoriteEntries = pickFavorites(candidates, favoriteKeys);
+    const entries = this.entries.map((entry) => {
+      const favoriteKey = entryKey(entry);
+      return { ...entry, favoriteKey, isFavorite: Boolean(favoriteKey) && favoriteKeys.includes(favoriteKey) };
+    });
+
+    const blocks = arrange(LEFT_BLOCKS, { order: this.custom.blockOrder, hidden: this.custom.hiddenBlocks });
+    let leftBlocks = blocks.visible.map((id) => ({ id, hidden: false }));
+    if (this.editing) {
+      leftBlocks = [...leftBlocks, ...blocks.hidden.map((id) => ({ id, hidden: true }))];
+    }
 
     let healthPercent = 0;
     if (snapshot.characteristics.healthMax > 0) {
@@ -253,8 +313,18 @@ export class SODLCombatHud {
       entriesHeight: this.entriesHeight,
       healthStatus: healthState(snapshot.characteristics, t),
       afflictions: this.actor.temporaryEffects.map(effectView),
-      sections: sections.map((section) => ({ id: section.id, label: t(section.label), icon: section.icon, active: section === current })),
-      entries: this.entries
+      sections: shownTabIds.map(sectionById).map((section) => ({
+        id: section.id,
+        label: t(section.label),
+        icon: section.icon,
+        active: section === current,
+        hidden: tabs.hidden.includes(section.id)
+      })),
+      groups: groupByHeading(entries),
+      favorites: this.favoriteEntries,
+      editing: this.editing,
+      leftBlocks,
+      portraitSize: this.custom.portraitSize
     };
   }
 
@@ -262,7 +332,7 @@ export class SODLCombatHud {
     if (this.element) {
       const anchors = computeAnchors({
         uiLeftX: measureLeft("ui-left"),
-        sidebarX: measureLeft("sidebar"),
+        sidebarX: measureLeft("ui-right") ?? measureLeft("sidebar"),
         viewportWidth: window.innerWidth
       });
       this.element[0].style.left = `${anchors.left}px`;
@@ -336,10 +406,15 @@ export class SODLCombatHud {
         this.render();
         return;
       }
+      if (this.editing) {
+        return;
+      }
       this.runAction(entry.action, entry.name);
     });
 
     this.activateRollPanelListeners(html);
+
+    this.activateEditListeners(html);
 
     html.find("[data-uses-item]").on("click", (event) => {
       event.stopPropagation();
@@ -501,7 +576,94 @@ export class SODLCombatHud {
     game.settings.set(MODULE_ID, "combatHudLayout", {
       activeSection: this.activeSection,
       mode: this.mode,
-      entriesHeight: this.entriesHeight
+      entriesHeight: this.entriesHeight,
+      custom: this.custom,
+      favorites: this.favorites
+    });
+  }
+
+  updateCustomization(changes) {
+    this.custom = { ...this.custom, ...changes };
+    this.saveLayout();
+    this.render();
+  }
+
+  fullOrder(kind) {
+    if (kind === "tab") {
+      const sections = createSections(this.actor.type);
+      return arrange(sections.map((section) => section.id), { order: this.custom.tabOrder }).visible;
+    }
+    return arrange(LEFT_BLOCKS, { order: this.custom.blockOrder }).visible;
+  }
+
+  activateEditListeners(html) {
+    html.find("[data-edit-toggle]").on("click", () => {
+      this.editing = !this.editing;
+      this.openMenu = null;
+      this.rollPanel = null;
+      this.render();
+    });
+
+    html.find("[data-favorite]").on("click", (event) => {
+      const entry = this.favoriteEntries[Number(event.currentTarget.dataset.favorite)];
+      if (entry && !entry.disabled && !this.editing) {
+        this.runAction(entry.action, entry.name);
+      }
+    });
+
+    if (!this.editing) {
+      return;
+    }
+
+    html.find("[data-edit-reset]").on("click", () => this.updateCustomization(defaultCustomization()));
+
+    html.find("[data-hide-tab]").on("click", (event) => {
+      event.stopPropagation();
+      this.updateCustomization({ hiddenTabs: toggle(this.custom.hiddenTabs, event.currentTarget.dataset.hideTab) });
+    });
+
+    html.find("[data-hide-block]").on("click", (event) => {
+      this.updateCustomization({ hiddenBlocks: toggle(this.custom.hiddenBlocks, event.currentTarget.dataset.hideBlock) });
+    });
+
+    html.find("[data-portrait-size]").on("click", (event) => {
+      event.stopPropagation();
+      this.updateCustomization({ portraitSize: nextPortraitSize(this.custom.portraitSize) });
+    });
+
+    html.find("[data-favorite-toggle]").on("click", (event) => {
+      event.stopPropagation();
+      const key = event.currentTarget.dataset.favoriteToggle;
+      this.favorites = { ...this.favorites, [this.actor.id]: toggle(this.actorFavorites(), key) };
+      this.saveLayout();
+      this.render();
+    });
+
+    html.find("[data-drag-kind]").each((_, element) => {
+      element.setAttribute("draggable", "true");
+      element.addEventListener("dragstart", (event) => {
+        this.dragging = { kind: element.dataset.dragKind, id: element.dataset.dragId };
+        event.dataTransfer.effectAllowed = "move";
+      });
+      element.addEventListener("dragover", (event) => {
+        if (this.dragging?.kind === element.dataset.dragKind) {
+          event.preventDefault();
+        }
+      });
+      element.addEventListener("drop", (event) => {
+        event.preventDefault();
+        const dragging = this.dragging;
+        this.dragging = null;
+        if (!dragging || dragging.kind !== element.dataset.dragKind || dragging.id === element.dataset.dragId) {
+          return;
+        }
+        const order = moveBefore(this.fullOrder(dragging.kind), dragging.id, element.dataset.dragId);
+        if (dragging.kind === "tab") {
+          this.updateCustomization({ tabOrder: order });
+        } else {
+          this.updateCustomization({ blockOrder: order });
+        }
+      });
     });
   }
 }

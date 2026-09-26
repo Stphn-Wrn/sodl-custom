@@ -22,6 +22,7 @@ Foundry VTT companion module for **Shadow of the Demon Lord**: combat HUD, share
 - **Actions and afflictions** — Clicking an action, or an affliction's (i), sends its rule to chat.
 - **Effects** — Temporary effects (blessings, active spells...): toggle, delete, create.
 - **Tools** — Character sheet, dice roller (d2 to d100, 1 to 8 dice), 8 h / 24 h rest.
+- **Edit mode** — Pencil button: everyone reorders or hides the tabs and the left column blocks with drag and drop, picks the portrait size, and pins their favorite actions (weapons, spells, rolls...) to an always-visible favorites bar, per character.
 - **Personal setting** — Each player and the GM enable it for themselves, without reloading. Height, mode and open tab are remembered.
 
 ### Party dashboard (GM)

@@ -283,6 +283,16 @@
         "Fast": "Rapide",
         "Slow": "Lent",
         "Hint": "Tour rapide ou lent pour ce round : cliquer pour changer"
+      },
+      "Edit": {
+        "Toggle": "Personnaliser le HUD",
+        "Hint": "Glissez les onglets et les blocs pour les réordonner, l'œil les masque, l'étoile épingle une action dans vos favoris.",
+        "Reset": "Réinitialiser",
+        "Done": "Terminer",
+        "Favorites": "Favoris",
+        "Pin": "Épingler dans les favoris",
+        "ToggleVisibility": "Afficher / masquer",
+        "PortraitSize": "Taille du portrait (grand, petit, masqué)"
       }
     },
     "Settings": {

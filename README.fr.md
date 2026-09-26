@@ -22,6 +22,7 @@ Module Foundry VTT d'aide de jeu pour **L'Ombre du Seigneur Démon** : HUD de co
 - **Actions et afflictions** — Un clic sur une action, ou l'info-bulle (i) d'une affliction, envoie sa règle dans le chat.
 - **Effets** — Effets temporaires (bénédictions, sorts actifs...) : activer/désactiver, supprimer, créer.
 - **Outils** — Fiche du personnage, lanceur de dés (d2 à d100, 1 à 8 dés), repos 8 h / 24 h.
+- **Mode édition** — Bouton crayon : chacun réordonne ou masque les onglets et les blocs de la colonne de gauche par glisser-déposer, choisit la taille du portrait, et épingle ses actions préférées (armes, sorts, jets…) dans une barre de favoris toujours visible, propre à chaque personnage.
 - **Réglage personnel** — Chaque joueur et le MJ l'activent ou non pour eux-mêmes, sans recharger. La hauteur, le mode et l'onglet ouvert sont mémorisés.
 
 ### Tableau de bord du groupe (MJ)
@@ -54,7 +55,7 @@ Dans Foundry : *Modules complémentaires → Installer un module*, puis collez l
 https://raw.githubusercontent.com/Stphn-Wrn/sodl-custom/main/module.json
 ```
 
-Activez ensuite le module dans le monde. Il n'apparaît dans la liste que si le monde utilise le système `demonlord`. Voir `INSTALLATION.md` pour l'installation manuelle.
+Activez ensuite le module dans le monde. Il n'apparaît dans la liste que si le monde utilise le système `demonlord`. Voir `INSTALLATION.fr.md` pour l'installation manuelle.
 
 ## Utilisation
 
@@ -72,7 +73,7 @@ La recherche YouTube fonctionne sans configuration grâce à des instances publi
 - **Réserve de Fortune max par défaut** — `resources.chancePoints.maximum` dans `config.js` ; le MJ l'ajuste ensuite depuis le compagnon.
 - **Styles** — Chaque outil a sa feuille de style dans son dossier.
 
-Voir `CUSTOMIZATION.md` pour plus de détails.
+Voir `CUSTOMIZATION.fr.md` pour plus de détails.
 
 ## Structure
 
