@@ -1,11 +1,10 @@
 import { companionFeature } from "./features/companion/register.js";
-import { diceClockFeature } from "./features/dice-clock/register.js";
-import { youtubePlayerFeature } from "./features/youtube-player/register.js";
 import { combatHudFeature } from "./features/combat-hud/register.js";
 import { roundRemindersFeature } from "./features/round-reminders/register.js";
 import { partyDashboardFeature } from "./features/party-dashboard/register.js";
+import { movedToolsFeature } from "./features/moved-tools/register.js";
 
-const FEATURES = [companionFeature, diceClockFeature, youtubePlayerFeature, combatHudFeature, roundRemindersFeature, partyDashboardFeature];
+const FEATURES = [companionFeature, combatHudFeature, roundRemindersFeature, partyDashboardFeature, movedToolsFeature];
 
 function runStep(step, ...args) {
   for (const feature of FEATURES) {

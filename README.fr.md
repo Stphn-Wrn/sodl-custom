@@ -2,7 +2,7 @@
 
 🇬🇧 [English version](README.md)
 
-Module Foundry VTT d'aide de jeu pour **L'Ombre du Seigneur Démon** : HUD de combat, réserve de Fortune du groupe, aide de jeu, tableau de bord du MJ, rappels de round, horloge à dés et diffusion de vidéos YouTube.
+Module Foundry VTT d'aide de jeu pour **L'Ombre du Seigneur Démon** : HUD de combat, réserve de Fortune du groupe, aide de jeu, tableau de bord du MJ et rappels de round.
 
 **Compatibilité :** Foundry VTT v11+ (testé sur v14 stable 7) | Système `demonlord` v6.1.0+
 
@@ -38,14 +38,9 @@ Module Foundry VTT d'aide de jeu pour **L'Ombre du Seigneur Démon** : HUD de co
 - **Aide de jeu** — Afflictions, actions, options de mêlée/tir, règles situationnelles, hors de combat, folie, corruption, incantation (avec le tableau des utilisations par Puissance/Rang), effets étendus de la Fortune.
 - **Recherche instantanée** — Filtre tout le contenu par mot-clé.
 
-### Horloge à Dés
-- **Compte à rebours à base de dés**, piloté par le MJ : une heure pleine fait sonner un carillon et poste un message dans le chat.
-- **Configurable** — Nombre de dés, faces, minutes par point, heure de départ, son et message final.
+## Horloge à dés et lecteur YouTube
 
-### Lecteur YouTube
-- **Diffusion synchronisée** — Le MJ lance une vidéo et tout le monde la regarde en même temps (pause, reprise et sauts compris).
-- **Recherche et bibliothèque** — Recherche YouTube ou liens collés, bibliothèque en dossiers avec glisser-déposer.
-- **Widget flottant** — Déplaçable, redimensionnable, réductible en pastille. Désactivé par défaut.
+Ce sont maintenant des modules à part, utilisables avec tous les systèmes : [Horloges à dés](https://github.com/Stphn-Wrn/dice-clock) et [Lecteur YouTube synchronisé](https://github.com/Stphn-Wrn/synced-youtube-player). Installez-les avec leur URL de manifeste ; vos réglages, votre horloge et votre bibliothèque de vidéos sont repris automatiquement de ce module.
 
 ## Installation
 
@@ -61,11 +56,7 @@ Activez ensuite le module dans le monde. Il n'apparaît dans la liste que si le 
 
 - **HUD de combat** — Sélectionnez un token : le HUD s'affiche en bas de l'écran. Le bouton grille le masque au profit des macros ; le bouton épée le réaffiche.
 - **Compagnon** — Icône **livre** dans la barre d'outils de gauche.
-- **Horloge à Dés** — Icône **dé** dans la barre d'outils de gauche.
 - **Tableau de bord** — Icône **groupe** dans la barre d'outils de gauche (MJ uniquement).
-- **Lecteur YouTube** — À activer dans les paramètres du module, puis rafraîchir. L'icône **dossier** du widget affiche la recherche et la bibliothèque ; cliquer sur une vidéo la lance chez tout le monde.
-
-La recherche YouTube fonctionne sans configuration grâce à des instances publiques [Invidious](https://invidious.io), parfois indisponibles. Pour une recherche fiable, renseignez une clé **YouTube Data API v3** dans les paramètres. Cette clé est visible des joueurs connectés : restreignez-la à l'API YouTube Data dans la console Google.
 
 ## Personnalisation
 
@@ -89,10 +80,8 @@ sodl-companion/
 │       ├── party-dashboard/  # Tableau de bord du groupe (MJ)
 │       ├── round-reminders/  # Rappels de round (MJ)
 │       ├── companion/        # Aide de jeu, recherche et réserve de Fortune
-│       ├── dice-clock/       # Horloge à Dés
-│       └── youtube-player/   # Lecteur YouTube synchronisé
-├── tests/                    # Tests de la logique pure (npm test)
-└── sounds/                   # Carillon de l'horloge
+│       └── moved-tools/      # Message unique : horloge et lecteur YouTube déplacés
+└── tests/                    # Tests de la logique pure (npm test)
 ```
 
 ## Accéder aux données
@@ -103,14 +92,6 @@ Les classes principales sont exposées sur `window` pour les macros et la consol
 // Réserve de Fortune (setting monde partagé ; modifications réservées au MJ)
 SODLDataManager.getChancePoints();
 await SODLDataManager.modifyChancePoints(+1);
-
-// Horloge à Dés
-SODLDiceClockManager.getState();            // { remaining, hour }
-await SODLDiceClockManager.removePoints(1);
-
-// Lecteur YouTube
-await SODLYoutubeBroadcast.start(SODLYoutubeManager.getLibrary().videos[0]);
-await SODLYoutubeSearch.query("musique taverne");
 
 // HUD de combat et tableau de bord
 SODLCombatHud.toggleMode();
@@ -139,16 +120,6 @@ Les tests tournent sur GitHub à chaque push, et la release ne part pas s'ils é
 **Le HUD de combat n'apparaît pas**
 - Sélectionnez un token de personnage (ou, côté joueur, ayez un personnage assigné).
 - Vérifiez qu'il est activé dans vos paramètres du module, et qu'il n'est pas basculé sur les macros.
-
-**Le widget YouTube n'apparaît pas**
-- Il est désactivé par défaut. Côté joueur, il n'apparaît que pendant une diffusion.
-
-**La vidéo ne démarre pas chez un joueur**
-- Si le navigateur bloque la lecture automatique, un bouton **« Rejoindre la diffusion »** apparaît.
-- Certaines vidéos refusent d'être intégrées hors de YouTube : il faut en choisir une autre.
-
-**La recherche YouTube ne renvoie rien**
-- Renseignez une clé YouTube Data API v3, ou changez les instances Invidious dans les paramètres. Coller un lien fonctionne toujours.
 
 ## Licence
 

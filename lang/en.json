@@ -79,77 +79,6 @@
     "Common": {
       "Cancel": "Cancel"
     },
-    "DiceClock": {
-      "Title": "Dice Clock",
-      "OpenTool": "Open the Dice Clock",
-      "HourFormat": "{hour}:00",
-      "Expired": "The clock has run out.",
-      "Room": "Room / Floor",
-      "RoomHint": "Search a room / Change floor (-1 point)",
-      "ShortRest": "Short rest",
-      "ShortRestHint": "Short rest (-1 hour)",
-      "Adjust": "Adjust",
-      "Reset": "Reset",
-      "ReadOnly": "The GM controls the clock.",
-      "ResetDialog": {
-        "Title": "Reset the clock",
-        "Content": "Reset the clock to its starting state?"
-      },
-      "Chat": {
-        "ResetTitle": "The clock has been reset.",
-        "ResetBody": "It is {hour}. The dice show their maximum value.",
-        "ChimeTitle": "Ding... Dong...",
-        "ChimeBody": "The clock strikes. It is now {hour}."
-      },
-      "DefaultCriticalMessage": "A dull rumble rises from the walls of the house... The Mound of Flesh (Walter) awakens and attacks!"
-    },
-    "Youtube": {
-      "Title": "YouTube Player",
-      "Unsorted": "Unsorted",
-      "VideoFallback": "Video {id}",
-      "ConfirmClick": "Click again to confirm",
-      "Expand": "Expand the player",
-      "Move": "Move",
-      "SearchAndLibrary": "Search and library",
-      "Collapse": "Collapse",
-      "PlayPause": "Play / pause",
-      "Join": "Join the broadcast",
-      "Placeholder": "Search for a video or pick one from the library to broadcast it.",
-      "Volume": "Volume (only for you)",
-      "Fullscreen": "Fullscreen",
-      "Stop": "Stop the broadcast for everyone",
-      "SearchPlaceholder": "Search YouTube or paste one or more links",
-      "Search": "Search",
-      "Library": "Library",
-      "NewFolder": "New folder",
-      "FolderName": "Folder name",
-      "Create": "Create",
-      "RenameFolder": "Rename the folder",
-      "DeleteFolder": "Delete the folder (its videos move to \"Unsorted\")",
-      "VideoHint": "{title} — click to broadcast, drag to change folder",
-      "RenameVideo": "Rename the video",
-      "DeleteVideo": "Delete the video",
-      "EmptyFolder": "Empty folder — drag videos here",
-      "EmptyLibrary": "No videos yet. Search for one above.",
-      "Searching": "Searching…",
-      "Results": "Results ({count})",
-      "TargetFolder": "Folder to add the videos to",
-      "AddAll": "Add the {count} videos to the library",
-      "CloseResults": "Close the results",
-      "PlayNow": "Broadcast now",
-      "AlreadySaved": "Already in the library",
-      "AddToLibrary": "Add to the library",
-      "NoResults": "No results.",
-      "Errors": {
-        "EmptyFolderName": "The folder name cannot be empty.",
-        "EmptyVideoTitle": "The video title cannot be empty.",
-        "EmptyVideoId": "The YouTube ID cannot be empty.",
-        "InvalidLink": "Invalid YouTube link.",
-        "ApiRefused": "YouTube search refused ({reason}): check the API key.",
-        "NoProvider": "No search service responded. Set a YouTube API key in the module settings.",
-        "IframeApi": "Could not load the YouTube API."
-      }
-    },
     "Hud": {
       "Tabs": {
         "Attacks": "Attacks",
@@ -296,46 +225,6 @@
       }
     },
     "Settings": {
-      "DiceClockEnabled": {
-        "Name": "Dice Clock: enable",
-        "Hint": "Shows or hides the Dice Clock button and window. Reopen/refresh the game for the button to appear or disappear."
-      },
-      "DiceClockDiceCount": {
-        "Name": "Dice Clock: number of dice",
-        "Hint": "Number of dice used by the clock."
-      },
-      "DiceClockFaces": {
-        "Name": "Dice Clock: faces per die",
-        "Hint": "Number of faces on each die (6 for d6)."
-      },
-      "DiceClockPipMinutes": {
-        "Name": "Dice Clock: minutes per point",
-        "Hint": "Duration in minutes represented by one point (pip) removed."
-      },
-      "DiceClockStartHour": {
-        "Name": "Dice Clock: starting hour",
-        "Hint": "Hour shown at the start of the countdown (18 for 18:00)."
-      },
-      "DiceClockSoundPath": {
-        "Name": "Dice Clock: chime sound",
-        "Hint": "Path to the audio file played on every full hour (e.g. modules/sodl-companion/sounds/chime.mp3). Leave empty to disable the sound."
-      },
-      "DiceClockCriticalMessage": {
-        "Name": "Dice Clock: final message",
-        "Hint": "Message sent to chat when all the clock's points are spent."
-      },
-      "YoutubePlayerEnabled": {
-        "Name": "YouTube Player: enable",
-        "Hint": "Shows a floating player letting the GM broadcast YouTube videos to every player. Requires a refresh."
-      },
-      "YoutubeApiKey": {
-        "Name": "YouTube Player: API key (search)",
-        "Hint": "Optional. A \"YouTube Data API v3\" key (Google Cloud Console) for reliable search. Without a key, search uses public Invidious instances, which are sometimes unavailable."
-      },
-      "YoutubeInvidiousInstances": {
-        "Name": "YouTube Player: Invidious instances",
-        "Hint": "Used for search when no API key is set, in order, separated by commas."
-      },
       "CombatHudEnabled": {
         "Name": "Combat HUD: enable",
         "Hint": "Personal setting (each player and the GM choose for themselves). Shows at the bottom of the screen, in place of the macros and player list, a HUD for the controlled token (attacks, equipment, spells, talents, items, attributes). A button brings the macros back."
@@ -703,6 +592,12 @@
       "Player": "Player",
       "Ancestry": "Ancestry",
       "Professions": "Professions"
+    },
+    "MovedTools": {
+      "Title": "The dice clock and the YouTube player have moved",
+      "Body": "They are now separate modules that work with any system. Install the ones you use with their manifest URL: your settings, clock and video library will be imported automatically.",
+      "diceClock": "Dice Clocks",
+      "youtubePlayer": "Synced YouTube Player"
     }
   }
 }

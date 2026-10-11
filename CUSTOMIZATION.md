@@ -12,7 +12,6 @@ Every text of the module lives in `lang/en.json` and `lang/fr.json`, under the `
 | `SODL.Companion` | Companion interface |
 | `SODL.Hud` | Combat HUD |
 | `SODL.Dashboard`, `SODL.Reminders` | Party dashboard and round reminders |
-| `SODL.DiceClock`, `SODL.Youtube` | Dice clock and YouTube player |
 | `SODL.Settings` | Setting names and hints |
 
 To fix a rule, edit its text **in both files**: the companion, the HUD and the chat messages all pick it up. Both files must always have exactly the same keys.
@@ -80,25 +79,6 @@ CSS variables at the top of `combat-hud.css`, on `.sodl-hud` (`--hud-bg`, `--hud
 - `src/features/party-dashboard/`: `party-row.js` prepares one row per player character (tested), `party-dashboard-app.js` handles the window. Hiding the system GM tools is done in its `register.js`.
 - `src/features/round-reminders/`: `reminders.js` builds the reminders (tested), `register.js` whispers them to the GM on every new round.
 
-## Dice Clock
-
-Everyday settings are in the module settings. The rest lives in `src/features/dice-clock/`:
-- **GM buttons**: `dice-clock.html` for display, `activateListeners()` in `dice-clock-app.js` for the action;
-- **chat messages**: `_removeOnePoint()` and `resetClock()` in `dice-clock-manager.js`, texts in `SODL.DiceClock.Chat`;
-- **default sound**: `sounds/vecna-clock.mp3`;
-- **look**: `dice-clock.css`.
-
-## YouTube Player
-
-The code lives in `src/features/youtube-player/`.
-
-- **Colors**: CSS variables at the top of `youtube-player.css`, on `.yt-widget`.
-- **Default position and size**: `_loadLayout()` in `widget.js`.
-- **Sync**: `SYNC_TOLERANCE` (`broadcast.js`, 2 s) is the drift beyond which a player is resynced; `SYNC_INTERVAL_MS` (`widget.js`, 1 s) the check frequency.
-- **Search**: `search.js` defines one provider per service (YouTube Data API when a key is set, Invidious otherwise). To add a service, write a provider exposing `search(text)` and plug it into `createSearchProvider`. `SEARCH_RESULTS_LIMIT` sets the number of results.
-- **Link formats**: add a function to `PARSING_STRATEGIES` in `url-parser.js`.
-- **Data**: `youtubeLibrary` and `youtubeBroadcast` (world), `youtubeVolume` and `youtubeWidgetLayout` (each user).
-
 ## Adding a tool
 
 Each tool is a folder in `src/features/` whose `register.js` exports the steps it needs:
@@ -148,4 +128,4 @@ npm test
 
 Pure logic tests live in `tests/`, organized by tool like `src/features/`. They also run on GitHub on every push, and before each release.
 
-In Foundry, test with a GM account and a player account (for example in two browsers): Fortune pool hidden for players, read-only clock, YouTube broadcast mirrored, HUD and favorites specific to each player. After changing JavaScript, reload with Ctrl+Shift+R: modules are cached by the browser.
+In Foundry, test with a GM account and a player account (for example in two browsers): Fortune pool hidden for players, HUD and favorites specific to each player. After changing JavaScript, reload with Ctrl+Shift+R: modules are cached by the browser.

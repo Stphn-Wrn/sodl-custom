@@ -41,7 +41,7 @@ Créez un dossier `sodl-companion` dans `Data/modules/` et copiez-y tous les fic
 
 Une fois le monde rechargé :
 - le **HUD de combat** s'affiche en bas de l'écran dès qu'un token est sélectionné ;
-- la barre d'outils de gauche contient l'icône **livre** (Compagnon), l'icône **dé** (Horloge à Dés) et, pour le MJ, l'icône **groupe** (tableau de bord).
+- la barre d'outils de gauche contient l'icône **livre** (Compagnon) et, pour le MJ, l'icône **groupe** (tableau de bord).
 
 ## Paramètres
 
@@ -50,8 +50,6 @@ Dans **Paramètres du jeu → Configurer les paramètres → L'Ombre du Seigneur
 | Paramètre | Par défaut | Qui |
 |---|---|---|
 | HUD de combat : activer | activé | chaque joueur |
-| Horloge à Dés : activer, dés, faces, minutes par point, heure de départ, son, message final | activée | MJ |
-| Lecteur YouTube : activer, clé API, instances Invidious | désactivé | MJ |
 | Rappels de round : activer | activé | MJ |
 | Masquer les outils MJ du système (Player Tracker) | activé | MJ |
 
@@ -66,7 +64,7 @@ La langue du module suit celle de Foundry (**Paramètres principaux → Langue**
 **Installé manuellement** — Supprimez `Data/modules/sodl-companion/`, copiez la nouvelle version, puis rechargez le monde (Ctrl+Maj+R pour vider le cache des scripts).
 
 Les données sont conservées lors d'une mise à jour :
-- **dans le monde** : réserve de Fortune, état de l'horloge, bibliothèque YouTube, paramètres du MJ ;
+- **dans le monde** : réserve de Fortune et paramètres du MJ ;
 - **sur chaque compte** : disposition du HUD et favoris ;
 - **sur les personnages** : cadrage du portrait.
 
@@ -89,10 +87,6 @@ Les données sont conservées lors d'une mise à jour :
 **Le HUD de combat n'apparaît pas**
 - Sélectionnez un token de personnage (côté joueur, un personnage assigné suffit).
 - Vérifiez qu'il est activé dans vos paramètres et qu'il n'est pas basculé sur les macros (bouton épée pour le réafficher).
-
-**Le widget YouTube n'apparaît pas**
-- Activez-le dans les paramètres puis rafraîchissez. Côté joueur, il n'apparaît que pendant une diffusion.
-- Le lecteur charge l'API depuis `youtube.com` : il ne fonctionne pas hors ligne ou si YouTube est bloqué.
 
 **Le MJ ne peut pas modifier la réserve de Fortune**
 - Le compte doit avoir le rôle **Gamemaster** (pas seulement des permissions élevées).

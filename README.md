@@ -2,7 +2,7 @@
 
 🇫🇷 [Version française](README.fr.md)
 
-Foundry VTT companion module for **Shadow of the Demon Lord**: combat HUD, shared Fortune pool, rules reference, GM party dashboard, round reminders, dice clock and synced YouTube player.
+Foundry VTT companion module for **Shadow of the Demon Lord**: combat HUD, shared Fortune pool, rules reference, GM party dashboard and round reminders.
 
 **Compatibility:** Foundry VTT v11+ (tested on v14 stable 7) | `demonlord` system v6.1.0+
 
@@ -38,14 +38,9 @@ Foundry VTT companion module for **Shadow of the Demon Lord**: combat HUD, share
 - **Rules reference** — Afflictions, actions, melee/ranged options, situational rules, out of combat, madness, corruption, incantations (with the castings table by Power/Rank), extended uses of Fortune.
 - **Instant search** — Filters all the content by keyword.
 
-### Dice Clock
-- **Dice-based countdown** driven by the GM: every full hour rings a chime and posts a chat message.
-- **Configurable** — Number of dice, faces, minutes per point, starting hour, sound and final message.
+## Dice clock and YouTube player
 
-### YouTube Player
-- **Synced broadcast** — The GM starts a video and everyone watches it together (pause, resume and seeking included).
-- **Search and library** — YouTube search or pasted links, folder library with drag and drop.
-- **Floating widget** — Movable, resizable, collapsible into a pill. Disabled by default.
+They are now separate modules that work with any system: [Dice Clocks](https://github.com/Stphn-Wrn/dice-clock) and [Synced YouTube Player](https://github.com/Stphn-Wrn/synced-youtube-player). Install them with their manifest URL; your settings, clock and video library are imported from this module automatically.
 
 ## Installation
 
@@ -61,11 +56,7 @@ Then enable the module in your world. It only shows up in the list if the world 
 
 - **Combat HUD** — Select a token: the HUD shows at the bottom of the screen. The grid button hides it in favor of the macros; the sword button brings it back.
 - **Companion** — **Book** icon in the left toolbar.
-- **Dice Clock** — **Die** icon in the left toolbar.
 - **Party dashboard** — **Group** icon in the left toolbar (GM only).
-- **YouTube Player** — Enable it in the module settings, then refresh. The widget's **folder** icon shows the search and library; clicking a video starts it for everyone.
-
-YouTube search works out of the box through public [Invidious](https://invidious.io) instances, which are sometimes down. For reliable search, set a **YouTube Data API v3** key in the settings. This key is visible to connected players: restrict it to the YouTube Data API in the Google console.
 
 ## Customization
 
@@ -89,10 +80,8 @@ sodl-companion/
 │       ├── party-dashboard/  # Party dashboard (GM)
 │       ├── round-reminders/  # Round reminders (GM)
 │       ├── companion/        # Rules reference, search and Fortune pool
-│       ├── dice-clock/       # Dice Clock
-│       └── youtube-player/   # Synced YouTube player
-├── tests/                    # Pure logic tests (npm test)
-└── sounds/                   # Clock chime
+│       └── moved-tools/      # One-time notice: clock and YouTube player moved
+└── tests/                    # Pure logic tests (npm test)
 ```
 
 ## Accessing the data
@@ -103,14 +92,6 @@ The main classes are exposed on `window` for macros and the console.
 // Fortune pool (shared world setting; changes are GM only)
 SODLDataManager.getChancePoints();
 await SODLDataManager.modifyChancePoints(+1);
-
-// Dice Clock
-SODLDiceClockManager.getState();            // { remaining, hour }
-await SODLDiceClockManager.removePoints(1);
-
-// YouTube Player
-await SODLYoutubeBroadcast.start(SODLYoutubeManager.getLibrary().videos[0]);
-await SODLYoutubeSearch.query("tavern music");
 
 // Combat HUD and party dashboard
 SODLCombatHud.toggleMode();
@@ -139,16 +120,6 @@ Tests run on GitHub on every push, and a release is not published if they fail. 
 **The combat HUD does not show**
 - Select a character token (or, as a player, have a character assigned).
 - Check that it is enabled in your module settings and not switched to the macros.
-
-**The YouTube widget does not show**
-- It is disabled by default. For players, it only shows during a broadcast.
-
-**The video does not start for a player**
-- If the browser blocks autoplay, a **"Join the broadcast"** button appears.
-- Some videos cannot be embedded outside YouTube: pick another one.
-
-**YouTube search returns nothing**
-- Set a YouTube Data API v3 key, or change the Invidious instances in the settings. Pasting a link always works.
 
 ## License
 

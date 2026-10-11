@@ -79,77 +79,6 @@
     "Common": {
       "Cancel": "Annuler"
     },
-    "DiceClock": {
-      "Title": "Horloge à Dés",
-      "OpenTool": "Ouvrir l'Horloge à Dés",
-      "HourFormat": "{hour}h00",
-      "Expired": "L'horloge est arrivée à son terme.",
-      "Room": "Pièce / Étage",
-      "RoomHint": "Fouiller une pièce / Changer d'étage (-1 point)",
-      "ShortRest": "Repos court",
-      "ShortRestHint": "Repos court (-1 heure)",
-      "Adjust": "Ajustement",
-      "Reset": "Réinitialiser",
-      "ReadOnly": "Le MJ contrôle l'horloge.",
-      "ResetDialog": {
-        "Title": "Réinitialiser l'horloge",
-        "Content": "Remettre l'horloge à son état de départ ?"
-      },
-      "Chat": {
-        "ResetTitle": "L'horloge est remise à zéro.",
-        "ResetBody": "Il est {hour}. Les dés affichent leur valeur maximale.",
-        "ChimeTitle": "Ding... Dong...",
-        "ChimeBody": "L'horloge sonne. Il est maintenant {hour}."
-      },
-      "DefaultCriticalMessage": "Un grondement sourd s'élève des murs de la maison... Le Monticule de Chair (Walter) s'éveille et attaque !"
-    },
-    "Youtube": {
-      "Title": "Lecteur YouTube",
-      "Unsorted": "Non classé",
-      "VideoFallback": "Vidéo {id}",
-      "ConfirmClick": "Cliquer à nouveau pour confirmer",
-      "Expand": "Agrandir le lecteur",
-      "Move": "Déplacer",
-      "SearchAndLibrary": "Recherche et bibliothèque",
-      "Collapse": "Réduire",
-      "PlayPause": "Lecture / pause",
-      "Join": "Rejoindre la diffusion",
-      "Placeholder": "Recherchez une vidéo ou choisissez-en une dans la bibliothèque pour la diffuser.",
-      "Volume": "Volume (uniquement pour vous)",
-      "Fullscreen": "Plein écran",
-      "Stop": "Arrêter la diffusion pour tout le monde",
-      "SearchPlaceholder": "Rechercher sur YouTube ou coller un ou plusieurs liens",
-      "Search": "Rechercher",
-      "Library": "Bibliothèque",
-      "NewFolder": "Nouveau dossier",
-      "FolderName": "Nom du dossier",
-      "Create": "Créer",
-      "RenameFolder": "Renommer le dossier",
-      "DeleteFolder": "Supprimer le dossier (ses vidéos passent dans « Non classé »)",
-      "VideoHint": "{title} — cliquer pour diffuser, glisser pour changer de dossier",
-      "RenameVideo": "Renommer la vidéo",
-      "DeleteVideo": "Supprimer la vidéo",
-      "EmptyFolder": "Dossier vide — glissez-y des vidéos",
-      "EmptyLibrary": "Aucune vidéo pour le moment. Recherchez-en une ci-dessus.",
-      "Searching": "Recherche en cours…",
-      "Results": "Résultats ({count})",
-      "TargetFolder": "Dossier dans lequel ajouter les vidéos",
-      "AddAll": "Ajouter les {count} vidéos à la bibliothèque",
-      "CloseResults": "Fermer les résultats",
-      "PlayNow": "Diffuser maintenant",
-      "AlreadySaved": "Déjà dans la bibliothèque",
-      "AddToLibrary": "Ajouter à la bibliothèque",
-      "NoResults": "Aucun résultat.",
-      "Errors": {
-        "EmptyFolderName": "Le nom du dossier ne peut pas être vide.",
-        "EmptyVideoTitle": "Le titre de la vidéo ne peut pas être vide.",
-        "EmptyVideoId": "L'identifiant YouTube ne peut pas être vide.",
-        "InvalidLink": "Lien YouTube invalide.",
-        "ApiRefused": "Recherche YouTube refusée ({reason}) : vérifiez la clé API.",
-        "NoProvider": "Aucun service de recherche n'a répondu. Renseignez une clé API YouTube dans les paramètres du module.",
-        "IframeApi": "Impossible de charger l'API YouTube."
-      }
-    },
     "Hud": {
       "Tabs": {
         "Attacks": "Attaques",
@@ -296,46 +225,6 @@
       }
     },
     "Settings": {
-      "DiceClockEnabled": {
-        "Name": "Horloge à Dés : activer le module",
-        "Hint": "Active ou désactive le bouton et la fenêtre de l'Horloge à Dés. Nécessite de rouvrir/rafraîchir la partie pour que le bouton apparaisse ou disparaisse."
-      },
-      "DiceClockDiceCount": {
-        "Name": "Horloge à Dés : nombre de dés",
-        "Hint": "Nombre de dés utilisés par l'horloge."
-      },
-      "DiceClockFaces": {
-        "Name": "Horloge à Dés : faces par dé",
-        "Hint": "Nombre de faces de chaque dé (6 pour des d6)."
-      },
-      "DiceClockPipMinutes": {
-        "Name": "Horloge à Dés : minutes par point",
-        "Hint": "Durée en minutes représentée par un point (pip) retiré."
-      },
-      "DiceClockStartHour": {
-        "Name": "Horloge à Dés : heure de départ",
-        "Hint": "Heure affichée au début du compte à rebours (18 pour 18h00)."
-      },
-      "DiceClockSoundPath": {
-        "Name": "Horloge à Dés : son du carillon",
-        "Hint": "Chemin vers le fichier audio joué à chaque heure pleine (ex: modules/sodl-companion/sounds/carillon.mp3). Laisser vide pour désactiver le son."
-      },
-      "DiceClockCriticalMessage": {
-        "Name": "Horloge à Dés : message final",
-        "Hint": "Message envoyé dans le chat lorsque tous les points de l'horloge sont épuisés."
-      },
-      "YoutubePlayerEnabled": {
-        "Name": "Lecteur YouTube : activer le module",
-        "Hint": "Affiche un lecteur flottant permettant au MJ de diffuser des vidéos YouTube à tous les joueurs. Nécessite de rafraîchir la partie."
-      },
-      "YoutubeApiKey": {
-        "Name": "Lecteur YouTube : clé API (recherche)",
-        "Hint": "Facultatif. Clé « YouTube Data API v3 » (Google Cloud Console) pour une recherche fiable. Sans clé, la recherche passe par des instances publiques Invidious, parfois indisponibles."
-      },
-      "YoutubeInvidiousInstances": {
-        "Name": "Lecteur YouTube : instances Invidious",
-        "Hint": "Utilisées pour la recherche quand aucune clé API n'est renseignée, dans l'ordre, séparées par des virgules."
-      },
       "CombatHudEnabled": {
         "Name": "HUD de combat : activer",
         "Hint": "Réglage personnel (chaque joueur et le MJ choisissent pour eux-mêmes). Affiche en bas de l'écran, à la place des macros et de la liste des joueurs, un HUD pour le token contrôlé (attaques, équipement, sorts, talents, objets, caractéristiques). Un bouton permet de revenir aux macros."
@@ -703,6 +592,12 @@
       "Player": "Joueur",
       "Ancestry": "Ascendance",
       "Professions": "Professions"
+    },
+    "MovedTools": {
+      "Title": "L'horloge à dés et le lecteur YouTube ont déménagé",
+      "Body": "Ils sont maintenant des modules à part, utilisables avec tous les systèmes. Installez ceux dont vous vous servez avec leur URL de manifeste : vos réglages, votre horloge et votre bibliothèque de vidéos seront repris automatiquement.",
+      "diceClock": "Horloges à dés",
+      "youtubePlayer": "Lecteur YouTube synchronisé"
     }
   }
 }

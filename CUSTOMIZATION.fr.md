@@ -12,7 +12,6 @@ Tous les textes du module sont dans `lang/fr.json` et `lang/en.json`, sous la cl
 | `SODL.Companion` | Interface du compagnon |
 | `SODL.Hud` | HUD de combat |
 | `SODL.Dashboard`, `SODL.Reminders` | Tableau de bord et rappels de round |
-| `SODL.DiceClock`, `SODL.Youtube` | Horloge et lecteur YouTube |
 | `SODL.Settings` | Noms et descriptions des paramètres |
 
 Pour corriger une règle, modifiez son texte **dans les deux fichiers** : le compagnon, le HUD et les messages du chat en profitent. Les deux fichiers doivent toujours avoir exactement les mêmes clés.
@@ -80,25 +79,6 @@ Variables CSS en tête de `combat-hud.css`, sur `.sodl-hud` (`--hud-bg`, `--hud-
 - `src/features/party-dashboard/` : `party-row.js` prépare une ligne par personnage joueur (testé), `party-dashboard-app.js` gère la fenêtre. Le masquage des outils MJ du système est dans son `register.js`.
 - `src/features/round-reminders/` : `reminders.js` construit les rappels (testé), `register.js` les envoie au MJ à chaque nouveau round.
 
-## Horloge à Dés
-
-Les réglages courants se font dans les paramètres du module. Le reste est dans `src/features/dice-clock/` :
-- **boutons du MJ** : `dice-clock.html` pour l'affichage, `activateListeners()` de `dice-clock-app.js` pour l'action ;
-- **messages du chat** : `_removeOnePoint()` et `resetClock()` de `dice-clock-manager.js`, textes dans `SODL.DiceClock.Chat` ;
-- **son par défaut** : `sounds/vecna-clock.mp3` ;
-- **apparence** : `dice-clock.css`.
-
-## Lecteur YouTube
-
-Le code est dans `src/features/youtube-player/`.
-
-- **Couleurs** : variables CSS en tête de `youtube-player.css`, sur `.yt-widget`.
-- **Position et taille par défaut** : `_loadLayout()` de `widget.js`.
-- **Synchronisation** : `SYNC_TOLERANCE` (`broadcast.js`, 2 s) est l'écart au-delà duquel un joueur est recalé ; `SYNC_INTERVAL_MS` (`widget.js`, 1 s) la fréquence de vérification.
-- **Recherche** : `search.js` définit un fournisseur par service (API YouTube Data si une clé est renseignée, sinon Invidious). Pour ajouter un service, écrivez un fournisseur exposant `search(text)` et branchez-le dans `createSearchProvider`. `SEARCH_RESULTS_LIMIT` règle le nombre de résultats.
-- **Formats de liens** : ajoutez une fonction à `PARSING_STRATEGIES` dans `url-parser.js`.
-- **Données** : `youtubeLibrary` et `youtubeBroadcast` (monde), `youtubeVolume` et `youtubeWidgetLayout` (chaque utilisateur).
-
 ## Ajouter un outil
 
 Chaque outil est un dossier de `src/features/` dont le `register.js` exporte les étapes dont il a besoin :
@@ -148,4 +128,4 @@ npm test
 
 Les tests de la logique pure sont dans `tests/`, rangés par outil comme `src/features/`. Ils tournent aussi sur GitHub à chaque push, et avant chaque release.
 
-Dans Foundry, testez avec un compte MJ et un compte joueur (par exemple dans deux navigateurs) : réserve de Fortune masquée côté joueur, horloge en lecture seule, diffusion YouTube répercutée, HUD et favoris propres à chaque joueur. Après une modification du JavaScript, rechargez avec Ctrl+Maj+R : les modules sont mis en cache par le navigateur.
+Dans Foundry, testez avec un compte MJ et un compte joueur (par exemple dans deux navigateurs) : réserve de Fortune masquée côté joueur, HUD et favoris propres à chaque joueur. Après une modification du JavaScript, rechargez avec Ctrl+Maj+R : les modules sont mis en cache par le navigateur.

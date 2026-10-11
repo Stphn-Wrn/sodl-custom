@@ -1,7 +1,7 @@
 {
   "id": "sodl-companion",
   "title": "L'Ombre du Seigneur Démon - Compagnon",
-  "description": "Module compagnon pour L'Ombre du Seigneur Démon avec gestion de ressources et aide de jeu",
+  "description": "Module compagnon pour L'Ombre du Seigneur Démon : HUD de combat, réserve de Fortune, aide de jeu et outils du MJ",
   "version": "1.4.10",
   "compatibility": {
     "minimum": "11",
@@ -34,8 +34,6 @@
   ],
   "styles": [
     "src/features/companion/companion.css",
-    "src/features/dice-clock/dice-clock.css",
-    "src/features/youtube-player/youtube-player.css",
     "src/features/combat-hud/combat-hud.css",
     "src/features/party-dashboard/party-dashboard.css"
   ],
