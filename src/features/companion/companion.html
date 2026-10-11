@@ -1,5 +1,4 @@
 <form class="sodl-companion-form" autocomplete="off">
-  <!-- Recherche rapide -->
   <div class="sodl-search-bar">
     <i class="fas fa-search"></i>
     <input type="text" class="sodl-search-input" placeholder="{{localize 'SODL.Companion.SearchPlaceholder'}}">
@@ -8,7 +7,6 @@
   <div class="sodl-search-results" style="display: none;"></div>
 
   <div class="sodl-normal-view">
-  <!-- Navigation des onglets -->
   <nav class="sodl-tab-nav">
     <button type="button" class="tab-button {{#if (eq activeTab 'resources')}}active{{/if}}" data-tab="resources">
       <i class="fas fa-coins"></i> {{localize "SODL.Companion.Tabs.Resources"}}
@@ -24,10 +22,8 @@
     </button>
   </nav>
 
-  <!-- Contenu des onglets -->
   <div class="sodl-tabs-content">
     
-    <!-- Onglet: Ressources (Points de Chance) -->
     {{#if (eq activeTab 'resources')}}
     <div class="tab-content resources-tab">
       <div class="resources-header">
@@ -115,7 +111,6 @@
     </div>
     {{/if}}
 
-    <!-- Onglet: Règles -->
     {{#if (eq activeTab 'rules')}}
     <div class="tab-content rules-tab">
       <div class="rules-header">
@@ -135,7 +130,6 @@
     </div>
     {{/if}}
 
-    <!-- Onglet: Actions -->
     {{#if (eq activeTab 'actions')}}
     <div class="tab-content actions-tab">
       <div class="actions-header">
@@ -155,7 +149,6 @@
     </div>
     {{/if}}
 
-    <!-- Onglet: Aide -->
     {{#if (eq activeTab 'help')}}
     <div class="tab-content help-tab">
       <div class="help-header">
