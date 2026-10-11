@@ -1,0 +1,28 @@
+{
+  "group": "sodl",
+  "platform": "foundry",
+  "icon": "fa-gauge-high",
+  "order": 10,
+  "text": {
+    "fr": {
+      "title": "Compagnon",
+      "summary": "L'aide de jeu complète pour la table : HUD de combat, réserve de Fortune du groupe et tableau de bord du MJ.",
+      "features": [
+        "HUD de combat personnalisable avec barre de favoris",
+        "Réserve de Fortune partagée et aide de jeu consultable",
+        "Tableau de bord du groupe et rappels de round pour le MJ",
+        "Horloge à dés et lecteur YouTube synchronisé"
+      ]
+    },
+    "en": {
+      "title": "Companion",
+      "summary": "The all-in-one table helper: combat HUD, shared Fortune pool and GM dashboard.",
+      "features": [
+        "Customisable combat HUD with a favourites bar",
+        "Shared Fortune pool and searchable rules reference",
+        "Party dashboard and round reminders for the GM",
+        "Dice clock and synced YouTube player"
+      ]
+    }
+  }
+}
